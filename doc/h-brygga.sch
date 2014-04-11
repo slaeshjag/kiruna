@@ -1,0 +1,262 @@
+EESchema Schematic File Version 2  date Thu 10 Apr 2014 08:22:06 PM CEST
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:special
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+EELAYER 43  0
+EELAYER END
+$Descr A4 11700 8267
+Sheet 1 1
+Title ""
+Date "10 apr 2014"
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L CONN_4 P?
+U 1 1 53465AA8
+P 3350 2250
+F 0 "P?" V 3300 2250 50  0000 C CNN
+F 1 "CONN_4" V 3400 2250 50  0000 C CNN
+	1    3350 2250
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	3200 2700 3200 2600
+Connection ~ 2550 3400
+Wire Wire Line
+	2650 3400 2500 3400
+Wire Wire Line
+	2500 3400 2500 2850
+Wire Wire Line
+	2500 2850 3300 2850
+Wire Wire Line
+	3300 2850 3300 2600
+Connection ~ 3100 3900
+Wire Wire Line
+	3100 3900 3100 3600
+Connection ~ 3100 4550
+Wire Wire Line
+	3100 4300 3100 4550
+Wire Wire Line
+	2550 2900 4250 2900
+Wire Wire Line
+	4250 3400 4250 3950
+Wire Wire Line
+	4250 3950 2650 3950
+Connection ~ 4150 3400
+Wire Wire Line
+	2650 3950 2650 4350
+Connection ~ 3400 2900
+Wire Wire Line
+	3400 2750 3400 2900
+Connection ~ 3400 4550
+Wire Wire Line
+	3400 4700 3400 4550
+Wire Wire Line
+	3850 4550 2950 4550
+Connection ~ 2950 3900
+Wire Wire Line
+	3300 3900 2950 3900
+Wire Wire Line
+	3850 4150 3850 3600
+Wire Wire Line
+	2950 3600 2950 4150
+Wire Wire Line
+	3500 3900 3850 3900
+Connection ~ 3850 3900
+Wire Wire Line
+	3850 3200 2950 3200
+Wire Wire Line
+	3400 3100 3400 3200
+Connection ~ 3400 3200
+Wire Wire Line
+	2550 3400 2550 4800
+Wire Wire Line
+	2550 4800 4150 4800
+Wire Wire Line
+	4150 4800 4150 4350
+Wire Wire Line
+	3700 4300 3700 4550
+Connection ~ 3700 4550
+Wire Wire Line
+	3700 3600 3700 3900
+Connection ~ 3700 3900
+Wire Wire Line
+	3400 2800 3400 2600
+Connection ~ 3400 2800
+Wire Wire Line
+	3500 2600 3500 2850
+Wire Wire Line
+	3500 2850 4300 2850
+Wire Wire Line
+	4300 2850 4300 3400
+Wire Wire Line
+	4300 3400 4150 3400
+Connection ~ 4250 3400
+$Comp
+L GND #PWR?
+U 1 1 53465A96
+P 3200 2700
+F 0 "#PWR?" H 3200 2700 30  0001 C CNN
+F 1 "GND" H 3200 2630 30  0001 C CNN
+	1    3200 2700
+	1    0    0    -1  
+$EndComp
+$Comp
+L DIODE D?
+U 1 1 53465A18
+P 3100 3400
+F 0 "D?" H 3100 3500 40  0000 C CNN
+F 1 "DIODE" H 3100 3300 40  0000 C CNN
+	1    3100 3400
+	0    -1   -1   0   
+$EndComp
+$Comp
+L DIODE D?
+U 1 1 53465A10
+P 3700 3400
+F 0 "D?" H 3700 3500 40  0000 C CNN
+F 1 "DIODE" H 3700 3300 40  0000 C CNN
+	1    3700 3400
+	0    -1   -1   0   
+$EndComp
+$Comp
+L DIODE D?
+U 1 1 534659F1
+P 3700 4100
+F 0 "D?" H 3700 4200 40  0000 C CNN
+F 1 "DIODE" H 3700 4000 40  0000 C CNN
+	1    3700 4100
+	0    -1   -1   0   
+$EndComp
+$Comp
+L DIODE D?
+U 1 1 534659E7
+P 3100 4100
+F 0 "D?" H 3100 4200 40  0000 C CNN
+F 1 "DIODE" H 3100 4000 40  0000 C CNN
+	1    3100 4100
+	0    -1   -1   0   
+$EndComp
+$Comp
+L R R?
+U 1 1 534659BA
+P 2550 3150
+F 0 "R?" V 2630 3150 50  0000 C CNN
+F 1 "R" V 2550 3150 50  0000 C CNN
+	1    2550 3150
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R?
+U 1 1 534659B1
+P 4250 3150
+F 0 "R?" V 4330 3150 50  0000 C CNN
+F 1 "R" V 4250 3150 50  0000 C CNN
+	1    4250 3150
+	1    0    0    -1  
+$EndComp
+$Comp
+L +3.3V #PWR?
+U 1 1 53465959
+P 3400 2750
+F 0 "#PWR?" H 3400 2710 30  0001 C CNN
+F 1 "+3.3V" H 3400 2860 30  0000 C CNN
+	1    3400 2750
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 53465884
+P 3400 4700
+F 0 "#PWR?" H 3400 4700 30  0001 C CNN
+F 1 "GND" H 3400 4630 30  0001 C CNN
+	1    3400 4700
+	1    0    0    -1  
+$EndComp
+$Comp
+L VCC #PWR?
+U 1 1 53465866
+P 3400 3100
+F 0 "#PWR?" H 3400 3200 30  0001 C CNN
+F 1 "VCC" H 3400 3200 30  0000 C CNN
+	1    3400 3100
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_2 P?
+U 1 1 53465801
+P 3400 3550
+F 0 "P?" V 3350 3550 40  0000 C CNN
+F 1 "CONN_2" V 3450 3550 40  0000 C CNN
+	1    3400 3550
+	0    -1   -1   0   
+$EndComp
+$Comp
+L MOSFET_P Q?
+U 1 1 53465719
+P 3950 3400
+F 0 "Q?" H 3950 3590 60  0000 R CNN
+F 1 "MOSFET_P" H 3950 3220 60  0000 R CNN
+	1    3950 3400
+	-1   0    0    1   
+$EndComp
+$Comp
+L MOSFET_P Q?
+U 1 1 5346570F
+P 2850 3400
+F 0 "Q?" H 2850 3590 60  0000 R CNN
+F 1 "MOSFET_P" H 2850 3220 60  0000 R CNN
+	1    2850 3400
+	1    0    0    1   
+$EndComp
+$Comp
+L MOSFET_N Q?
+U 1 1 534656FE
+P 3950 4350
+F 0 "Q?" H 3960 4520 60  0000 R CNN
+F 1 "MOSFET_N" H 3960 4200 60  0000 R CNN
+	1    3950 4350
+	-1   0    0    -1  
+$EndComp
+$Comp
+L MOSFET_N Q?
+U 1 1 534656F9
+P 2850 4350
+F 0 "Q?" H 2860 4520 60  0000 R CNN
+F 1 "MOSFET_N" H 2860 4200 60  0000 R CNN
+	1    2850 4350
+	1    0    0    -1  
+$EndComp
+$EndSCHEMATC
