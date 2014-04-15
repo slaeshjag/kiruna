@@ -1,0 +1,99 @@
+
+struct DATORS{
+
+	int nr;
+	char data;
+
+};
+
+struct STRUCT_RETURN_BYTE{
+
+	char* data;
+	int offset;
+	DATORS byte;	
+
+};
+
+*STRUCT_RETURN_BYTE analysera_nästa_bit (*char data, int offset, int pixelstorlek){
+	
+	char temp = data[0];
+	char temp2;
+	int nyoffset = pixelstorlek;
+
+	static int minimivärde = 6;
+
+	if (offset != 0){
+	
+	//Om vi inte ska börja vid första biten...
+	
+		temp = temp >> offset;
+		
+		//Vi skyfflar ned data ifrån vår första byte
+		//så att vi missar redan läst data.
+
+		temp2 = data[1] << offset;
+
+		//Nu hämtar vi nog med data för att fylla ut charren.
+
+		temp = temp + temp 2;
+
+		//Och lägger ihop dem.
+		//Nu har vi en hel byte data.
+
+		nyoffset = nyoffset + offset;
+
+	}
+
+	STRUCT_RETURN_BYTE svar;
+
+	if(temp < minimivärde){
+
+		
+
+	}
+	else{
+		
+		temp = temp << 8 - pixelstorlek;
+
+		//Annars formaterar vi bara våran pixel.
+
+		svar.byte.data = temp;
+		svar.byte.nr = 1;
+
+		//Och lägger in den i vårat svar.
+
+	}
+
+	if(nyoffset < 8){
+		
+		svar.offset = nyoffset;
+		svar.data = data;
+		return *svar;
+
+		//Om offsettet inte är större än en byte
+		//returnerar vi grunkor.
+
+	}
+	
+	else{
+
+		char *tempdata = data;
+
+		while (8 < nyoffset){
+			
+			tempdata++;
+			nyoffset = nyoffset - 8;
+
+		}
+
+		svar.offset = nyoffset;
+		svar.data = data;
+		return *svar;	
+
+		//Om offsettet är större är en byte eller mer
+		//Flyttar vi fram datapekaren 1 steg,
+		//drar bort 8 ifrån bitoffsettet
+		//och returnerar all data.
+	}
+
+}
