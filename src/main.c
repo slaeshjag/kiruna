@@ -2,12 +2,13 @@
 #include "system/LPC11xx.h"
 #include "util.h"
 #include "uart.h"
+#include "motor.h"
 
 extern asm_test();
 
 static void scsi_init_pinp(volatile uint32_t *p) {
-	(*p) &= (~0x1F);
-	(*p) |= 0x8;
+//	(*p) &= (~0x1F);
+//	(*p) |= 0x2;
 }
 
 
@@ -175,10 +176,32 @@ int main(int ram, char **argv) {
 	initialize();
 	util_delay(200);
 	uart_printf("System booted up, %u bytes of RAM used\n", ram);
-	scsi_init_pinp(&LPC_IOCON->PIO1_8);
+	LPC_GPIO2->DIR |= MOTOR_MASK;
+	scsi_init_pinp(&LPC_IOCON->PIO2_8);
+	scsi_init_pinp(&LPC_IOCON->PIO2_9);
+	scsi_init_pinp(&LPC_IOCON->PIO2_10);
+	scsi_init_pinp(&LPC_IOCON->PIO2_11);
+
 	
+	MOTOR_PORT->MASKED_ACCESS[MOTOR_MASK] |= (MOTOR_MASK);
+	util_delay(2000000);
+	uart_printf("Going forward\n");
+	motor_go(MOTOR_DIR_FORWARD);
+	util_delay(2000000);
+	uart_printf("Going left\n");
+	motor_go(MOTOR_DIR_LEFT);
+	util_delay(2000000);
+	uart_printf("Going right\n");
+	motor_go(MOTOR_DIR_RIGHT);
+	util_delay(2000000);
+	uart_printf("Going backwards\n");
+	motor_go(MOTOR_DIR_BACKWARD);
+	util_delay(2000000);
+	uart_printf("Stopping\n");
+	motor_go(MOTOR_DIR_STAHP);
+
 	for (;;) {
-		prompt();
+		
 	}
 
 	return 0;
