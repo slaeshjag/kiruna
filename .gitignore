@@ -1,0 +1,12 @@
+*.o
+*.elf
+*.hex
+*.bin
+*.dat
+*.ogg
+*.swp
+*.elf
+*.exe
+*.dll
+*.so
+
