@@ -202,6 +202,7 @@ int main(int ram, char **argv) {
 	util_delay(2000000);
 	uart_printf("Going backwards\n");
 	motor_go(MOTOR_DIR_BACKWARD);
+	for(;;);
 	util_delay(2000000);
 	uart_printf("Stopping\n");
 	motor_go(MOTOR_DIR_STAHP);
