@@ -21,7 +21,7 @@ inline void gpio_set_pin(int port, int pin, int data) {
 
 void util_delay(int us) {
 	SysTick->CTRL = 0;
-	SysTick->LOAD = us * (SYSTEM_CLOCK / 2000000);
+	SysTick->LOAD = us * (SYSTEM_CLOCK / 1000000);
 	SysTick->VAL = 0;
 	SysTick->CTRL = 1;
 	while (!(SysTick->CTRL & (1 << 16)));
@@ -33,7 +33,7 @@ void util_delay(int us) {
 /* Tiondels mikrosekund */
 void util_delay_tus(int tus) {
 	SysTick->CTRL = 0;
-	SysTick->LOAD = tus * (SYSTEM_CLOCK / 20000000);
+	SysTick->LOAD = tus * (SYSTEM_CLOCK / 10000000);
 	SysTick->VAL = 0;
 	SysTick->CTRL = 1;
 	while (!(SysTick->CTRL & (1 << 16)));
