@@ -55,9 +55,9 @@ void initialize(void) {
 	LPC_UART->LCR = 0x3;
 	
 	/********* Enable SPI0 ************/
-	LPC_IOCON->SCK_LOC  = 2;
+	LPC_IOCON->SCK_LOC  = 0x0;
 	//LPC_IOCON->PIO0_6 &= ~0x7;
-	LPC_IOCON->PIO0_6 = 2;
+	LPC_IOCON->PIO0_10 = 0x2;
 	LPC_IOCON->PIO0_8 &= ~0x7;
 	LPC_IOCON->PIO0_8 |= 0x1;
 	LPC_IOCON->PIO0_9 &= ~0x7;

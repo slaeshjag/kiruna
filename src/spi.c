@@ -21,14 +21,9 @@
 #include "spi.h"
 #include <stdint.h>
 
-
-uint8_t spi_recv() {
-	/* TODO: Implement */
-	return 0;
-}
-
-
-void spi_send(uint8_t data) {
-	/* TODO: Implement */
-	return;
+uint8_t spi_send_recv(uint8_t data) {
+	while(!(LPC_SSP0->SR & 0x2));
+	LPC_SSP0->DR = data;
+	while(!(LPC_SSP0->SR & 0x4));
+	return LPC_SSP0->DR;
 }
