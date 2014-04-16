@@ -7,11 +7,12 @@ unsigned char microphone_sample() {
 	/*48 MHz / 12 = 4 MHz*/
 	LPC_ADC->INTEN = 0;
 	LPC_SYSCON->PDRUNCFG &= ~(0x1 << 4);
+	LPC_ADC->CR = 0x1 | (12 << 8) | (1 << 24);
 	for(;;) {
-		LPC_ADC->CR = 0x1 | (12 << 8) | (1 << 24);
 		while(!(LPC_ADC->STAT & 0x1));
 		uart_send_char(LPC_ADC->DR[0] >> 7);
 		//uart_printf("\rADC: %i", (LPC_ADC->DR[0] >> 5) & 0x3FF);
-		util_delay(125);
+		LPC_ADC->CR |= (1 << 24);
+		util_delay(60);
 	}
 }
