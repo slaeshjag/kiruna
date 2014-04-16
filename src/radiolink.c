@@ -190,37 +190,62 @@ void radiolink_test() {
 	LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 1;
 	util_delay(500000);
 
-	do {
-		LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 1;
-		util_delay(500000);
-		LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 0;
-		util_delay(20);
-		status = spi_send_recv(0x06);
-		uart_printf("Status: 0x%X\n", (unsigned int) status);
-		status = spi_send_recv(0x07);
-		uart_printf("Config: 0x%X\n", (unsigned int) status);
-
-		LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 1;
+//	do {
+/*		LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 1;
 		util_delay(500000);
 		LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 0;
 		util_delay(20);
 		spi_send_recv(0x20);
 		spi_send_recv(0x0A);
-	} while (status);
+		util_delay(20);*/
 
+/*		LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 1;
+		util_delay(500000);
+		LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 0;
+		util_delay(20);
+		status = spi_send_recv(0xFF);
+		uart_printf("Status: 0x%X\n", (unsigned int) status);
+		uart_printf("Config: 0x%X\n", (unsigned int) status);*/
 
+//	} while (status);
+	LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 1 << 9;
+//	while (spi_send_recv(0xFF));
+
+	util_delay(500000);
+	LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 0;
+	util_delay(20);
+	uart_printf("nn: %X\n", spi_send_recv(0x20));
+	uart_printf("nn: %X\n", spi_send_recv(0x0A));
+	uart_printf("nn: %X\n", spi_send_recv(0xFF));
+	uart_printf("nn: %X\n", spi_send_recv(0xFF));
+	uart_printf("nn: %X\n", spi_send_recv(0xFF));
+	uart_printf("nn: %X\n", spi_send_recv(0xFF));
+	uart_printf("nn: %X\n", spi_send_recv(0xFF));
+	
+	util_delay(20);
+	LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 1 << 9;
+	util_delay(500000);
+	LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 0;
+	util_delay(20);
+	
+	uart_printf("nn: %X\n", spi_send_recv(0x00));
+	uart_printf("nn: %X\n", spi_send_recv(0xFF));
+	uart_printf("nn: %X\n", spi_send_recv(0xFF));
+	uart_printf("nn: %X\n", spi_send_recv(0xFF));
+	uart_printf("nn: %X\n", spi_send_recv(0xFF));
 
 //	radiolink_init();
 
-//	for (;;) {
-		LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 1;
+	for (;;) {
 		util_delay(500000);
 		LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 0;
 		status = spi_send_recv(0x0A);
 		for (i = 0; i <3; i++)
 			uart_printf("0x%X ", spi_send_recv(0xFF));
+		LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 1 << 9;
 		uart_printf("\n");
-//	}
+	}
+	LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 1;
 	for (;;);
 
 }
