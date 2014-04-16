@@ -57,7 +57,7 @@ void initialize(void) {
 	/********* Enable SPI0 ************/
 	LPC_IOCON->SCK_LOC  = 0x0;
 	//LPC_IOCON->PIO0_6 &= ~0x7;
-	LPC_IOCON->PIO0_10 = 0x2;
+	LPC_IOCON->SWCLK_PIO0_10 = 0x2;
 	LPC_IOCON->PIO0_8 &= ~0x7;
 	LPC_IOCON->PIO0_8 |= 0x1;
 	LPC_IOCON->PIO0_9 &= ~0x7;
@@ -66,7 +66,7 @@ void initialize(void) {
 	//LPC_SYSCON->PRESETCTRL |= 0x5;
 	//LPC_SYSCON->SYSAHBCLKCTRL &= ~(1 << 11);
 	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 11);
-	LPC_SYSCON->SSP0CLKDIV = 64;
+	LPC_SYSCON->SSP0CLKDIV = 255;
 	LPC_SYSCON->PRESETCTRL |= 0x1;
 	
 	LPC_SSP0->CPSR = 0x2;
@@ -185,7 +185,8 @@ int main(int ram, char **argv) {
 	scsi_init_pinp(&LPC_IOCON->PIO2_9);
 	scsi_init_pinp(&LPC_IOCON->PIO2_10);
 	scsi_init_pinp(&LPC_IOCON->PIO2_11);
-	
+
+	radiolink_test();
 	microphone_sample();
 
 	
