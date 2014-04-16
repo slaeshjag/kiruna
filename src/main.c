@@ -72,6 +72,10 @@ void initialize(void) {
 	LPC_SSP0->CPSR = 0x2;
 	LPC_SSP0->CR0 = 0x107;
 	LPC_SSP0->CR1 = 0x2;
+	
+	/*Enable ADC*/
+	LPC_IOCON->R_PIO0_11 = 0x2;
+	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 13);
 }
 
 static unsigned char *ascii_filter(unsigned char *s) {
@@ -181,6 +185,8 @@ int main(int ram, char **argv) {
 	scsi_init_pinp(&LPC_IOCON->PIO2_9);
 	scsi_init_pinp(&LPC_IOCON->PIO2_10);
 	scsi_init_pinp(&LPC_IOCON->PIO2_11);
+	
+	microphone_sample();
 
 	
 	MOTOR_PORT->MASKED_ACCESS[MOTOR_MASK] |= (MOTOR_MASK);
