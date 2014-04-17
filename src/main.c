@@ -186,7 +186,7 @@ int main(int ram, char **argv) {
 	scsi_init_pinp(&LPC_IOCON->PIO2_10);
 	scsi_init_pinp(&LPC_IOCON->PIO2_11);
 
-	radiolink_test();
+	//radiolink_test();
 	microphone_sample();
 
 	

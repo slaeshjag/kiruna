@@ -24,6 +24,8 @@
 #include "uart.h"
 #include <stdint.h>
 
+static void radiolink_cmd_flush_tx();
+
 /* FIXME: I should probably move the overhead over to recieve. We'll be
 	recieving data a lot less frequently than we'll transmit it */
 
@@ -36,8 +38,12 @@ void radiolink_init() {
 
 	RADIO_ATTENTION;
 	/* Power on */
-	spi_send_recv(0x20);
-	spi_send_recv(0x0B);
+	spi_send_recv(RLINK_CMD_WRITE_REG | RLINK_REG_CONFIG);
+	#ifdef MOTHERSHIP
+	spi_send_recv(RLINK_CONFIG_PWR_UP | RLINK_CONFIG_EN_CRC);
+	#else
+	spi_send_recv(RLINK_CONFIG_PWR_UP | RLINK_CONFIG_EN_CRC | RLINK_CONFIG_PRIM_RX);
+	#endif
 	RADIO_DONE;
 	
 	/* The radio module needs > 100 ms to start up */
@@ -45,18 +51,19 @@ void radiolink_init() {
 
 	/* The device starts up in Enhanced ShockBurst™ mode, which is fine */
 	RADIO_ATTENTION;
-	spi_send_recv(0x20 + RADIOLINK_CHANNEL);
+	spi_send_recv(RLINK_CMD_WRITE_REG | RLINK_REG_RF_CH);
+	spi_send_recv(RADIOLINK_CHANNEL);
 	RADIO_DONE;
 
-	/* Set address length */
+	/* Set address length to 3 */
 	RADIO_ATTENTION;
-	spi_send_recv(0x23);
+	spi_send_recv(RLINK_CMD_WRITE_REG | RLINK_REG_SETUP_AW);
 	spi_send_recv(0x01);
 	RADIO_DONE;
 
 	/* Set up device network address for receiving acks */
 	RADIO_ATTENTION;
-	spi_send_recv(0x2B);
+	spi_send_recv(RLINK_CMD_WRITE_REG | RLINK_REG_RX_ADDR1);
 	spi_send_recv(RADIOLINK_ADDR_SELF_0);
 	spi_send_recv(RADIOLINK_ADDR_SELF_1);
 	spi_send_recv(RADIOLINK_ADDR_SELF_2);
@@ -65,7 +72,7 @@ void radiolink_init() {
 
 	/* Set up device network address */
 	RADIO_ATTENTION;
-	spi_send_recv(0x2A);
+	spi_send_recv(RLINK_CMD_WRITE_REG | RLINK_REG_RX_ADDR0);
 	spi_send_recv(RADIOLINK_ADDR_TARG_0);
 	spi_send_recv(RADIOLINK_ADDR_TARG_1);
 	spi_send_recv(RADIOLINK_ADDR_TARG_2);
@@ -73,7 +80,7 @@ void radiolink_init() {
 
 	/* Set up device transmit address */
 	RADIO_ATTENTION;
-	spi_send_recv(0x30);
+	spi_send_recv(RLINK_CMD_WRITE_REG | RLINK_REG_TX_ADDR);
 	spi_send_recv(RADIOLINK_ADDR_TARG_0);
 	spi_send_recv(RADIOLINK_ADDR_TARG_1);
 	spi_send_recv(RADIOLINK_ADDR_TARG_2);
@@ -85,13 +92,25 @@ void radiolink_init() {
 	spi_send_recv(0x1);
 	RADIO_DONE;
 
+	/* Ack packets */
+	RADIO_ATTENTION;
+	spi_send_recv(0x3D);
+	spi_send_recv(0x06);
+	RADIO_DONE;
+
+	/* Dynamic payload legth on PIPE 0, 1 */
+	RADIO_ATTENTION;
+	spi_send_recv(0x3C);
+	spi_send_recv(0x03);
+	RADIO_DONE;
+
 	return;
 }
 
 static void radiolink_reset_hard() {
+	radiolink_cmd_flush_tx();
 	uart_printf("Packet loss!\n");
 
-	for(;;);
 }
 
 
@@ -140,7 +159,7 @@ static void radiolink_cmd_enter_transmit() {
 	RADIO_ATTENTION;
 	/* Enter transmit mode by turning off recieve mode */
 	spi_send_recv(0x20);
-	spi_send_recv(0x0B);
+	spi_send_recv(0x0A);
 	RADIO_DONE;
 }	
 
@@ -149,7 +168,7 @@ static void radiolink_cmd_enter_receive() {
 	RADIO_ATTENTION;
 	/* Enter receive mode by turning on recieve mode */
 	spi_send_recv(0x20);
-	spi_send_recv(0x0A);
+	spi_send_recv(0x0B);
 	RADIO_DONE;
 }	
 
@@ -159,8 +178,7 @@ static void radiolink_cmd_flush_tx() {
 
 	RADIO_ATTENTION;
 
-	spi_send_recv(0xE1);
-	spi_send_recv(0xFF);
+	spi_send_recv(RLINK_CMD_FLUSH_TX);
 
 	RADIO_DONE;
 
@@ -171,15 +189,7 @@ static void radiolink_cmd_flush_tx() {
 	RADIO_ATTENTION;
 	if (state) {
 		spi_send_recv(0x27);
-		spi_send_recv(state);
-	}
-	RADIO_DONE;
-
-	RADIO_ATTENTION;
-	if (state) {
-		state ^= spi_send_recv(0xFF);
-		if (state)
-			uart_printf("Change! %X\n", state);
+		spi_send_recv(0x10);
 	}
 	RADIO_DONE;
 }
@@ -188,8 +198,7 @@ static void radiolink_cmd_flush_tx() {
 static void radiolink_cmd_flush_rx() {
 	RADIO_ATTENTION;
 
-	spi_send_recv(0xE1);
-	spi_send_recv(0xFF);
+	spi_send_recv(RLINK_CMD_FLUSH_RX);
 	
 	RADIO_DONE;
 }
@@ -246,10 +255,8 @@ void radiolink_transmit_begin() {
 	radiolink_wait_until_tx_ready();
 	/* TODO: Check if module is ready to transmit */
 
-	radiolink_cmd_flush_rx();
 	radiolink_cmd_enter_transmit();
 	radiolink_cmd_flush_tx();
-	radiolink_cmd_addr_targ();
 	
 	return;
 }
@@ -281,13 +288,6 @@ void radiolink_transmit(uint8_t *data, int data_len) {
 		spi_send_recv(data[i]);
 	RADIO_DONE;
 
-	RADIO_ATTENTION;
-	spi_send_recv(0x08);
-	state = spi_send_recv(0xFF);
-	RADIO_DONE;
-
-	util_delay(200);
-
 	return;
 }
 
@@ -297,14 +297,16 @@ void radiolink_test() {
 	#ifdef MOTHERSHIP
 	char *rftest = "arnearnearnearnearnearnearne  \n";
 	#else
-	char rftest[32];
 	#endif
+	char rftest2[32];
 
 	LPC_GPIO1->DIR |= (1 << 9);
 	LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 1;
 
 	do {
 		radiolink_init();
+		radiolink_cmd_flush_rx();
+		radiolink_cmd_flush_tx();
 
 		RADIO_ATTENTION;
 		state = spi_send_recv(0x00);
@@ -317,9 +319,22 @@ void radiolink_test() {
 	for (;;) {
 		#ifdef MOTHERSHIP
 		radiolink_transmit(rftest, 32);
+
+		RADIO_ATTENTION;
+		spi_send_recv(0x17);
+		state = spi_send_recv(0xFF);
+		RADIO_DONE;
+		if (state & 0x2)
+			radiolink_cmd_flush_rx();
+		if (!(state & 1)) {
+			radiolink_receive(rftest2);
+			rftest2[31] = 0;
+			uart_printf("%s", rftest2);
+		}
+
 		#else
-		radiolink_receive(rftest);
-		uart_printf("%s", rftest);
+		radiolink_receive(rftest2);
+		uart_printf("%s", rftest2);
 		#endif
 	}
 
