@@ -79,6 +79,12 @@ void radiolink_init() {
 	spi_send_recv(RADIOLINK_ADDR_TARG_2);
 	RADIO_DONE;
 
+	/* Disable auto-ack for all pipes but pipe 0 */
+	RADIO_ATTENTION;
+	spi_send_recv(0x21);
+	spi_send_recv(0x1);
+	RADIO_DONE;
+
 	return;
 }
 
@@ -105,12 +111,15 @@ static void radiolink_wait_for_packet() {
 
 
 static void radiolink_wait_until_tx_ready() {
-	uint8_t state;
+	uint8_t state, wait=0;
 
 	for (;;) {
 		RADIO_ATTENTION;
 		state = spi_send_recv(0xFF);
 		RADIO_DONE;
+
+		if (state & RADIOLINK_TX_FIFO_FULL)
+			wait=1;
 		if (state & RADIOLINK_MAX_RETRANSMIT) {	/* BAD */
 			radiolink_reset_hard();
 			return;
@@ -119,6 +128,9 @@ static void radiolink_wait_until_tx_ready() {
 		if (!(state & RADIOLINK_TX_FIFO_FULL))
 			break;
 	}
+	
+	if (wait)
+		uart_printf("Had to wait\n");
 
 	return;
 }
@@ -143,11 +155,32 @@ static void radiolink_cmd_enter_receive() {
 
 
 static void radiolink_cmd_flush_tx() {
+	uint8_t state;
+
 	RADIO_ATTENTION;
 
 	spi_send_recv(0xE1);
 	spi_send_recv(0xFF);
 
+	RADIO_DONE;
+
+	RADIO_ATTENTION;
+	state = spi_send_recv(0xFF);
+	RADIO_DONE;
+
+	RADIO_ATTENTION;
+	if (state) {
+		spi_send_recv(0x27);
+		spi_send_recv(state);
+	}
+	RADIO_DONE;
+
+	RADIO_ATTENTION;
+	if (state) {
+		state ^= spi_send_recv(0xFF);
+		if (state)
+			uart_printf("Change! %X\n", state);
+	}
 	RADIO_DONE;
 }
 
@@ -235,9 +268,11 @@ void radiolink_receive_begin() {
 
 void radiolink_transmit(uint8_t *data, int data_len) {
 	int i;
+	uint8_t state;
 
 	radiolink_transmit_begin();
-	
+	radiolink_cmd_flush_tx();
+
 	/* Write payload */
 	RADIO_ATTENTION;
 	spi_send_recv(0xA0);
@@ -246,18 +281,46 @@ void radiolink_transmit(uint8_t *data, int data_len) {
 		spi_send_recv(data[i]);
 	RADIO_DONE;
 
-	radiolink_receive_begin();
-	
+	RADIO_ATTENTION;
+	spi_send_recv(0x08);
+	state = spi_send_recv(0xFF);
+	RADIO_DONE;
+
+	util_delay(200);
+
 	return;
 }
 
 
 void radiolink_test() {
+	int state;
+	#ifdef MOTHERSHIP
+	char *rftest = "arnearnearnearnearnearnearne  \n";
+	#else
+	char rftest[32];
+	#endif
+
 	LPC_GPIO1->DIR |= (1 << 9);
 	LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 1;
 
-	radiolink_init();
+	do {
+		radiolink_init();
 
-	for (;;);
+		RADIO_ATTENTION;
+		state = spi_send_recv(0x00);
+		state = spi_send_recv(0xFF);
+		RADIO_DONE;
+	} while (!(state & 0x2));
+
+	uart_printf("NRF24L01+ has started up\n");
+
+	for (;;) {
+		#ifdef MOTHERSHIP
+		radiolink_transmit(rftest, 32);
+		#else
+		radiolink_receive(rftest);
+		uart_printf("%s", rftest);
+		#endif
+	}
 
 }
