@@ -186,8 +186,8 @@ int main(int ram, char **argv) {
 	scsi_init_pinp(&LPC_IOCON->PIO2_10);
 	scsi_init_pinp(&LPC_IOCON->PIO2_11);
 
-	//radiolink_test();
-	microphone_sample();
+	radiolink_init();
+	//microphone_sample();
 
 	
 	MOTOR_PORT->MASKED_ACCESS[MOTOR_MASK] |= (MOTOR_MASK);
