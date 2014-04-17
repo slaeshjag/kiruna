@@ -30,4 +30,10 @@
 #define	RADIOLINK_ADDR_TARG_1	0x55
 #define	RADIOLINK_ADDR_TARG_2	0x4a
 
+#define	RADIOLINK_MAX_RETRANSMIT	0x10
+#define	RADIOLINK_TX_FIFO_FULL	0x1
+
+
+void radiolink_test();
+
 #endif

@@ -20,125 +20,197 @@
 #include "system/LPC11xx.h"
 #include "radiolink.h"
 #include "spi.h"
+#include "util.h"
+#include "uart.h"
 #include <stdint.h>
 
 /* FIXME: I should probably move the overhead over to recieve. We'll be
 	recieving data a lot less frequently than we'll transmit it */
 
+#define	RADIO_ATTENTION		LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 0;
+#define	RADIO_DONE		LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 1 << 9; util_delay(1);
 
 void radiolink_init() {
+	RADIO_DONE;
+	util_delay(50000);
+
+	RADIO_ATTENTION;
 	/* Power on */
 	spi_send_recv(0x20);
 	spi_send_recv(0x0B);
+	RADIO_DONE;
+	
+	/* The radio module needs > 100 ms to start up */
+	util_delay(150000);
 
 	/* The device starts up in Enhanced ShockBurst™ mode, which is fine */
+	RADIO_ATTENTION;
 	spi_send_recv(0x20 + RADIOLINK_CHANNEL);
+	RADIO_DONE;
 
 	/* Set address length */
+	RADIO_ATTENTION;
 	spi_send_recv(0x23);
 	spi_send_recv(0x01);
+	RADIO_DONE;
+
+	/* Set up device network address for receiving acks */
+	RADIO_ATTENTION;
+	spi_send_recv(0x2B);
+	spi_send_recv(RADIOLINK_ADDR_SELF_0);
+	spi_send_recv(RADIOLINK_ADDR_SELF_1);
+	spi_send_recv(RADIOLINK_ADDR_SELF_2);
+	RADIO_DONE;
+
 
 	/* Set up device network address */
-	spi_send_recv(0x2B);
-	spi_send_recv(RADIOLINK_ADDR_SELF_0);
-	spi_send_recv(RADIOLINK_ADDR_SELF_1);
-	spi_send_recv(RADIOLINK_ADDR_SELF_2);
+	RADIO_ATTENTION;
+	spi_send_recv(0x2A);
+	spi_send_recv(RADIOLINK_ADDR_TARG_0);
+	spi_send_recv(RADIOLINK_ADDR_TARG_1);
+	spi_send_recv(RADIOLINK_ADDR_TARG_2);
+	RADIO_DONE;
 
 	/* Set up device transmit address */
-	spi_send_recv(0x2B);
-	spi_send_recv(RADIOLINK_ADDR_SELF_0);
-	spi_send_recv(RADIOLINK_ADDR_SELF_1);
-	spi_send_recv(RADIOLINK_ADDR_SELF_2);
+	RADIO_ATTENTION;
+	spi_send_recv(0x30);
+	spi_send_recv(RADIOLINK_ADDR_TARG_0);
+	spi_send_recv(RADIOLINK_ADDR_TARG_1);
+	spi_send_recv(RADIOLINK_ADDR_TARG_2);
+	RADIO_DONE;
+
+	return;
+}
+
+static void radiolink_reset_hard() {
+	uart_printf("Packet loss!\n");
+
+	for(;;);
+}
+
+
+static void radiolink_wait_for_packet() {
+	uint8_t stat;
+	
+	for (;;) {
+		RADIO_ATTENTION;
+		stat = spi_send_recv(0xFF);
+		RADIO_DONE;
+		if ((stat & 0xE) == 0xE)
+			break;
+	}
+	
+	return;
+}
+
+
+static void radiolink_wait_until_tx_ready() {
+	uint8_t state;
+
+	for (;;) {
+		RADIO_ATTENTION;
+		state = spi_send_recv(0xFF);
+		RADIO_DONE;
+		if (state & RADIOLINK_MAX_RETRANSMIT) {	/* BAD */
+			radiolink_reset_hard();
+			return;
+		}
+
+		if (!(state & RADIOLINK_TX_FIFO_FULL))
+			break;
+	}
 
 	return;
 }
 
 
 static void radiolink_cmd_enter_transmit() {
-	/* FIXME: Pull CSE low */
+	RADIO_ATTENTION;
 	/* Enter transmit mode by turning off recieve mode */
 	spi_send_recv(0x20);
 	spi_send_recv(0x0B);
-
-	/* FIXME: Pull CSE high */
+	RADIO_DONE;
 }	
 
 
 static void radiolink_cmd_enter_receive() {
-	/* FIXME: Pull CSE low */
+	RADIO_ATTENTION;
 	/* Enter receive mode by turning on recieve mode */
 	spi_send_recv(0x20);
 	spi_send_recv(0x0A);
-
-	/* FIXME: Pull CSE high */
+	RADIO_DONE;
 }	
 
 
 static void radiolink_cmd_flush_tx() {
-	/* FIXME: Pull CSE low */
+	RADIO_ATTENTION;
 
 	spi_send_recv(0xE1);
+	spi_send_recv(0xFF);
 
-	/* FIXME: Pull CSE high */
+	RADIO_DONE;
 }
 
 
 static void radiolink_cmd_flush_rx() {
-	/* FIXME: Pull CSE low */
+	RADIO_ATTENTION;
 
 	spi_send_recv(0xE1);
-
-	/* FIXME: Pull CSE high */
+	spi_send_recv(0xFF);
+	
+	RADIO_DONE;
 }
 
 
 static void radiolink_cmd_addr_self() {
-	/* FIXME: Pull CSE low */
+	RADIO_ATTENTION;
 
-	spi_send_recv(0x2B);
+	spi_send_recv(0x2A);
 	spi_send_recv(RADIOLINK_ADDR_SELF_0);
 	spi_send_recv(RADIOLINK_ADDR_SELF_1);
 	spi_send_recv(RADIOLINK_ADDR_SELF_2);
-
-	/* FIXME: Pull CSE high */
+	
+	RADIO_DONE;
 }
 
 
 static void radiolink_cmd_addr_targ() {
-	/* FIXME: Pull CSE low */
+	RADIO_ATTENTION;
 
-	spi_send_recv(0x2B);
+	spi_send_recv(0x2A);
 	spi_send_recv(RADIOLINK_ADDR_TARG_0);
 	spi_send_recv(RADIOLINK_ADDR_TARG_1);
 	spi_send_recv(RADIOLINK_ADDR_TARG_2);
 
-	/* FIXME: Pull CSE high */
+	RADIO_DONE;
 }
 
 
 int radiolink_receive(uint8_t *data) {
 	uint8_t bytes;
 	int i;
-
+	
+	RADIO_ATTENTION;
 	/* Get amount of byte waiting for us */
 	spi_send_recv(0xB);
+	bytes = spi_send_recv(0xF);
+	RADIO_DONE;
 	
 	/* Fetch bytes */
+	RADIO_ATTENTION;
 	spi_send_recv(0x60);
 	for (i = 0; i < bytes; i++)
 		data[i] = spi_send_recv(0xFF);
+	RADIO_DONE;
 	
-	/* Flush RX */
-	spi_send_recv(0xE2);
+	radiolink_cmd_flush_rx();
 
-	return;
+	return bytes;
 }
 
 
 void radiolink_transmit_begin() {
-	/* FIXME: Hold CSN pin low */
-	/* Must be low for wireless module to care about SPI */
-	
+	radiolink_wait_until_tx_ready();
 	/* TODO: Check if module is ready to transmit */
 
 	radiolink_cmd_flush_rx();
@@ -151,11 +223,9 @@ void radiolink_transmit_begin() {
 
 
 void radiolink_receive_begin() {
-	/* FIXME: Hold CSN pin low */
 	/* Must be low for wireless module to care about SPI */
 	
-	/* TODO: Check if module is ready to transmit */
-
+	radiolink_wait_for_packet();
 	radiolink_cmd_enter_receive();
 	radiolink_cmd_addr_self();
 	
@@ -168,13 +238,13 @@ void radiolink_transmit(uint8_t *data, int data_len) {
 
 	radiolink_transmit_begin();
 	
-	/* FIXME: Pull CSE low */
 	/* Write payload */
+	RADIO_ATTENTION;
 	spi_send_recv(0xA0);
 
 	for (i = 0; i < data_len; i++)
 		spi_send_recv(data[i]);
-	/* FIXME: Pull CSE high */
+	RADIO_DONE;
 
 	radiolink_receive_begin();
 	
@@ -183,69 +253,11 @@ void radiolink_transmit(uint8_t *data, int data_len) {
 
 
 void radiolink_test() {
-	uint8_t status;
-	int i;
-	
 	LPC_GPIO1->DIR |= (1 << 9);
 	LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 1;
-	util_delay(500000);
 
-//	do {
-/*		LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 1;
-		util_delay(500000);
-		LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 0;
-		util_delay(20);
-		spi_send_recv(0x20);
-		spi_send_recv(0x0A);
-		util_delay(20);*/
+	radiolink_init();
 
-/*		LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 1;
-		util_delay(500000);
-		LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 0;
-		util_delay(20);
-		status = spi_send_recv(0xFF);
-		uart_printf("Status: 0x%X\n", (unsigned int) status);
-		uart_printf("Config: 0x%X\n", (unsigned int) status);*/
-
-//	} while (status);
-	LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 1 << 9;
-//	while (spi_send_recv(0xFF));
-
-	util_delay(500000);
-	LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 0;
-	util_delay(20);
-	uart_printf("nn: %X\n", spi_send_recv(0x20));
-	uart_printf("nn: %X\n", spi_send_recv(0x0A));
-	uart_printf("nn: %X\n", spi_send_recv(0xFF));
-	uart_printf("nn: %X\n", spi_send_recv(0xFF));
-	uart_printf("nn: %X\n", spi_send_recv(0xFF));
-	uart_printf("nn: %X\n", spi_send_recv(0xFF));
-	uart_printf("nn: %X\n", spi_send_recv(0xFF));
-	
-	util_delay(20);
-	LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 1 << 9;
-	util_delay(500000);
-	LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 0;
-	util_delay(20);
-	
-	uart_printf("nn: %X\n", spi_send_recv(0x00));
-	uart_printf("nn: %X\n", spi_send_recv(0xFF));
-	uart_printf("nn: %X\n", spi_send_recv(0xFF));
-	uart_printf("nn: %X\n", spi_send_recv(0xFF));
-	uart_printf("nn: %X\n", spi_send_recv(0xFF));
-
-//	radiolink_init();
-
-	for (;;) {
-		util_delay(500000);
-		LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 0;
-		status = spi_send_recv(0x0A);
-		for (i = 0; i <3; i++)
-			uart_printf("0x%X ", spi_send_recv(0xFF));
-		LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 1 << 9;
-		uart_printf("\n");
-	}
-	LPC_GPIO1->MASKED_ACCESS[(1 << 9)] = 1;
 	for (;;);
 
 }
