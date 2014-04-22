@@ -14,64 +14,118 @@ struct STRUCT_RETURN_BYTE{
 
 };
 
-*STRUCT_RETURN_BYTE analysera_nästa_bit (*char data, int offset, int pixelstorlek){
-	
+*STRUCT_RETURN_BYTE next_bit (*char data, int offset, int pixel_size, int repeat_size);
+
+int make_binary(int repeat_size);
+
+*STRUCT_RETURN_BYTE next_bit (*char data, int offset, int pixel_size, int repeat_size){
+
 	char temp = data[0];
 	char temp2;
-	int nyoffset = pixelstorlek;
+	int new_offset = pixel_size;
 
-	static int minimivärde = 6;
+	static int max_val = 6;
 
 	if (offset != 0){
 	
-	//Om vi inte ska börja vid första biten...
+		//If we dont start at the first byte.
 	
 		temp = temp >> offset;
 		
-		//Vi skyfflar ned data ifrån vår första byte
-		//så att vi missar redan läst data.
+		//Shuffle down the data to avoid the already used bits.
 
 		temp2 = data[1] << offset;
 
-		//Nu hämtar vi nog med data för att fylla ut charren.
-
 		temp = temp + temp 2;
 
-		//Och lägger ihop dem.
-		//Nu har vi en hel byte data.
-
-		nyoffset = nyoffset + offset;
+		//Now we fetch enough data to fill the rest of the char,
+		//and add those bits to the byte.
 
 	}
 
-	STRUCT_RETURN_BYTE svar;
+	STRUCT_RETURN_BYTE answer;
 
-	if(temp < minimivärde){
+	if(max_size < temp){
 
+		int temp_offset = offset+3;
+
+		//If we've encountered an RLE, we move our offset forwards 3 bits.
+
+		int re_size = (make_binary(repeat_size));
+
+		//And we convert the number of bits to a mask which will
+		//be (repeat_size) number of 1 's.
+
+		if(8 =< temp_offset){
+
+			temp_offset = temp_offset - 8;
+			data++;
+			temp = data[0];
+
+			//We move our pointer forwards a byte, and change offset accordingly.
+
+		}
+
+		if (temp_offset != 0){
 		
+			//Om vi inte ska börja vid första biten...
+	
+			temp = temp >> temp_offset;
+		
+			//Shuffle down the data to avoid the already used bits.
+
+			temp2 = data[1] << offset;
+	
+			temp = temp + temp 2;
+
+			//Now we fetch enough data to fill the rest of the char,
+			//and add those bits to the byte.
+
+		}
+
+		char read_number[4];
+
+		//We make some space for some calculations.
+	
+		read_number[0] = (data[0] >> temp_offset) + (data[1] << temp_offset);
+		read_number[1] = (data[1] >> temp_offset) + (data[2] << temp_offset);
+
+		//We then read the following 2 bytes with offset in mind. 
+
+		answer.byte.data = temp;
+		answer.byte.nr = ((int)read_number[0] + ((int)read_number[1] * 0x100)) & re_size;
+
+		//And then we store the data as we want it; the pixel read on its own,
+		//and the number is the number of bits.
 
 	}
 	else{
 		
-		temp = temp << 8 - pixelstorlek;
+		temp = temp << 8 - pixel_size;
 
-		//Annars formaterar vi bara våran pixel.
+		//Otherwise we simply format our pixel,
 
-		svar.byte.data = temp;
-		svar.byte.nr = 1;
+		answer.byte.data = temp;
+		answer.byte.nr = 1;
 
-		//Och lägger in den i vårat svar.
+		//and add it to our answer structure.
+
+		new_offset = new_offset + offset;
+
+		//We also calculate our new offset.
 
 	}
 
+
+
 	if(nyoffset < 8){
 		
-		svar.offset = nyoffset;
-		svar.data = data;
-		return *svar;
+		answer.offset = new_offset;
+		answer.data = data;
+		return *answer;
 
-		//Om offsettet inte är större än en byte
-		//returnerar vi grunkor.
+		//If our offset isnt bigger than a byte
+		//we return our answer structure.
 
 	}
 	
@@ -79,21 +133,35 @@ struct STRUCT_RETURN_BYTE{
 
 		char *tempdata = data;
 
-		while (8 < nyoffset){
+		while (8 =< nyoffset){
 			
 			tempdata++;
-			nyoffset = nyoffset - 8;
+			new_offset = new_offset - 8;
 
 		}
 
-		svar.offset = nyoffset;
-		svar.data = data;
-		return *svar;	
+		answer.offset = nyoffset;
+		answer.data = data;
+		return *answer;	
 
-		//Om offsettet är större är en byte eller mer
-		//Flyttar vi fram datapekaren 1 steg,
-		//drar bort 8 ifrån bitoffsettet
-		//och returnerar all data.
+		//Else, if our offset is more than a byte
+		//we move our pointer forward a byte,
+		//subtract 8 from our offset and loop untill
+		//offset is less than 8.
+
+		//When all is said and done we return stuff.
 	}
+
+}
+
+int make_binary(int repeat_size){
+
+	int temp = 0;
+
+	while(0 < repeat_size){
+
+		temp = (temp * 2) + 1;
+		repeat_size -1;
+	} 
 
 }
