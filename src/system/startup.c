@@ -4,6 +4,7 @@
 
 int main(int ram, char **argv);
 void system_reset();
+void TIMER16_0_IRQHandler(void);
 
 extern int __stack_end;
 
@@ -40,10 +41,11 @@ void __startup() {
 }
 
 
-void *vectors[29] __attribute__((section(".vectors"))) = {
+void *vectors[32] __attribute__((section(".vectors"))) = {
 	&__stack_end,
 	 __startup,
 	system_reset,
+	TIMER16_0_IRQHandler,
 	system_reset,
 	system_reset,
 	system_reset,
@@ -51,23 +53,25 @@ void *vectors[29] __attribute__((section(".vectors"))) = {
 	system_reset,
 	system_reset,
 	system_reset,
-	system_reset,
-	system_reset,
-	system_reset,
-	system_reset,
-	system_reset,
-	system_reset,
-	system_reset,
-	system_reset,
-	system_reset,
-	system_reset,
-	system_reset,
-	system_reset,
-	system_reset,
-	system_reset,
-	system_reset,
-	system_reset,
-	system_reset,
-	system_reset,
-	system_reset,
+	TIMER16_0_IRQHandler,
+	TIMER16_0_IRQHandler,
+	TIMER16_0_IRQHandler,
+	TIMER16_0_IRQHandler,
+	TIMER16_0_IRQHandler,
+	TIMER16_0_IRQHandler,
+	TIMER16_0_IRQHandler,
+	TIMER16_0_IRQHandler,
+	TIMER16_0_IRQHandler,
+	TIMER16_0_IRQHandler,
+	TIMER16_0_IRQHandler,
+	TIMER16_0_IRQHandler,
+	TIMER16_0_IRQHandler,
+	TIMER16_0_IRQHandler,
+	TIMER16_0_IRQHandler,
+	TIMER16_0_IRQHandler,
+	TIMER16_0_IRQHandler,
+	TIMER16_0_IRQHandler,
+	TIMER16_0_IRQHandler,
+	TIMER16_0_IRQHandler,
+	TIMER16_0_IRQHandler,
 };

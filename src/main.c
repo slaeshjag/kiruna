@@ -2,13 +2,9 @@
 #include "system/LPC11xx.h"
 #include "util.h"
 #include "uart.h"
+#include "spi.h"
+#include "motor.h"
 
-extern asm_test();
-
-static void scsi_init_pinp(volatile uint32_t *p) {
-	(*p) &= (~0x1F);
-	(*p) |= 0x8;
-}
 
 
 void initialize(void) {
@@ -54,9 +50,9 @@ void initialize(void) {
 	LPC_UART->LCR = 0x3;
 	
 	/********* Enable SPI0 ************/
-	LPC_IOCON->SCK_LOC  = 2;
+	LPC_IOCON->SCK_LOC  = 0x0;
 	//LPC_IOCON->PIO0_6 &= ~0x7;
-	LPC_IOCON->PIO0_6 = 2;
+	LPC_IOCON->SWCLK_PIO0_10 = 0x2;
 	LPC_IOCON->PIO0_8 &= ~0x7;
 	LPC_IOCON->PIO0_8 |= 0x1;
 	LPC_IOCON->PIO0_9 &= ~0x7;
@@ -65,120 +61,111 @@ void initialize(void) {
 	//LPC_SYSCON->PRESETCTRL |= 0x5;
 	//LPC_SYSCON->SYSAHBCLKCTRL &= ~(1 << 11);
 	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 11);
-	LPC_SYSCON->SSP0CLKDIV = 64;
+	LPC_SYSCON->SSP0CLKDIV = 4;
 	LPC_SYSCON->PRESETCTRL |= 0x1;
 	
 	LPC_SSP0->CPSR = 0x2;
 	LPC_SSP0->CR0 = 0x107;
 	LPC_SSP0->CR1 = 0x2;
-}
-
-static unsigned char *ascii_filter(unsigned char *s) {
-	static unsigned char ret[17];
-	int i = 0;
-	while(i < 16) {
-		ret[i] = (*s < 32 || *s > 126)? '.' : (*s);
-		i++;
-		s++;
-	}
-	return ret;
-}
-
-
-static int64_t prompt_read_number(void) {
-	uint32_t sector = 0;
-	uint8_t base = 10;
-	char c;
 	
-	uart_send_string(" (Args: sector number) ");
-	for(;;) {
-		c = uart_recv_char();
-		switch(c) {
-			case 'x':
-				if(base == 8 && !sector) {
-					base = 16;
-					uart_send_char(c);
-				}
-				break;
-			case '0':
-				if(base == 10 && !sector) {
-					base = 8;
-					uart_send_char(c);
-					break;
-				}
-			case '1': case '2': case '3': case '4': case '5': case '6': case '7':
-				uart_send_char(c);
-				sector *= base;
-				sector += c - '0';
-				break;
-			case '8': case '9': 
-				if(base < 10)
-					break;
-				uart_send_char(c);
-				sector *= base;
-				sector += c - '0';
-				break;
-			case 'A': case 'B': case 'C': case 'D': case 'E': case 'F':
-				if(base < 16)
-					break;
-				uart_send_char(c);
-				sector *= base;
-				sector += c - 'A';
-				break;
-			case 'a': case 'b': case 'c': case 'd': case 'e': case 'f':
-				if(base < 16)
-					break;
-				uart_send_char(c);
-				sector *= base;
-				sector += c - 'a';
-				break;
-			case 127:
-				uart_send_string("\b \b");
-				if(sector) {
-					sector /= base;
-				} else {
-					if(base == 16)
-						base = 8;
-					else if(base == 8)
-						base = 10;
-					else
-						return -1;
-				}
-				break;
-			case ' ': case '\n':
-				return sector;
-		}
-	}
+	/*Enable ADC*/
+	LPC_IOCON->R_PIO0_11 = 0x2;
+	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 13);
 }
 
-static void prompt() {
-	char c;
-	int64_t arg;
-	uart_send_string("\n> ");
-	c = uart_recv_char();
-	uart_send_char(c);
-	switch(c) {
-		case 'r':
-			break;
-		default:
-			uart_send_char('?');
-		case '?':
-		case 'h':
-			uart_send_string("\nValid commands are [r - read sector, h/? - help]");
-	}
-}
+
+
+
 
 int main(int ram, char **argv) {
-	//int i;
-	
+	unsigned char sample;
 	
 	initialize();
 	util_delay(200);
-	uart_printf("System booted up, %u bytes of RAM used\n", ram);
-	scsi_init_pinp(&LPC_IOCON->PIO1_8);
 	
+	//uart_printf("Initiation done!\n");
+
+	/***************************************/
+	/* Test DAC */
+	LPC_GPIO0->DIR |= 0x80;
+	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
+
+	for (sample = 0; ; sample += 8) {
+		LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
+/*		if (sample & 0x1)
+			spi_send_recv(0x80);
+		else
+			spi_send_recv(0x00);*/
+		spi_send_recv(1 << (sample));
+		LPC_GPIO0->MASKED_ACCESS[0x80] = 0x80;
+		util_delay(100);
+	}
+
+	/***************************************/
+		
+	
+	motor_go(MOTOR_DIR_FORWARD);
+	
+	while(1)
+	{
+		if(ms_left_pressed())
+		{
+			motor_go(MOTOR_DIR_LEFT);
+			util_delay(MOTOR_TIME_45);
+			
+			motor_go(MOTOR_DIR_BACKWARD);
+			util_delay(MOTOR_TIME_SHORT);
+			
+			motor_go(MOTOR_DIR_RIGHT);
+			util_delay(MOTOR_TIME_45);
+			
+			motor_go(MOTOR_DIR_FORWARD);
+		}
+		else if(ms_right_pressed())
+		{
+			motor_go(MOTOR_DIR_RIGHT);
+			util_delay(MOTOR_TIME_45);
+			
+			motor_go(MOTOR_DIR_BACKWARD);
+			util_delay(MOTOR_TIME_SHORT);
+			
+			motor_go(MOTOR_DIR_LEFT);
+			util_delay(MOTOR_TIME_45);
+			
+			motor_go(MOTOR_DIR_FORWARD);
+		}
+		else if (us() > 9000)	// It's over 9000!!!! Turn!
+		{
+			motor_go(MOTOR_DIR_LEFT);
+			util_delay(MOTOR_TIME_90);
+			
+			motor_go(MOTOR_DIR_FORWARD);
+			util_delay(MOTOR_TIME_SHORT);
+			
+			motor_go(MOTOR_DIR_RIGHT);
+			util_delay(MOTOR_TIME_90);
+		}
+	}
+	
+	MOTOR_PORT->MASKED_ACCESS[MOTOR_MASK] |= (MOTOR_MASK);
+	util_delay(2000000);
+	uart_printf("Going forward\n");
+	motor_go(MOTOR_DIR_FORWARD);
+	util_delay(2000000);
+	uart_printf("Going left\n");
+	motor_go(MOTOR_DIR_LEFT);
+	util_delay(2000000);
+	uart_printf("Going right\n");
+	motor_go(MOTOR_DIR_RIGHT);
+	util_delay(2000000);
+	uart_printf("Going backwards\n");
+	motor_go(MOTOR_DIR_BACKWARD);
+	util_delay(2000000);
+	uart_printf("Stopping\n");
+	motor_go(MOTOR_DIR_STAHP);
+
 	for (;;) {
-		prompt();
+		
 	}
 
 	return 0;

@@ -16,7 +16,7 @@ ASFILES		= $(wildcard *.s)
 OBJFILES	= $(CFILES:.c=.o)
 OBJFILES	+=$(ASFILES:.s=.o)
 LINKSCRIPT	= link.ld
-BINFILE		= trollcard
+BINFILE		= autokorg
 
 TERM-DEVICE	= /dev/ttyUSB0
 TERM-BAUDRATE	= 115200

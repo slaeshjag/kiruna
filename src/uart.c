@@ -18,7 +18,7 @@ else \
 	} \
 uart_send_raw((unsigned char *) s, width)
 
-void uart_send_char(char c) {
+void uart_send_char(unsigned char c) {
 	while (!(LPC_UART->LSR & (1 << 5)));
 	LPC_UART->THR = c;
 }
