@@ -203,7 +203,7 @@ unsigned char radiolink_recv(int size, unsigned char *data) {
 
 void radiolink_init() {
 	unsigned char reg[5];
-	unsigned char data[] = "xxxx";
+	unsigned char data[] = "zzzz";
 	unsigned char status;
 	CSN_PORT->DIR |= CSN_PIN;
 	CE_PORT->DIR |= CE_PIN;
@@ -237,7 +237,7 @@ void radiolink_init() {
 	}*/
 	
 	reg[0] = 4;
-	radiolink_write_reg(REG_RX_PW_P1, 1, reg);
+	radiolink_write_reg(REG_RX_PW_P0, 1, reg);
 	
 	for(;;) {
 		radiolink_recv(4, data);
