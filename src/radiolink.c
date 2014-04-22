@@ -181,9 +181,12 @@ unsigned char radiolink_recv(int size, unsigned char *data) {
 	ce_on();
 	util_delay(1000000);
 	
+	uart_printf("wating for data\n");
 	while(!((status = radiolink_status()) & 0x40));
+	uart_printf("got some data\n");
 	
 	cmd_start();
+	spi_send_recv(CMD_RECV_PAYLOAD);
 	for(i = 0; i < size; i++) {
 		data[i] = spi_send_recv(CMD_NOP);
 	}
