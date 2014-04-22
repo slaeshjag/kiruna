@@ -1,7 +1,12 @@
 #include "system/LPC11xx.h"
 #include "motor.h"
 
-#define	MOTOR_REGISTER	MOTOR_PORT->MASKED_ACCESS[MOTOR_MASK]
+#define	MOTOR_REGISTER	MOTOR_PORT->MASKED_ACCESS[MOTOR_MASK]	// Masked changes only the bits specified in brackets
+
+void motor_init(void)
+{
+	MOTOR_PORT->DIR |= MOTOR_MASK;
+}
 
 void motor_go(enum motor_direction dir) {
 	MOTOR_PORT->MASKED_ACCESS[MOTOR_MASK] &= (~MOTOR_MASK);
@@ -23,7 +28,7 @@ void motor_go(enum motor_direction dir) {
 			MOTOR_REGISTER |= MOTOR_RIGHT_BACKWARD;
 			break;
 		default:
-			MOTOR_REGISTER |= (MOTOR_MASK);
+			MOTOR_REGISTER |= (MOTOR_MASK);	// Both sides of H-bridge is turned on. No dif = no rotation
 			break;
 	}
 	return;
