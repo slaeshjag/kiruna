@@ -2,6 +2,7 @@
 #include "system/LPC11xx.h"
 #include "util.h"
 #include "uart.h"
+#include "spi.h"
 #include "motor.h"
 
 
@@ -77,7 +78,7 @@ void initialize(void) {
 
 
 int main(int ram, char **argv) {
-	
+	unsigned char sample;
 	
 	initialize();
 	motor_init();
@@ -86,6 +87,25 @@ int main(int ram, char **argv) {
 	util_delay(200);
 	
 	//uart_printf("Initiation done!\n");
+
+	/***************************************/
+	/* Test DAC */
+	LPC_GPIO0->DIR |= 0x80;
+	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
+
+	for (sample = 0; ; sample += 8) {
+		LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
+/*		if (sample & 0x1)
+			spi_send_recv(0x80);
+		else
+			spi_send_recv(0x00);*/
+		spi_send_recv(1 << (sample));
+		LPC_GPIO0->MASKED_ACCESS[0x80] = 0x80;
+		util_delay(100);
+	}
+
+	/***************************************/
+		
 	
 	motor_go(MOTOR_DIR_FORWARD);
 	
