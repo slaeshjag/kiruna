@@ -29,26 +29,29 @@ void initialize(void) {
 	
 	/*********** Enable UART0 **********/
 	
-	LPC_SYSCON->UARTCLKDIV 		= 1;		//set clk divider to 1 (3.5.16)
-	LPC_IOCON->PIO1_6		&= ~0x7;
-	LPC_IOCON->PIO1_6		|= 0x01;	//configure UART RXD pin (7.4.40)
-	LPC_IOCON->PIO1_7		&= ~0x7;
-	LPC_IOCON->PIO1_7		|= 0x01;	//configure UART TXD pin (7.4.41)
-	LPC_SYSCON->SYSAHBCLKCTRL 	|= (1 << 12);	//enable clock to UART (3.5.14)
-	LPC_UART->FCR 			= 0x7;		//enable FIFO (13.5.6)
-	
+	LPC_SYSCON->UARTCLKDIV = 1;
+	/* Enable RXD, TXD on the IO pins */
+	LPC_IOCON->PIO1_6 &= ~0x7;
+	LPC_IOCON->PIO1_6 |= 1;
+	LPC_IOCON->PIO1_7 &= ~0x7;
+	LPC_IOCON->PIO1_7 |= 1;
+
+	/* Enable UART clock bit */
+	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 12);
+	/* Set up FIFO */
+	LPC_UART->FCR = 0x7;
 	/* Set line control (stop bits etc.) */
 	LPC_UART->LCR = 0x83;
 	regval = ((SYSTEM_CLOCK/LPC_SYSCON->SYSAHBCLKDIV)/16/UART_BAUD_RATE);
 	LPC_UART->FDR = 0x10;
 	LPC_UART->DLL = regval & 0xFF;
 	LPC_UART->DLM = (regval >> 8) & 0xFF;
-	LPC_UART->LCR = 0x3;				//set for 8 bit data width (13.5.7)
+	LPC_UART->LCR = 0x3;
 	
 	/********* Enable SPI0 ************/
-	LPC_IOCON->SCK_LOC  = 2;
+	LPC_IOCON->SCK_LOC  = 0x0;
 	//LPC_IOCON->PIO0_6 &= ~0x7;
-	LPC_IOCON->PIO0_6 = 2;
+	LPC_IOCON->SWCLK_PIO0_10 = 0x2;
 	LPC_IOCON->PIO0_8 &= ~0x7;
 	LPC_IOCON->PIO0_8 |= 0x1;
 	LPC_IOCON->PIO0_9 &= ~0x7;
@@ -57,26 +60,26 @@ void initialize(void) {
 	//LPC_SYSCON->PRESETCTRL |= 0x5;
 	//LPC_SYSCON->SYSAHBCLKCTRL &= ~(1 << 11);
 	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 11);
-	LPC_SYSCON->SSP0CLKDIV = 64;
+	LPC_SYSCON->SSP0CLKDIV = 4;
 	LPC_SYSCON->PRESETCTRL |= 0x1;
 	
 	LPC_SSP0->CPSR = 0x2;
 	LPC_SSP0->CR0 = 0x107;
 	LPC_SSP0->CR1 = 0x2;
+	
+	/*Enable ADC*/
+	LPC_IOCON->R_PIO0_11 = 0x2;
+	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 13);
 }
 
 
 
 
-int main(void) {
+
+int main(int ram, char **argv) {
 	
 	
 	initialize();
-	us_init();
-	motor_init();
-	
-	util_delay(900);
-	interrupter_timer16_init();
 	util_delay(200);
 	
 	//uart_printf("Initiation done!\n");

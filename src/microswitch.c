@@ -1,3 +1,4 @@
+#include "system/LPC11xx.h"
 
 #define MS_PORT		LPC_GPIO1
 #define MS_LEFT		4

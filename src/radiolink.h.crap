@@ -1,0 +1,109 @@
+/* AutoKorg™ v.1.0
+ * Copyright 2014 Steven Arnow <s@rdw.se>
+ * 
+ * 'radiolink.h' - This file is part of AutoKorg™.
+ * 
+ * AutoKorg™ is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * AutoKorg™ is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with AutoKorg™.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#ifndef __RADIOLINK_H__
+#define	__RADIOLINK_H__
+
+#define MOTHERSHIP
+
+/* Defines which channel the nRF24L01+ tranceives on */
+#define	RADIOLINK_CHANNEL	0
+
+#ifdef MOTHERSHIP
+	#define	RADIOLINK_ADDR_SELF_0	0xB0
+	#define	RADIOLINK_ADDR_SELF_1	0x0B
+	#define	RADIOLINK_ADDR_SELF_2	0x50
+
+	#define	RADIOLINK_ADDR_TARG_0	0x42
+	#define	RADIOLINK_ADDR_TARG_1	0x55
+	#define	RADIOLINK_ADDR_TARG_2	0x4a
+#else
+	#define	RADIOLINK_ADDR_TARG_0	0xB0
+	#define	RADIOLINK_ADDR_TARG_1	0x0B
+	#define	RADIOLINK_ADDR_TARG_2	0x50
+
+	#define	RADIOLINK_ADDR_SELF_0	0x42
+	#define	RADIOLINK_ADDR_SELF_1	0x55
+	#define	RADIOLINK_ADDR_SELF_2	0x4a
+#endif
+
+#define	RADIOLINK_MAX_RETRANSMIT	0x10
+#define	RADIOLINK_TX_FIFO_FULL		0x1
+
+
+
+enum radiolink_register_name {
+	RLINK_REG_CONFIG		= 0x00,
+	RLINK_REG_ENSHKBRST 		= 0x01,
+	RLINK_REG_ENRXADDR		= 0x02,
+	RLINK_REG_SETUP_AW		= 0x03,
+	RLINK_REG_SETUP_RETR		= 0x04,
+	RLINK_REG_RF_CH			= 0x05,
+	RLINK_REG_RF_SETUP		= 0x06,
+	RLINK_REG_STATUS		= 0x07,
+	RLINK_REG_OBSERVE_TX		= 0x08,
+	RLINK_REG_RPD			= 0x09,
+	RLINK_REG_RX_ADDR0		= 0x0A,
+	RLINK_REG_RX_ADDR1		= 0x0B,
+	RLINK_REG_RX_ADDR2		= 0x0C,
+	RLINK_REG_RX_ADDR3		= 0x0D,
+	RLINK_REG_RX_ADDR4		= 0x0E,
+	RLINK_REG_RX_ADDR5		= 0x0F,
+	RLINK_REG_TX_ADDR		= 0x10,
+	RLINK_REG_RX_PW0		= 0x11,
+	RLINK_REG_RX_PW1		= 0x12,
+	RLINK_REG_RX_PW2		= 0x13,
+	RLINK_REG_RX_PW3		= 0x14,
+	RLINK_REG_RX_PW4		= 0x15,
+	RLINK_REG_RX_PW5		= 0x16,
+	RLINK_REG_FIFO_STATUS		= 0x17,
+	RLINK_REG_DYNPD			= 0x1C,
+	RLINK_REG_FEATURE		= 0x1D,
+};
+
+
+enum radiolink_function_name {
+	RLINK_CMD_READ_REG			= 0x00,
+	RLINK_CMD_WRITE_REG			= 0x20,
+	RLINK_CMD_READ_RX_PAYLOAD		= 0x61,
+	RLINK_CMD_WRITE_TX_PAYLOAD		= 0xA0,
+	RLINK_CMD_FLUSH_TX			= 0xE1,
+	RLINK_CMD_FLUSH_RX			= 0xE2,
+	RLINK_CMD_REUSE_TX_PAYLOAD		= 0xE3,
+	RLINK_CMD_READ_RX_PAYLOAD_WIDTH		= 0x60,
+	RLINK_CMD_WRITE_ACK_PAYLOAD		= 0xA8,
+	RLINK_CMD_WRITE_PAYLOAD_NO_ACK		= 0xB0,
+	RLINK_CMD_NOP				= 0xFF,
+};
+
+
+enum radiolink_config_bits {
+	RLINK_CONFIG_PRIM_RX			= 0x01,
+	RLINK_CONFIG_PWR_UP			= 0x02,
+	RLINK_CONFIG_CRCO			= 0x04,
+	RLINK_CONFIG_EN_CRC			= 0x08,
+	RLINK_CONFIG_MASK_MAX_RT		= 0x10,
+	RLINK_CONFIG_MASK_TX_DS			= 0x20,
+	RLINK_CONFIG_MASK_RX_DR			= 0x40,
+};
+
+
+void radiolink_test();
+
+#endif
