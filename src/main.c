@@ -78,7 +78,8 @@ void initialize(void) {
 
 
 int main(int ram, char **argv) {
-	unsigned char sample;
+	uint16_t sample;
+	int i;
 	
 	initialize();
 	motor_init();
@@ -93,8 +94,17 @@ int main(int ram, char **argv) {
 	SysTick->LOAD = SYSTEM_CLOCK / 8000;
 	SysTick->VAL = 0;
 	SysTick->CTRL = 1;
+
 	for (;;) {
 		while (!(SysTick->CTRL & (1 << 16)));
+		microphone_sample();
+
+		for (;;) {
+			if (!(sample = uart_recv_try()))
+				break;
+			sample &= 0xFF;
+		}
+
 		/* FILL THIS IN */
 	}
 
