@@ -10,6 +10,7 @@
  */
 
 #define INTER_TIME	0x1800
+#define DATA_SIZE	32
 
 
 void interrupter_timer16_init(void)
@@ -29,11 +30,17 @@ void interrupter_timer16_init(void)
 	uart_printf("interrupter init done!\n");
 }
 
+
+unsigned char data[DATA_SIZE];
+
 void TIMER16_0_IRQHandler(void)
 {
 	if(LPC_TMR16B0->IR & 0x1)			//Interrupt on MR0
 	{
-		uart_printf("Interrupt on MR0!\n");
+		uart_printf("MR0!\n");
+		
+		radiolink_send(DATA_SIZE, data);
+		
 		LPC_TMR16B0->TC 		= 0x0;	//reset timer
 		LPC_TMR16B0->IR 		|= 0x1;	//reset interrupt
 	}

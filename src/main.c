@@ -83,6 +83,9 @@ void initialize(void) {
 
 int main(int ram, char **argv) {
 	initialize();
+	motor_init();
+	us_init();
+	ms_init();
 	util_delay(200);
 	
 	uart_printf("Initiation done!\n");
