@@ -1,5 +1,18 @@
 #include "system/LPC11xx.h"
 #include "uart.h"
+
+unsigned char mic_buffer[1024];
+unsigned char spk_buffer[1024];
+int mic_buffer_index = 0;
+int spk_buffer_index = 0;
+
+void speaker_output() {
+	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
+	spi_send_recv(spk_buffer[spk_buffer_index++]);
+	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x80;
+	spk_buffer_index &= 0x3FF
+}
+
 unsigned char microphone_sample() {
 	unsigned char val;
 	

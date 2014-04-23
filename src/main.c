@@ -71,6 +71,10 @@ void initialize(void) {
 	/*Enable ADC*/
 	LPC_IOCON->R_PIO0_11 = 0x2;
 	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 13);
+	
+	/* Set up DAC */
+	LPC_GPIO0->DIR |= 0x80;
+	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
 }
 
 
@@ -78,28 +82,12 @@ void initialize(void) {
 
 
 int main(int ram, char **argv) {
-	unsigned char sample;
-	
 	initialize();
 	util_delay(200);
 	
-	//uart_printf("Initiation done!\n");
+	uart_printf("Initiation done!\n");
 
 	/***************************************/
-	/* Test DAC */
-	LPC_GPIO0->DIR |= 0x80;
-	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
-
-	for (sample = 0; ; sample += 8) {
-		LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
-/*		if (sample & 0x1)
-			spi_send_recv(0x80);
-		else
-			spi_send_recv(0x00);*/
-		spi_send_recv(1 << (sample));
-		LPC_GPIO0->MASKED_ACCESS[0x80] = 0x80;
-		util_delay(100);
-	}
 
 	/***************************************/
 		

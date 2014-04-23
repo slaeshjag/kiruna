@@ -153,12 +153,13 @@ unsigned char radiolink_send(int size, unsigned char *data) {
 	cmd_end();
 	
 	ce_on();
-	util_delay(1000000);
+	/*migth need to fix*/
+	util_delay(10);
 	ce_off();
 	
 	do {
 		status = radiolink_status();
-		uart_printf("arne 0x%x\n", status);
+		/*uart_printf("arne 0x%x\n", status);*/
 		if(status & 0x10) {
 			radiolink_flush();
 			break;
@@ -179,11 +180,11 @@ unsigned char radiolink_recv(int size, unsigned char *data) {
 	radiolink_write_reg(REG_CONFIG, 1, &config);
 	
 	ce_on();
-	util_delay(1000000);
+	util_delay(130);
 	
-	uart_printf("wating for data\n");
+	/*uart_printf("wating for data\n");*/
 	while(!((status = radiolink_status()) & 0x40));
-	uart_printf("got some data\n");
+	/*uart_printf("got some data\n");*/
 	
 	cmd_start();
 	spi_send_recv(CMD_RECV_PAYLOAD);
