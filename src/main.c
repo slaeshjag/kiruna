@@ -86,6 +86,18 @@ int main(int ram, char **argv) {
 	ms_init();
 	util_delay(200);
 	
+	/* Attempt to plan the flow */
+
+	SysTick->CTRL = 0;
+	/* Trig 8000 times per second */
+	SysTick->LOAD = SYSTEM_CLOCK / 8000;
+	SysTick->VAL = 0;
+	SysTick->CTRL = 1;
+	for (;;) {
+		while (!(SysTick->CTRL & (1 << 16)));
+		/* FILL THIS IN */
+	}
+
 	//uart_printf("Initiation done!\n");
 
 	/***************************************/
