@@ -82,12 +82,13 @@ void initialize(void) {
 
 
 int main(int ram, char **argv) {
+	unsigned char sample;
+	
 	initialize();
 	motor_init();
 	us_init();
 	ms_init();
 	util_delay(200);
-	int i;
 	
 	uart_printf("Initiation done!\n");
 	microphone_sample();
