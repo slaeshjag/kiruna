@@ -74,7 +74,7 @@ void initialize(void) {
 	
 	/* Set up DAC */
 	LPC_GPIO0->DIR |= 0x80;
-	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
+	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x80;
 }
 
 
@@ -87,11 +87,17 @@ int main(int ram, char **argv) {
 	us_init();
 	ms_init();
 	util_delay(200);
+	int i;
 	
 	uart_printf("Initiation done!\n");
-
+	microphone_sample();
 	/***************************************/
-
+	/*for(i = 0;; i++) {
+		LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
+		spi_send_recv(data);
+		LPC_GPIO0->MASKED_ACCESS[0x80] = 0x80;
+		util_delay(100);
+	}*/
 	/***************************************/
 		
 	
