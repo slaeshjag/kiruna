@@ -1,260 +1,87 @@
-/******************************************************************************
-* author: Freddie Chopin, http://www.freddiechopin.info/
-* file: lpc1114_rom.ld
-* last change: 2010-10-13
-*
-* chip: LPC1114
-* compiler: arm-none-eabi-gcc (Sourcery G++ Lite 2010q1-188) 4.4.1
-*
-* description:
-* Linker script for LPC1114 chip (/301 version) (32kB Flash, 8kB SRAM).
-******************************************************************************/
-
-SEARCH_DIR(.);
-
 /*
-+=============================================================================+
-| format configurations
-+=============================================================================+
-*/
-
-OUTPUT_FORMAT("elf32-littlearm", "elf32-bigarm", "elf32-littlearm");
-OUTPUT_ARCH(arm);
-
-/*
-+=============================================================================+
-| stacks sizes
-+=============================================================================+
-*/
-
-/* Handler mode (core exceptions / interrupts) can use only main stack */
-/* Thread mode can use main stack (default) or process stack - selected in CONTROL special register */
-
-__main_stack_size = 1024;
-__process_stack_size = 0;
-
-PROVIDE(__main_stack_size = __main_stack_size);
-PROVIDE(__process_stack_size = __process_stack_size);
-
-/*
-+=============================================================================+
-| available memories definitions
-+=============================================================================+
-*/
+ * Software License Agreement (BSD License)
+ *
+ * Copyright (c) 2010, Roel Verdult
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * 3. Neither the name of the copyright holders nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ''AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
 
 MEMORY
 {
-	rom (rx)	: org = 0x00000000, len = 32k
-	ram (rwx)	: org = 0x10000000, len = 8k
+	flash(rx): ORIGIN = 0x00000000, LENGTH = 32k
+	sram(rwx): ORIGIN = 0x10000000, LENGTH = 4k
 }
 
-__rom_start = ORIGIN(rom);
-__rom_size = LENGTH(rom);
-__rom_end = __rom_start + __rom_size;
-
-__ram_start = ORIGIN(ram);
-__ram_size = LENGTH(ram);
-__ram_end = __ram_start + __ram_size;
-
-PROVIDE(__rom_start = __rom_start);
-PROVIDE(__rom_size = __rom_size);
-PROVIDE(__rom_end = __rom_end);
-
-PROVIDE(__ram_start = __ram_start);
-PROVIDE(__ram_size = __ram_size);
-PROVIDE(__ram_end = __ram_end);
-
-/*
-+=============================================================================+
-| entry point
-+=============================================================================+
-*/
-
-ENTRY( __startup );
-
-/*
-+=============================================================================+
-| put data in sections
-+=============================================================================+
-*/
+sram_top = ORIGIN(sram) + LENGTH(sram);
+ENTRY(__startup)
 
 SECTIONS
 {
 	.text :
 	{
-		. = ALIGN(4);
-		__text_start = .;
-		PROVIDE(__text_start = __text_start);
+		KEEP(*(.vectors))
+		. = ALIGN(128);
+		KEEP(*(.after_vectors))
+		*(.text*)
+		*(.rodata*)
+	} > flash
 
-		. = ALIGN(4);
-		KEEP(*(.vectors));
-		. = ALIGN(4);
-		*(.text .text.* .gnu.linkonce.t.*);
-		. = ALIGN(4);
-		*(.glue_7t .glue_7);
-		. = ALIGN(4);
-		*(.rodata .rodata.* .gnu.linkonce.r.*);
-
-		. = ALIGN(4);
-		*(.ARM.extab* .gnu.linkonce.armextab.*);	/* exception unwinding information */
-		. = ALIGN(4);
-		*(.gcc_except_table);						/* information used for stack unwinding during exception */
-		. = ALIGN(4);
-		*(.eh_frame_hdr);							/* additional information about .ex_frame section */
-		. = ALIGN(4);
-		*(.eh_frame);								/* information used for stack unwinding during exception */
-
-		. = ALIGN(4);
-		KEEP(*(.init));
-		. = ALIGN(4);
-		__preinit_array_start = .;
-		KEEP(*(.preinit_array));
-		. = ALIGN(4);
-		__preinit_array_end = .;
-		__init_array_start = .;
-		KEEP(*(SORT(.init_array.*)));
-		. = ALIGN(4);
-		KEEP(*(.init_array));
-		. = ALIGN(4);
-		__init_array_end = .;
-		KEEP(*(.fini));
-		. = ALIGN(4);
-		__fini_array_start = .;
-		KEEP(*(.fini_array));
-		. = ALIGN(4);
-		KEEP(*(SORT(.fini_array.*)));
-		. = ALIGN(4);
-		__fini_array_end = .;
-   		
-		. = ALIGN(4);
-		__text_end = .;
-		PROVIDE(__text_end = __text_end);
-	} > rom AT > rom
-
-	. = ALIGN(4);
+	/*
+	 * More information about Special Section Indexes is available in the
+	 * free "ELF for the ARM Architecture" document from ARM Limited
+	 * http://simplemachines.it/doc/aaelf.pdf
+	 *
+	 */
+	.ARM.extab : { *(.ARM.extab* .gnu.linkonce.armextab.*) } > flash
 	__exidx_start = .;
-	PROVIDE(__exidx_start = __exidx_start);
-
-	.ARM.exidx :
-	{
-		*(.ARM.exidx* .gnu.linkonce.armexidx.*);
-	} > rom AT > rom								/* index entries for section unwinding */
-
-	. = ALIGN(4);
+	.ARM.exidx : { *(.ARM.exidx* .gnu.linkonce.armexidx.*) } > flash
 	__exidx_end = .;
-	PROVIDE(__exidx_end = __exidx_end);
 
-	.data :
+	_etext = .;
+		
+	.data : AT (__exidx_end)
 	{
-		. = ALIGN(4);
 		__data_init_start = LOADADDR (.data);
 		PROVIDE(__data_init_start = __data_init_start);
 		__data_start = .;
-		PROVIDE(__data_start = __data_start);
-
-		. = ALIGN(4);
-		*(.data .data.* .gnu.linkonce.d.*)
-
-		. = ALIGN(4);
+		*(vtable)
+		*(.data*)
 		__data_end = .;
-		PROVIDE(__data_end = __data_end);
-	} > ram AT > rom
+	} > sram
 
+	/* zero initialized data */
 	.bss :
 	{
-		. = ALIGN(4);
 		__bss_start = .;
-		PROVIDE(__bss_start = __bss_start);
-
-		. = ALIGN(4);
-		*(.bss .bss.* .gnu.linkonce.b.*)
-		. = ALIGN(4);
-		*(COMMON);
-
-		. = ALIGN(4);
+		*(.bss*)
+		*(COMMON)
 		__bss_end = .;
-		PROVIDE(__bss_end = __bss_end);
-	} > ram AT > ram
+	} > sram
+	
+	end = .;
 
-	.stack :
-	{
-		. = ALIGN(8);
-		__stack_start = .;
-		PROVIDE(__stack_start = __stack_start);
-
-		. = ALIGN(8);
-		__main_stack_start = .;
-		PROVIDE(__main_stack_start = __main_stack_start);
-
-		. += __main_stack_size;
-
-		. = ALIGN(8);
-		__main_stack_end = .;
-		PROVIDE(__main_stack_end = __main_stack_end);
-
-		. = ALIGN(8);
-		__process_stack_start = .;
-		PROVIDE(__process_stack_start = __process_stack_start);
-
-		. += __process_stack_size;
-
-		. = ALIGN(8);
-		__process_stack_end = .;
-		PROVIDE(__process_stack_end = __process_stack_end);
-
-		. = ALIGN(8);
-		__stack_end = .;
-		PROVIDE(__stack_end = __stack_end);
-	} > ram AT > ram
-
-	. = ALIGN(4);
-	__heap_start = .;
-	PROVIDE(__heap_start = __heap_start);
-
-	. = ALIGN(4);
-	__heap_end = __ram_end;
-	PROVIDE(__heap_end = __heap_end);
-
-	.stab 				0 (NOLOAD) : { *(.stab) }
-	.stabstr 			0 (NOLOAD) : { *(.stabstr) }
-	/* DWARF debug sections.
-	* Symbols in the DWARF debugging sections are relative to the beginning
-	* of the section so we begin them at 0. */
-	/* DWARF 1 */
-	.debug				0 : { *(.debug) }
-	.line				0 : { *(.line) }
-	/* GNU DWARF 1 extensions */
-	.debug_srcinfo		0 : { *(.debug_srcinfo) }
-	.debug_sfnames		0 : { *(.debug_sfnames) }
-	/* DWARF 1.1 and DWARF 2 */
-	.debug_aranges		0 : { *(.debug_aranges) }
-	.debug_pubnames		0 : { *(.debug_pubnames) }
-	/* DWARF 2 */
-	.debug_info			0 : { *(.debug_info .gnu.linkonce.wi.*) }
-	.debug_abbrev		0 : { *(.debug_abbrev) }
-	.debug_line			0 : { *(.debug_line) }
-	.debug_frame		0 : { *(.debug_frame) }
-	.debug_str			0 : { *(.debug_str) }
-	.debug_loc			0 : { *(.debug_loc) }
-	.debug_macinfo		0 : { *(.debug_macinfo) }
-	/* SGI/MIPS DWARF 2 extensions */
-	.debug_weaknames	0 : { *(.debug_weaknames) }
-	.debug_funcnames	0 : { *(.debug_funcnames) }
-	.debug_typenames	0 : { *(.debug_typenames) }
-	.debug_varnames		0 : { *(.debug_varnames) }
-
-	.note.gnu.arm.ident	0 : { KEEP(*(.note.gnu.arm.ident)) }
-	.ARM.attributes		0 : { KEEP(*(.ARM.attributes)) }
-	/DISCARD/				: { *(.note.GNU-stack) }
+	/* For GDB compatibility we decrease the top with 16 bytes */
+	__stack_end = sram_top - 16;
 }
-
-PROVIDE(__text_size = __text_end - __text_start);
-PROVIDE(__exidx_size = __exidx_end - __exidx_start);
-PROVIDE(__data_size = __data_end - __data_start);
-PROVIDE(__bss_size = __bss_end - __bss_start);
-PROVIDE(__stack_size = __stack_end - __stack_start);
-PROVIDE(__heap_size = __heap_end - __heap_start);
-
-/******************************************************************************
-* END OF FILE
-******************************************************************************/
