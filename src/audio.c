@@ -10,12 +10,10 @@ int spk_buffer_next = 0;
 
 void speaker_output() {
 	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
-	uart_printf("loop\n");
 	spi_send_recv(spk_buffer[spk_buffer_index++]);
 	if (spk_buffer_index == 1024)
 		spk_buffer_index = 0;
 	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x80;
-	uart_printf("loop\n");
 	spk_buffer_index &= 0x3FF;
 }
 
