@@ -87,6 +87,9 @@ int main(int ram, char **argv) {
 	ms_init();
 	util_delay(200);
 	
+	uart_printf("booted up and shit\n");
+	util_delay(2000000);
+	
 	/* Attempt to plan the flow */
 
 	SysTick->CTRL = 0;
