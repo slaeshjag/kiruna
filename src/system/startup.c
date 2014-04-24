@@ -90,6 +90,9 @@ void unhandled_irq(void) {
 	0,
 	0,
 };*/
+
+void systick_irq();
+
 extern void (* const __vectors[])(void);
 void (* const __vectors[32])(void)  __attribute__ ((section(".vectors"))) = {
 	(void (*)(void)) & __stack_end,	
@@ -107,7 +110,7 @@ void (* const __vectors[32])(void)  __attribute__ ((section(".vectors"))) = {
 	0,                      				// Reserved
 	0,                                      // Reserved
 	unhandled_irq,                      	// The PendSV handler
-	unhandled_irq,                      	// The SysTick handler
+	systick_irq,                      	// The SysTick handler
 	unhandled_irq,                      // PIO0_0  Wakeup
 	unhandled_irq,                      // PIO0_1  Wakeup
 	unhandled_irq,                      // PIO0_2  Wakeup
@@ -124,6 +127,7 @@ void (* const __vectors[32])(void)  __attribute__ ((section(".vectors"))) = {
 	unhandled_irq,							// C_CAN Interrupt
 	unhandled_irq, 						// SPI/SSP1 Interrupt
 	unhandled_irq,                      	// I2C0
+	#if 0
 	unhandled_irq,                   // CT16B0 (16-bit Timer 0)          <--------------------- want
 	unhandled_irq,                   // CT16B1 (16-bit Timer 1)
 	unhandled_irq,                   // CT32B0 (32-bit Timer 0)
@@ -140,5 +144,6 @@ void (* const __vectors[32])(void)  __attribute__ ((section(".vectors"))) = {
 	unhandled_irq,                     // PIO INT2
 	unhandled_irq,                     // PIO INT1
 	unhandled_irq,                     // PIO INT0
+	#endif
 };
 

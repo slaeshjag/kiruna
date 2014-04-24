@@ -81,8 +81,23 @@ void initialize(void) {
 	LPC_ADC->INTEN = 0;
 	LPC_SYSCON->PDRUNCFG &= ~(0x1 << 4);
 	LPC_ADC->CR = 0x1 | (12 << 8) | (1 << 24);
+	
+	/*Enable DAC*/
+	LPC_GPIO0->DIR |= 0x80;
 }
 
+void systick_irq() {
+	static unsigned char data = 0;
+	microphone_sample();
+	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
+	spi_send_recv(data);
+	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x80;
+	if(!data)
+		data = 0x10;
+	else
+		data = 0;
+	
+}
 
 int main(int ram, char **argv) {
 	uint16_t sample;
@@ -98,14 +113,17 @@ int main(int ram, char **argv) {
 	
 	/* Attempt to plan the flow */
 
-	speaker_prebuffer();
+	//speaker_prebuffer();
 
 	SysTick->CTRL = 0;
 	/* Trig 8000 times per second */
 	SysTick->LOAD = SYSTEM_CLOCK / 8000;
 	SysTick->VAL = 0;
-	SysTick->CTRL = 1;
-
+	SysTick->CTRL = 0x1 | 0x2 | 0x4;
+	
+	while(1);
+		//microphone_send();
+	
 	for (i = 0;; i++) {
 		while (!(SysTick->CTRL & (1 << 16)));
 		SysTick->CTRL &= (~(1 << 16));
