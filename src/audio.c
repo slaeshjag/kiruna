@@ -5,8 +5,11 @@
 unsigned char mic_buffer[1024];
 unsigned char spk_buffer[1024];
 int mic_buffer_index = 0;
+int mic_buffer_send = 0;
+int mic_buffer_looped = 0;
 int spk_buffer_index = 0;
 int spk_buffer_next = 0;
+
 
 void speaker_output() {
 	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
@@ -17,13 +20,29 @@ void speaker_output() {
 	spk_buffer_index &= 0x3FF;
 }
 
-void microphone_sample() {
-	
+unsigned char microphone_sample() {
+	unsigned char data;
 	while(!(LPC_ADC->STAT & 0x1));
-	uart_send_char(LPC_ADC->DR[0] >> 7);
+	/*mic_buffer[mic_buffer_index++] = LPC_ADC->DR[0] >> 7;
+	if(mic_buffer_index >= 1024) {
+		mic_buffer_index = 0;
+		mic_buffer_looped = 1;
+	}*/
+	uart_send_char(data = (LPC_ADC->DR[0] >> 7));
+	//uart_printf("0x%x\n", (LPC_ADC->DR[0] >> 7) & 0xFF);
 	//uart_printf("\rADC: %i", (LPC_ADC->DR[0] >> 5) & 0x3FF);
 	LPC_ADC->CR |= (1 << 24);
-	
+	return data;
+}
+
+void microphone_send() {
+	if(mic_buffer_send < mic_buffer_index || mic_buffer_looped) {
+		uart_send_char(mic_buffer[mic_buffer_send++]);
+		if(mic_buffer_send >= 1024) {
+			mic_buffer_send = 0;
+			mic_buffer_looped = 0;
+		}
+	}
 }
 
 void speaker_prebuffer() {
