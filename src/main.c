@@ -4,6 +4,7 @@
 #include "uart.h"
 #include "spi.h"
 #include "motor.h"
+#include "audio.h"
 
 
 
@@ -67,14 +68,20 @@ void initialize(void) {
 	LPC_SSP0->CPSR = 0x2;
 	LPC_SSP0->CR0 = 0x107;
 	LPC_SSP0->CR1 = 0x2;
+
+	/* Enable timers */
+	LPC_SYSCON->SYSAHBCLKDIV |= (1 << 10);
+	LPC_SYSCON->SYSAHBCLKDIV |= (1 << 9);
+	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 7);
 	
 	/*Enable ADC*/
 	LPC_IOCON->R_PIO0_11 = 0x2;
 	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 13);
+	/*48 MHz / 12 = 4 MHz*/
+	LPC_ADC->INTEN = 0;
+	LPC_SYSCON->PDRUNCFG &= ~(0x1 << 4);
+	LPC_ADC->CR = 0x1 | (12 << 8) | (1 << 24);
 }
-
-
-
 
 
 int main(int ram, char **argv) {
@@ -87,10 +94,9 @@ int main(int ram, char **argv) {
 	ms_init();
 	util_delay(200);
 	
-	uart_printf("booted up and shit\n");
-	util_delay(2000000);
-	
 	/* Attempt to plan the flow */
+
+	speaker_prebuffer();
 
 	SysTick->CTRL = 0;
 	/* Trig 8000 times per second */
@@ -98,40 +104,26 @@ int main(int ram, char **argv) {
 	SysTick->VAL = 0;
 	SysTick->CTRL = 1;
 
-	for (;;) {
+	for (i = 0;; i++) {
 		while (!(SysTick->CTRL & (1 << 16)));
-		microphone_sample();
+		audio_loop();
 
-		for (;;) {
-			if (!(sample = uart_recv_try()))
+		/* TODO: ultra-sonic sensor code */
+
+		/* 8 tasks ought to be enough for anybody, right? */
+		switch (i & 0x7) {
+			case 0:		/* Do collision awareness checking? */
+			case 1:
+			case 2:
+			case 3:
+			case 4:
+			case 5:
+			case 6:
+			case 7:
 				break;
-			sample &= 0xFF;
 		}
-
-		/* FILL THIS IN */
 	}
 
-	//uart_printf("Initiation done!\n");
-
-	/***************************************/
-	/* Test DAC */
-	LPC_GPIO0->DIR |= 0x80;
-	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
-
-	for (sample = 0; ; sample += 8) {
-		LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
-/*		if (sample & 0x1)
-			spi_send_recv(0x80);
-		else
-			spi_send_recv(0x00);*/
-		spi_send_recv(1 << (sample));
-		LPC_GPIO0->MASKED_ACCESS[0x80] = 0x80;
-		util_delay(100);
-	}
-
-	/***************************************/
-		
-	
 	motor_go(MOTOR_DIR_FORWARD);
 	
 	while(1)
