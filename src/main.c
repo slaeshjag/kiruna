@@ -4,6 +4,7 @@
 #include "uart.h"
 #include "spi.h"
 #include "motor.h"
+#include "audio.h"
 
 
 
@@ -78,37 +79,53 @@ void initialize(void) {
 
 
 int main(int ram, char **argv) {
+	uint16_t sample;
+	extern int spk_buffer_next;
+	extern int spk_buffer_index;
+	extern int spk_buffer[1024];
+	int i;
 	
 	initialize();
 	motor_init();
 	us_init();
 	ms_init();
-	radiolink_init();
-	interrupter_timer16_init();
 	util_delay(200);
 	
 	//uart_printf("Initiation done!\n");
 
-	/***************************************/
-	/* Test DAC */
-	unsigned char sample;
-	
-	LPC_GPIO0->DIR |= 0x80;
-	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
+	uart_printf("AutoKorg™ READY TO WRECK SOME HAVOC!\n");
 
-	for (sample = 0; ; sample += 8) {
-		LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
-/*		if (sample & 0x1)
-			spi_send_recv(0x80);
-		else
-			spi_send_recv(0x00);*/
-		spi_send_recv(1 << (sample));
-		LPC_GPIO0->MASKED_ACCESS[0x80] = 0x80;
-		util_delay(100);
+	/* Attempt to plan the flow */
+
+	SysTick->CTRL = 0;
+	/* Trig 8000 times per second */
+	SysTick->LOAD = SYSTEM_CLOCK / 8000;
+	SysTick->VAL = 0;
+	SysTick->CTRL = 1;
+
+	for (i = 0;; i++) {
+		while (!(SysTick->CTRL & (1 << 16)));
+		audio_loop();
+
+		/* TODO: ultra-sonic sensor code */
+
+		/* 8 tasks ought to be enough for anybody, right? */
+		switch (i & 0x7) {
+			case 0:		/* Do collision awareness checking? */
+			case 1:
+			case 2:
+			case 3:
+			case 4:
+			case 5:
+			case 6:
+			case 7:
+				break;
+		}
 	}
 
 	/***************************************/
 		
+	
 	motor_go(MOTOR_DIR_FORWARD);
 	int us_time;
 	

@@ -9,7 +9,8 @@
  * 48*10^6 iterations/s * 128*10^-6 s = 6144 iterations = 0x1800
  */
 
-#define INTER_TIME	0x1800
+//#define INTER_TIME	0x1800
+#define INTER_TIME 0xFFFF
 #define DATA_SIZE	32
 
 
@@ -39,7 +40,7 @@ void TIMER16_0_IRQHandler(void)
 	{
 		uart_printf("MR0!\n");
 		
-		//radiolink_send(DATA_SIZE, &data);	//send audio buffer
+		radiolink_send(DATA_SIZE, data);
 		
 		LPC_TMR16B0->TC 		= 0x0;	//reset timer
 		LPC_TMR16B0->IR 		|= 0x1;	//reset interrupt
