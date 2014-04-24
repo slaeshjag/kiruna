@@ -93,6 +93,8 @@ int main(int ram, char **argv) {
 	us_init();
 	ms_init();
 	util_delay(200);
+
+	uart_printf("AutoKorg™ READY TO WRECK SOME HAVOC!\n");
 	
 	/* Attempt to plan the flow */
 
