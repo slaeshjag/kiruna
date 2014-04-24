@@ -68,29 +68,37 @@ void initialize(void) {
 	LPC_SSP0->CPSR = 0x2;
 	LPC_SSP0->CR0 = 0x107;
 	LPC_SSP0->CR1 = 0x2;
+
+	/* Enable timers */
+	LPC_SYSCON->SYSAHBCLKDIV |= (1 << 10);
+	LPC_SYSCON->SYSAHBCLKDIV |= (1 << 9);
+	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 7);
 	
 	/*Enable ADC*/
 	LPC_IOCON->R_PIO0_11 = 0x2;
 	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 13);
+	/*48 MHz / 12 = 4 MHz*/
+	LPC_ADC->INTEN = 0;
+	LPC_SYSCON->PDRUNCFG &= ~(0x1 << 4);
+	LPC_ADC->CR = 0x1 | (12 << 8) | (1 << 24);
 }
 
 
 int main(int ram, char **argv) {
 	uint16_t sample;
-	extern int spk_buffer_next;
-	extern int spk_buffer_index;
-	extern int spk_buffer[1024];
 	int i;
 	
 	initialize();
-	motor_init();
-	us_init();
-	ms_init();
+//	motor_init();
+//	us_init();
+//	ms_init();
 	util_delay(200);
-
 	uart_printf("AutoKorg™ READY TO WRECK SOME HAVOC!\n");
 
+
 	/* Attempt to plan the flow */
+
+	speaker_prebuffer();
 
 	SysTick->CTRL = 0;
 	/* Trig 8000 times per second */

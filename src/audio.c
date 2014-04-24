@@ -10,16 +10,16 @@ int spk_buffer_next = 0;
 
 void speaker_output() {
 	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
+	uart_printf("loop\n");
 	spi_send_recv(spk_buffer[spk_buffer_index++]);
+	if (spk_buffer_index == 1024)
+		spk_buffer_index = 0;
 	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x80;
+	uart_printf("loop\n");
 	spk_buffer_index &= 0x3FF;
 }
 
 void microphone_sample() {
-	/*48 MHz / 12 = 4 MHz*/
-	LPC_ADC->INTEN = 0;
-	LPC_SYSCON->PDRUNCFG &= ~(0x1 << 4);
-	LPC_ADC->CR = 0x1 | (12 << 8) | (1 << 24);
 	
 	while(!(LPC_ADC->STAT & 0x1));
 	uart_send_char(LPC_ADC->DR[0] >> 7);
@@ -36,7 +36,8 @@ void speaker_prebuffer() {
 			continue;
 		sample &= 0xFF;
 		spk_buffer[spk_buffer_next++] = sample;
-		if (spk_buffer_next == 500)
+		uart_printf("%i ", spk_buffer_next);
+		if (spk_buffer_next == 20)
 			break;
 	}
 }
