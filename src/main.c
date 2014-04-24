@@ -78,18 +78,21 @@ void initialize(void) {
 
 
 int main(int ram, char **argv) {
-	unsigned char sample;
 	
 	initialize();
 	motor_init();
 	us_init();
 	ms_init();
+	radiolink_init();
+	interrupter_timer16_init();
 	util_delay(200);
 	
 	//uart_printf("Initiation done!\n");
 
 	/***************************************/
 	/* Test DAC */
+	unsigned char sample;
+	
 	LPC_GPIO0->DIR |= 0x80;
 	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
 
@@ -106,11 +109,13 @@ int main(int ram, char **argv) {
 
 	/***************************************/
 		
-	
 	motor_go(MOTOR_DIR_FORWARD);
+	int us_time;
 	
 	while(1)
 	{
+		us_time = us();
+		
 		if(ms_left_pressed())
 		{
 			motor_go(MOTOR_DIR_LEFT);
@@ -137,7 +142,7 @@ int main(int ram, char **argv) {
 			
 			motor_go(MOTOR_DIR_FORWARD);
 		}
-		else if (us() > 9000)	// It's over 9000!!!! Turn!
+		else if (us_time < 9000)	// It's not over 9000!!!! Turn!
 		{
 			motor_go(MOTOR_DIR_LEFT);
 			util_delay(MOTOR_TIME_90);
@@ -148,8 +153,23 @@ int main(int ram, char **argv) {
 			motor_go(MOTOR_DIR_RIGHT);
 			util_delay(MOTOR_TIME_90);
 		}
+		
+		//radiolink_send(4, &us_time);	//Print us_time to radio module (int is 4B, sends pointer to value)
 	}
 	
+	/********** Code for receiver **********/
+	/*
+	
+	int us_time;
+	
+	while(1)
+	{
+		radiolink_recv(4, &us_time);
+		uart_printf("US: %i\n", us_time);
+	}
+	*/
+	/***** Steven's old test code *********/
+	/*
 	MOTOR_PORT->MASKED_ACCESS[MOTOR_MASK] |= (MOTOR_MASK);
 	util_delay(2000000);
 	uart_printf("Going forward\n");
@@ -170,6 +190,7 @@ int main(int ram, char **argv) {
 	for (;;) {
 		
 	}
-
+	*/
+	/***************************************/
 	return 0;
 }
