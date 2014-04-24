@@ -106,6 +106,7 @@ int main(int ram, char **argv) {
 
 	for (i = 0;; i++) {
 		while (!(SysTick->CTRL & (1 << 16)));
+		SysTick->CTRL &= (~(1 << 16));
 		audio_loop();
 
 		/* TODO: ultra-sonic sensor code */

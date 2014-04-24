@@ -12,7 +12,7 @@
 #include <asm/termios.h>
 
 #define	PACKET_SIZE		8
-#define	BAUDRATE	230400
+#define	BAUDRATE	115200
 
 
 struct timeval time_d;
