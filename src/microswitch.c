@@ -13,10 +13,10 @@ void ms_init(void)
 
 int ms_left_pressed(void)
 {
-	return (MS_PORT->DATA & (1<<MS_LEFT));
+	return (!(MS_PORT->DATA & (1<<MS_LEFT)));
 }
 
 int ms_right_pressed(void)
 {
-	return (MS_PORT->DATA & (1<<MS_RIGHT));
+	return (!(MS_PORT->DATA & (1<<MS_RIGHT)));
 }
