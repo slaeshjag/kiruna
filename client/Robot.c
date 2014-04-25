@@ -1,32 +1,52 @@
+#include <asm/termios.h>
+#include <darnit/darnit.h>
+#include <fcntl.h>
+#include <pthread.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <darnit/darnit.h>
-#include <asm/termios.h>
-#include <stdbool.h>
-#include <stropts.h>       
-#include <sys/types.h>
+#include <stropts.h>
 #include <sys/stat.h>
-#include <fcntl.h>
+#include <sys/types.h>
 #include <unistd.h>
-
-//No parity -- !PARENB (c_cflag)
-//startbit
-//One stopbit -- !CSTOPB (c_cflag)
-//8 databitar -- CS8 (c_cflag)
-//No flödeskontroll -- 
-//Baudrate.
+//Includifications.
 
 #define BAUDRATE 115200
 #define MODEMDEVICE "/dev/ttyUSB0"
+//Serial port definitions.
 
+#define HD_IMAGE_WIDTH 640
+#define HD_IMAGE_HEIGHT 480
+#define IMAGE_WIDTH 320
+#define IMAGE_HEIGHT 240
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
+//Image numbers.
+
+#define COLOR_X 20
+#define COLOR_Y 400
+#define MENU_X (WINDOW_WIDTH - COLOR_X - BUTTON_WIDTH)
+#define MENU_Y COLOR_Y
+#define BUTTON_WIDTH 300
+#define BUTTON_HEIGHT 182
+//Button numbers.
+
+#define DISCO 0x10
+#define COLOR 2
+#define MENU 1
+#define UI 0
+//States.
+
+void draw_interface();
 void do_stuff(DARNIT_TEXT_SURFACE *textplace);
 void click(int x, int y, DARNIT_TEXT_SURFACE *textplace);
 void initiate_buttons(void);
 void initiate_serial_port(void);
-
-
+void * transfer();
+void * musikka();
 int make_binary(int repeat_size);
+int check_true(unsigned int* hits, unsigned int value);
 
 struct LOOKED{
 
@@ -41,14 +61,13 @@ struct DATORS{
 
 	int nr;
 	char data;
-
 };
 
 typedef struct{
 
 	char* data;
 	int offset;
-	struct DATORS byte;	
+	struct DATORS byte;
 
 }STRUCT_RETURN_BYTE;
 
@@ -74,20 +93,26 @@ typedef enum {
 
 //Defining some speeds we can command the robots to travel at.
 
-STRUCT_RETURN_BYTE* next_bit(char* data, int offset, int pixel_size, int repeat_size);
+STRUCT_RETURN_BYTE next_bit(char* data, int offset, int pixel_size, int repeat_size);
+char* get_image(char* data, int pixel_size, int repeat_size);
 
 DARNIT_BBOX *buttonlist;
-unsigned int button_up, button_right, button_left, button_menu;
+unsigned int button_up, button_right, button_left, button_menu, button_color;
 struct LOOKED looked;
+DARNIT_TILESHEET * ui1;
+DARNIT_TILESHEET * ui2;
+DARNIT_TILESHEET * graphic_button_menu;
+DARNIT_TILESHEET * graphic_button_back;
+DARNIT_TILESHEET * graphic_button_color;
 
-int serial_port;
+int serial_port, hello, state = 0, stickyness = 100;
 struct termios2 config;
 
-//Global stuff \o/ Integers, home-made structure, text object, serial port. 
+//Global stuff \o/ Integers, home-made structure, text object, serial port.
 
 int main(int argc, char **argv) {
-	
-	d_init_custom("AutoKorg", 800, 600, 0, "robot", NULL);
+
+	d_init_custom("AutoKorg", WINDOW_WIDTH, WINDOW_HEIGHT, 0, "robot", NULL);
 	//Calling an initiating function. Said function creates a window
 	//with resolution 800x600, that's now full-screen and with the title AutoKorg.
 	
@@ -97,7 +122,12 @@ int main(int argc, char **argv) {
 	DARNIT_TEXT_SURFACE *papper = d_text_surface_new(kgfont, 100 , 800, 10, 0);
 	//Here we create a handle to a text surface, using the font previously handled.
 	
+	pthread_t threads[1];
+	hello = pthread_create(&threads[0], NULL, musikka, (void *) NULL);
+	
 	d_cursor_show(1); //Call a funciton which shows the cursor in the window.
+	
+	initiate_buttons();
 	
 	/*if (!papper)
 		fprintf(stderr, "Paper didn't load\n");*/
@@ -107,12 +137,12 @@ int main(int argc, char **argv) {
 	
 	//d_sound_play(music, 1, 128, 128, 0); 
 	//Play la musica.
-	
+	/*
 	FILE * music = fopen("Rick Astley - Never Gonna Give You Up.wav", "r");
 	
 	unsigned char data_collection[1024];
 	
-	initiate_buttons(); 
+	//initiate_buttons();
 	initiate_serial_port();
 	//Initiate our buttons and serial port \o/
 	
@@ -121,9 +151,8 @@ int main(int argc, char **argv) {
 	while(1024 == fread(data_collection, 512, 512, music)){
 		
 		write(serial_port, data_collection, 1024);
-		usleep(100);
-		
-	}
+		usleep(100);	
+	}*/
 	
 	/*int fil = open("Robot.c", O_RDONLY);
 	
@@ -137,9 +166,6 @@ int main(int argc, char **argv) {
 	
 	printf("%s", svar);*/
 	
-	DARNIT_TILESHEET * ui1 = d_render_tilesheet_load("UI thing.gif", 28, 10, 1);
-	DARNIT_TILESHEET * ui2 = d_render_tilesheet_load("UI thing 2.gif", 12, 29, 1);
-	
 	for(;;) {
 		
 		//Program loop.
@@ -150,24 +176,21 @@ int main(int argc, char **argv) {
 		d_render_blend_enable(); 
 		//Enable blend, a call to a function apparently needed.
 		
-		d_render_tint(255,255,255,255); 
+		if(state < DISCO){
+			d_render_tint(255,255,255,255);
+		} 
+		else {
+			d_render_tint(rand() & 0xF0, rand() & 0xF0, rand() & 0xF0, 255);
+		}
 		//Another call to a needed function. Don't question the libdarnit.
 		
 		//d_text_surface_string_append(papper, svar);
 		
-		d_render_tile_blit(ui1, 0, 50, 300);
-		d_render_tile_blit(ui1, 0, (760 - 50), 300);
-		d_render_tile_blit(ui1, 0, 100, 300);
-		d_render_tile_blit(ui1, 0, (760 - 100), 300);
-		d_render_tile_blit(ui1, 0, 150, 300);
-		d_render_tile_blit(ui1, 0, (760 - 150), 300);
-		d_render_tile_blit(ui2, 0, 390, 20);
-		d_render_tile_blit(ui2, 0, 390, 70);
-		d_render_tile_blit(ui2, 0, 390, 130);
-		//Draws us some graphics.
-		
 		do_stuff(papper); 
 		//Call to a function which does stuff.
+		
+		draw_interface();
+		//Draws us some graphics.
 		
 		d_render_end(); 
 		//Call to a function which you do at the stop of rendering.
@@ -183,9 +206,52 @@ int main(int argc, char **argv) {
 	//End of show.
 }
 
+void draw_interface(){
+	
+	switch(state & 0xF){
+	case MENU:
+		
+		//Draw the menu.
+
+		d_render_tile_blit(graphic_button_back, 0, COLOR_X, COLOR_Y);
+		
+		break;
+		
+	case UI:
+		
+		//Draw the UI
+		
+		d_render_tile_blit(ui1, 0, 50, 300);
+		d_render_tile_blit(ui1, 0, (760 - 50), 300);
+		d_render_tile_blit(ui1, 0, 100, 300);
+		d_render_tile_blit(ui1, 0, (760 - 100), 300);
+		d_render_tile_blit(ui1, 0, 150, 300);
+		d_render_tile_blit(ui1, 0, (760 - 150), 300);
+		d_render_tile_blit(ui2, 0, 390, 20);
+		d_render_tile_blit(ui2, 0, 390, 70);
+		d_render_tile_blit(ui2, 0, 390, 130);
+		//Draw lines upon the screen.
+		
+		d_render_tile_blit(graphic_button_menu, 0, MENU_X, MENU_Y);
+		d_render_tile_blit(graphic_button_color, 0, COLOR_X, COLOR_Y);
+		//Draw our buttons.
+		
+		break;
+		
+	case COLOR:
+	
+		//Render UI for the colour image.
+	
+		d_render_tile_blit(graphic_button_back, 0, MENU_X, MENU_Y);
+		
+		break;
+	}
+}
+
 void initiate_buttons(void){
 	
-	buttonlist = d_bbox_new(8); //We make space for a list containing 8 boxes.
+	buttonlist = d_bbox_new(8);
+	//We make space for a list containing 8 boxes.
 	
 	button_up = d_bbox_add(buttonlist, 0, 0, 800, 200);
 	//Then we add a box (button) to the button list.
@@ -194,9 +260,18 @@ void initiate_buttons(void){
 	
 	button_left = d_bbox_add(buttonlist, 0, 0, 240, 400);
 	button_right = d_bbox_add(buttonlist, 560, 0, 260, 400);
-	button_menu = d_bbox_add(buttonlist, 300, 400, 200, 200);
-	//And here we add three more buttons. Didn't see that coming, did you?
+	button_menu = d_bbox_add(buttonlist, MENU_X, MENU_Y, BUTTON_WIDTH, BUTTON_HEIGHT);
+	button_color = d_bbox_add(buttonlist, COLOR_X, COLOR_Y, BUTTON_WIDTH, BUTTON_HEIGHT);
+	//And here we add four more buttons. Didn't see that coming, did you?
+	
+	ui1 = d_render_tilesheet_load("UI thing.gif", 28, 10, 1);
+	ui2 = d_render_tilesheet_load("UI thing 2.gif", 12, 29, 1);
+	//Here we also load up our graphic sprites. These are just some lines.
 
+	graphic_button_menu = d_render_tilesheet_load("button_menu.gif", BUTTON_WIDTH, BUTTON_HEIGHT, 1);
+	graphic_button_back = d_render_tilesheet_load("button_back.gif", BUTTON_WIDTH, BUTTON_HEIGHT, 1);
+	graphic_button_color = d_render_tilesheet_load("button_color.gif", BUTTON_WIDTH, BUTTON_HEIGHT, 1);
+	//Loads button graphics.
 }
 
 void initiate_serial_port(void){
@@ -211,7 +286,7 @@ void initiate_serial_port(void){
 	config.c_cflag |= BOTHER;
 	config.c_cflag |= CS8;
 	//These options will let us set our own baudrate,
-	//, no parity and a bytesize of 8 bits.
+	//no parity and a bytesize of 8 bits.
 	
 	config.c_iflag = 0;
 	//No input processing.
@@ -266,7 +341,7 @@ void do_stuff(DARNIT_TEXT_SURFACE *textplace){
 		
 		looked.frames_looked = looked.frames_looked + 1;
 		
-		if(100 < looked.frames_looked){
+		if(stickyness < looked.frames_looked){
 		
 		//Then, if we've looked at the same area for 100 frames...
 		
@@ -278,8 +353,8 @@ void do_stuff(DARNIT_TEXT_SURFACE *textplace){
 			//from which we defined the area.
 		}
 	}
+	
 	else{
-		
 		//If we are outside of the area we first looked at,
 		//we'll set the new area of looking to the point where 
 		//the mouse is, and set the frames looked to 0.
@@ -296,40 +371,73 @@ void do_stuff(DARNIT_TEXT_SURFACE *textplace){
 
 void click(int x, int y, DARNIT_TEXT_SURFACE *textplace){
 	
-	unsigned int hits[4] = {110, 110, 110, 110};
-	d_bbox_test(buttonlist, x, y, 1, 1, hits, 4);
+	unsigned int hits[8] = {110, 110, 110, 110, 110, 110, 110, 110};
+	d_bbox_test(buttonlist, x, y, 1, 1, hits, 8);
 	
 	//Now we check if the clicked point is overlapping any of
 	//our four buttons.
 	
-	if(hits[0] == button_up || hits[1] == button_up ||
-	   hits[2] == button_up || hits[3] == button_up ){
+	looked.frames_looked = 0;
+	//Reset the frames looked.
+	
+	if(check_true(hits, button_up)){
 		
 		d_text_surface_string_append(textplace, "\n Uppknappen klickades.");	   
 	}
 	
-	else if(hits[0] == button_left || hits[1] == button_left ||
-	   hits[2] == button_left || hits[3] == button_left ){
+	else if(check_true(hits, button_left)){
 		
 		//Left button click.
 		
 		d_text_surface_string_append(textplace, "\n Vänsterknappen klickades.");		   
 	}
 	
-	else if(hits[0] == button_right || hits[1] == button_right ||
-	   hits[2] == button_right || hits[3] == button_right ){
+	else if(check_true(hits, button_right)){
 		   
 		//Right button click.
 		   
 		d_text_surface_string_append(textplace, "\n Högerknappen klickades.");	
 	}
 	
-	else if(hits[0] == button_menu || hits[1] == button_menu ||
-	   hits[2] == button_menu || hits[3] == button_menu ){
+	else if(check_true(hits, button_menu)){
 		   
 		//Menu button click.
+			
+		if((state & 0xF) == UI){
+			
+			state &= 0xF0;
+			state &= 0x0;
+			state |= MENU;
+		}
 		
+		else if((state & 0xF) == COLOR){
+			
+			state &= 0xF0;
+			state |= UI;
+			stickyness = 100;
+		}
+	
 		d_text_surface_string_append(textplace, "\n Menyknappen klickades.");
+	}
+	
+	else if(check_true(hits, button_color)){
+		
+		if((state & 0xF) == UI){
+			
+			state &= 0xF0;
+			state |= DISCO + COLOR;
+			stickyness = 2;
+			
+			d_text_surface_string_append(textplace, "\n Colorknappen klickades.");
+		}
+		else if ((state & 0xF) == MENU){
+			
+			state &= 0xF0;
+			state |= UI;
+			
+			d_text_surface_string_append(textplace, "\n Backknappen klickades.");
+		}
+		
 	}
 	
 	else {
@@ -339,24 +447,111 @@ void click(int x, int y, DARNIT_TEXT_SURFACE *textplace){
 	}
 }
 
+int check_true(unsigned int* hits, unsigned int value){
+	
+	if(hits[0] == value || hits[1] == value ||
+	   hits[2] == value || hits[3] == value ||
+	   hits[4] == value || hits[5] == value ||
+	   hits[6] == value || hits[7] == value   ){
+		   
+		//If the number that we're looking for is in
+		//one of the first 8 blocks of the array
+		//we're looking in, return 1.
+		   
+		return 1;
+	}
+	
+	else{
+		return 0;
+	}
+}
+
+void * musikka(){
+	
+	DARNIT_SOUND *music = d_sound_streamed_load("TowerTown.ogg", 1, 1); 
+	//Load an audiophile.
+	
+	d_sound_play(music, 1, 128, 128, 0); 
+	//Play la musica.
+	
+	pthread_exit(NULL);
+	
+}
+
+void* transfer(){
+	
+	unsigned char buf[22600];
+	int music_test = open("test.wav", O_RDONLY);
+	int i;
+	//Make some variables we need. Amongst these we open
+	//a stream to the soundfile we want to send.
+	
+	if (read(music_test, buf, 22600)){
+		
+		//We then read 22600 bytes from the file stream,
+		//and send them eight at a time to the serial_port, 
+		//waiting inbetween each batch.
+		
+		for(i = 0; i < (22600 / 8); i++){
+			
+			if(write(serial_port, buf[i], 8)){
+				
+				sleep(2);
+			}
+		}
+	}
+	
+	pthread_exit(NULL);
+}
+
 void write_to_serial(ACTION action, SPEEDNESS speed){
 	
 
 	
 }
 
+void communication(){
+	
+
+}
+
+char* get_image(char* data, int pixel_size, int repeat_size){
+
+	int i = 0;
+	int size = (IMAGE_HEIGHT * IMAGE_WIDTH);
+	char image[size];
+	STRUCT_RETURN_BYTE answer;
+	//Datastructures for keeping track of stuff.
+	
+	answer.offset = 0;
+	answer.data = data;
+	answer.byte.nr = 0;
+	answer.byte.data = 0;
+	//Setting the answer structure to the numbers we need it to be.
+	
+	while(i < size){
+		
+		answer = next_bit(answer.data, answer.offset, pixel_size, repeat_size);
+		//Shuffles out the next pixel(s) of data. 
+		
+		while(0 < answer.byte.nr){
+			
+			image[i] = answer.byte.data;
+			answer.byte.nr =- 1;
+			//If we have a pixel in the answer,
+			//count it in, and move on to the next one.	
+		}
+		
+		i++;
+	}
+	
+	return image;
+}
 
 
 
 
-
-
-
-
-
-
-
-STRUCT_RETURN_BYTE* next_bit(char* data, int offset, int pixel_size, int repeat_size){
+STRUCT_RETURN_BYTE next_bit(char* data, int offset, int pixel_size, int repeat_size){
 
 	char temp = data[0], temp2;
 	int new_offset = pixel_size;
@@ -377,7 +572,6 @@ STRUCT_RETURN_BYTE* next_bit(char* data, int offset, int pixel_size, int repeat_
 
 		//Now we fetch enough data to fill the rest of the char,
 		//and add those bits to the byte.
-
 	}
 
 	STRUCT_RETURN_BYTE answer;
@@ -400,7 +594,7 @@ STRUCT_RETURN_BYTE* next_bit(char* data, int offset, int pixel_size, int repeat_
 			temp = data[0];
 
 			//We move our pointer forwards a byte, and change offset accordingly.
-
+			//We move our pointer forwards a byte, and change offset accordingly.
 		}
 
 		if (temp_offset != 0){
@@ -417,7 +611,6 @@ STRUCT_RETURN_BYTE* next_bit(char* data, int offset, int pixel_size, int repeat_
 
 			//Now we fetch enough data to fill the rest of the char,
 			//and add those bits to the byte.
-
 		}
 
 		char read_number[4];
@@ -434,8 +627,8 @@ STRUCT_RETURN_BYTE* next_bit(char* data, int offset, int pixel_size, int repeat_
 
 		//And then we store the data as we want it; the pixel read on its own,
 		//and the number is the number of bits.
-
 	}
+	
 	else{
 		
 		temp = temp << (8 - pixel_size);
@@ -450,7 +643,6 @@ STRUCT_RETURN_BYTE* next_bit(char* data, int offset, int pixel_size, int repeat_
 		new_offset = new_offset + offset;
 
 		//We also calculate our new offset.
-
 	}
 
 
@@ -462,7 +654,6 @@ STRUCT_RETURN_BYTE* next_bit(char* data, int offset, int pixel_size, int repeat_
 
 		//If our offset isnt bigger than a byte
 		//we return our answer structure.
-
 	}
 	
 	else{
@@ -473,7 +664,6 @@ STRUCT_RETURN_BYTE* next_bit(char* data, int offset, int pixel_size, int repeat_
 			
 			tempdata++;
 			new_offset = new_offset - 8;
-
 		}
 
 		answer.offset = new_offset;
@@ -487,7 +677,7 @@ STRUCT_RETURN_BYTE* next_bit(char* data, int offset, int pixel_size, int repeat_
 		//When all is said and done we return stuff.
 	}
 
-	return &answer;
+	return answer;
 
 }
 
@@ -502,5 +692,4 @@ int make_binary(int repeat_size){
 	} 
 
 	return temp;
-
 }
