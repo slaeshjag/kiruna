@@ -200,6 +200,14 @@ uint8_t uart_recv_char(void) {
 	return LPC_UART->RBR;
 }
 
+
+uint16_t uart_recv_try(void) {
+	if (LPC_UART->LSR & 1)
+		return LPC_UART->RBR | 0x100;
+	return 0;
+}
+
+
 void uart_loop(void) {
 	char cmd[16]/*, done[17]*/;
 	int i, /*j,*/ command, arg;
