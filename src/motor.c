@@ -5,7 +5,12 @@
 
 void motor_init(void)
 {
+	LPC_IOCON->R_PIO1_0 |= 0x1;
+	LPC_IOCON->R_PIO1_1 |= 0x1;
+	LPC_IOCON->R_PIO1_2 |= 0x1;
+	LPC_IOCON->SWDIO_PIO1_3 |= 0x1;
 	MOTOR_PORT->DIR |= MOTOR_MASK;
+	MOTOR_PORT->MASKED_ACCESS[MOTOR_MASK] |= (MOTOR_MASK);
 }
 
 void motor_go(enum motor_direction dir) {

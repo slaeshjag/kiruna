@@ -112,13 +112,15 @@ int main(int ram, char **argv) {
 	
 	initialize();
 	motor_init();
-	radiolink_init();
-	us_init();
-	ms_init();
+	//radiolink_init();
+	//us_init();
+	//ms_init();
 	util_delay(200);
 
 	uart_printf("AutoKorg™ READY TO WRECK SOME HAVOC!\n");
 	
+	
+	#if 0
 	while(1) {
 		unsigned char data[32];
 		radiolink_recv(32, data);
@@ -151,10 +153,12 @@ int main(int ram, char **argv) {
 				break;
 		}
 	}
+	
+	#endif
 
 	motor_go(MOTOR_DIR_FORWARD);
 	
-	while(1)
+	/*while(1)
 	{
 		if(ms_left_pressed())
 		{
@@ -193,9 +197,8 @@ int main(int ram, char **argv) {
 			motor_go(MOTOR_DIR_RIGHT);
 			util_delay(MOTOR_TIME_90);
 		}
-	}
+	}*/
 	
-	MOTOR_PORT->MASKED_ACCESS[MOTOR_MASK] |= (MOTOR_MASK);
 	util_delay(2000000);
 	uart_printf("Going forward\n");
 	motor_go(MOTOR_DIR_FORWARD);
