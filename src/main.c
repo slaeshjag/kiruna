@@ -91,9 +91,9 @@ int main(int ram, char **argv) {
 	ms_init();
 	util_delay(200);
 	
-	//uart_printf("Initiation done!\n");
-
 	uart_printf("AutoKorg™ READY TO WRECK SOME HAVOC!\n");
+	
+	/********************************************/
 
 	/* Attempt to plan the flow */
 
@@ -102,16 +102,39 @@ int main(int ram, char **argv) {
 	SysTick->LOAD = SYSTEM_CLOCK / 8000;
 	SysTick->VAL = 0;
 	SysTick->CTRL = 1;
-
-	for (i = 0;; i++) {
+	
+	/********************************************/
+	
+	int us_state = 0;
+	int us_pulse_counter = 0;
+	int us_pulse_length = 0;
+	
+	for (i = 0;; i++)
+	{
 		while (!(SysTick->CTRL & (1 << 16)));
 		audio_loop();
-
-		/* TODO: ultra-sonic sensor code */
+		
 
 		/* 8 tasks ought to be enough for anybody, right? */
 		switch (i & 0x7) {
-			case 0:		/* Do collision awareness checking? */
+			case 0:	// Ultrasonic sensor
+				if (us_state == 0) 
+				{
+					us_state = 1;
+					us_trig();	// blocking
+				}
+				else if (US_PORT->DATA & (1<<US_ECHO))	// count incoming pulse
+				{
+					us_state = 2;
+					us_pulse_counter++;
+				}
+				else if (us_state == 2)	// Returning pulse has ended
+				{
+					us_pulse_length = us_pulse_counter;
+					us_pulse_counter = 0;
+					us_state = 0;
+				}
+				break;
 			case 1:
 			case 2:
 			case 3:
@@ -123,8 +146,8 @@ int main(int ram, char **argv) {
 		}
 	}
 
-	/***************************************/
-		
+	/************** Old code ***************/
+	/*	
 	
 	motor_go(MOTOR_DIR_FORWARD);
 	int us_time;
@@ -173,7 +196,7 @@ int main(int ram, char **argv) {
 		
 		//radiolink_send(4, &us_time);	//Print us_time to radio module (int is 4B, sends pointer to value)
 	}
-	
+	*/
 	/********** Code for receiver **********/
 	/*
 	
