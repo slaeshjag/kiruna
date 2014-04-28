@@ -27,7 +27,7 @@ void util_delay(int us) {
 	n = SYSTEM_CLOCK / 1000000 * us;
 	LPC_TMR16B0->TCR &= (~0x2);
 	LPC_TMR16B0->CTCR = 0x0;
-	while (((volatile) LPC_TMR16B0->TC) < n);
+	while (LPC_TMR16B0->TC < n);
 	LPC_TMR16B0->TCR = 0x3;
 
 	return;
