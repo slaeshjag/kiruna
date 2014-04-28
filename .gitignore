@@ -4,11 +4,15 @@
 *.bin
 *.dat
 *.ogg
+*.wav
 *.swp
 *.elf
 *.exe
 *.dll
 *.so
+*.old
 *.orig
 *.remote
 *.swo
+arne.*
+client/Robot

@@ -3,8 +3,11 @@
 #include "util.h"
 #include "uart.h"
 #include "spi.h"
+#include "radiolink.h"
 #include "motor.h"
 #include "audio.h"
+#include "ultrasonic.h"
+#include "microswitch.h"
 
 
 
@@ -84,45 +87,49 @@ void initialize(void) {
 	
 	/*Enable DAC*/
 	LPC_GPIO0->DIR |= 0x80;
+	
+	/*Disable systick*/
+	SysTick->CTRL = 0;
 }
 
 void systick_irq() {
-	static unsigned char data = 0;
 	microphone_sample();
-	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
-	spi_send_recv(data);
-	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x80;
-	if(!data)
-		data = 0x10;
-	else
-		data = 0;
-	
+	/*LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
+	spi_send_recv(~data);
+	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x80;*/
+	//data += 5;
+}
+
+void systick_enable() {
+	/* Trig 8000 times per second */
+	SysTick->LOAD = SYSTEM_CLOCK / 8000;
+	SysTick->VAL = 0;
+	SysTick->CTRL = 0x1 | 0x2 | 0x4;
 }
 
 int main(int ram, char **argv) {
-	uint16_t sample;
 	int i;
 	
 	initialize();
 	motor_init();
+	radiolink_init();
 	us_init();
 	ms_init();
 	util_delay(200);
 
 	uart_printf("AutoKorg™ READY TO WRECK SOME HAVOC!\n");
 	
-	/* Attempt to plan the flow */
+	while(1) {
+		unsigned char data[32];
+		radiolink_recv(32, data);
+		uart_send_raw(data, 32);
+	}
 
 	//speaker_prebuffer();
-
-	SysTick->CTRL = 0;
-	/* Trig 8000 times per second */
-	SysTick->LOAD = SYSTEM_CLOCK / 8000;
-	SysTick->VAL = 0;
-	SysTick->CTRL = 0x1 | 0x2 | 0x4;
+	systick_enable();
 	
-	while(1);
-		//microphone_send();
+	while(1)
+		microphone_send();
 	
 	for (i = 0;; i++) {
 		while (!(SysTick->CTRL & (1 << 16)));

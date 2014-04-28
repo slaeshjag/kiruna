@@ -33,25 +33,33 @@ LDFLAGS		= $(CFLAGS) -nostartfiles
 .PHONY: all clean install install-term extract-code
 
 all: $(OBJFILES) system/startup.o
-	$(CC) $(LDFLAGS) system/startup.c $(OBJFILES) -o $(BINFILE).elf -T $(LINKSCRIPT)
+	@echo " [ LD ] $(BINFILE).elf"
+	@$(CC) $(LDFLAGS) system/startup.c $(OBJFILES) -o $(BINFILE).elf -T $(LINKSCRIPT)
 
 extract-code: all
-	$(OBJCOPY) -O ihex $(BINFILE).elf $(BINFILE).hex
+	@echo " [OBCP] $(BINFILE).hex"
+	@$(OBJCOPY) -O ihex $(BINFILE).elf $(BINFILE).hex
 
 install-term: extract-code
-	$(LPC21ISP) -control -term $(BINFILE).hex $(TERM-DEVICE) $(TERM-BAUDRATE) $(CHIP-XTAL)
+	@echo " [INST] Flashing micro and opening terminal with baudrate $(TERM-BAUDRATE)"
+	@$(LPC21ISP) -control -term $(BINFILE).hex $(TERM-DEVICE) $(TERM-BAUDRATE) $(CHIP-XTAL)
 
 install: extract-code
-	$(LPC21ISP) -control $(BINFILE).hex $(TERM-DEVICE) $(TERM-BAUDRATE) $(CHIP-XTAL)
+	@echo " [INST] Flashing micro with baudrate $(TERM-BAUDRATE)"
+	@$(LPC21ISP) $(BINFILE).hex $(TERM-DEVICE) $(TERM-BAUDRATE) $(CHIP-XTAL)
 
 clean:
-	$(RM) $(OBJFILES) system/startup.o $(BINFILE).hex $(BINFILE).elf
+	@echo " [ RM ] $(OBJFILES) system/startup.o $(BINFILE).hex $(BINFILE).elf"
+	@$(RM) $(OBJFILES) system/startup.o $(BINFILE).hex $(BINFILE).elf
 
 system/startup.o:
-	$(CC) $(CFLAGS) -c -o $@ $*.c
+	@echo " [ CC ] $@"
+	@$(CC) $(CFLAGS) -c -o $@ $*.c
 
 %.o: %.c %.h
-	$(CC) $(CFLAGS) -c -o $@ $<
+	@echo " [ CC ] $@"
+	@$(CC) $(CFLAGS) -c -o $@ $<
 
 %.o: %.s
-	$(AS) $(ASFLAGS) -o $@ $<
+	@echo " [ AS ] $@"
+	@$(AS) $(ASFLAGS) -o $@ $<

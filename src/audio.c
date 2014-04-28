@@ -1,8 +1,13 @@
 #include "system/LPC11xx.h"
 #include "uart.h"
 #include "spi.h"
+#include "radiolink.h"
 
-unsigned char mic_buffer[1024];
+unsigned char mic_buffer[2][32];
+static unsigned char *sample_buffer = mic_buffer[0];
+static unsigned char *send_buffer = mic_buffer[1];
+int send_data = 0;
+
 unsigned char spk_buffer[1024];
 int mic_buffer_index = 0;
 int mic_buffer_send = 0;
@@ -10,6 +15,8 @@ int mic_buffer_looped = 0;
 int spk_buffer_index = 0;
 int spk_buffer_next = 0;
 
+void audio_init() {
+}
 
 void speaker_output() {
 	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
@@ -22,27 +29,33 @@ void speaker_output() {
 
 unsigned char microphone_sample() {
 	unsigned char data;
+	void *tmp;
+	static int index = 0;
+	
 	while(!(LPC_ADC->STAT & 0x1));
-	/*mic_buffer[mic_buffer_index++] = LPC_ADC->DR[0] >> 7;
-	if(mic_buffer_index >= 1024) {
-		mic_buffer_index = 0;
-		mic_buffer_looped = 1;
-	}*/
-	uart_send_char(data = (LPC_ADC->DR[0] >> 7));
-	//uart_printf("0x%x\n", (LPC_ADC->DR[0] >> 7) & 0xFF);
-	//uart_printf("\rADC: %i", (LPC_ADC->DR[0] >> 5) & 0x3FF);
+	data = (LPC_ADC->DR[0] >> 7);
+	
+	sample_buffer[index++] = data;
+	
+	if(index == 32) {
+		index = 0;
+		tmp = sample_buffer;
+		sample_buffer = send_buffer;
+		send_buffer = tmp;
+		send_data = 1;
+	}
+	
 	LPC_ADC->CR |= (1 << 24);
 	return data;
 }
 
 void microphone_send() {
-	if(mic_buffer_send < mic_buffer_index || mic_buffer_looped) {
-		uart_send_char(mic_buffer[mic_buffer_send++]);
-		if(mic_buffer_send >= 1024) {
-			mic_buffer_send = 0;
-			mic_buffer_looped = 0;
-		}
-	}
+	if(!send_data)
+		return;
+	
+	radiolink_send(32, send_buffer);
+	
+	send_data = 0;
 }
 
 void speaker_prebuffer() {

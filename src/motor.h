@@ -22,6 +22,7 @@ enum motor_direction {
 	MOTOR_DIR_STAHP,
 };
 
+void motor_init(void);
 void motor_go(enum motor_direction dir);
 
 #endif
