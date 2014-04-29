@@ -111,112 +111,145 @@ int main(int ram, char **argv) {
 	int i;
 	
 	initialize();
+	uart_printf("initialize() done\n");
 	motor_init();
-	radiolink_init();
-	//us_init();
-	//ms_init();
-	util_delay(200);
+	uart_printf("motor_init() done\n");
+	us_init();
+	uart_printf("us_init() done\n");
+	ms_init();
+	uart_printf("ms_init() done\n");
+	i2c_init();
+	uart_printf("i2c_init() done\n");
 
 	uart_printf("AutoKorg™ READY TO WRECK SOME HAVOC!\n");
 	
+	util_delay(1000000);
+
+	
+	/*****************************************/
+	
+	#if 0
 	while(1) {
 		unsigned char data[32];
 		radiolink_recv(32, data);
 		uart_send_raw(data, 32);
 	}
-	
+
 	//speaker_prebuffer();
-	/*systick_enable();
+	systick_enable();
 	
 	while(1)
 		microphone_send();
-	*/
-	#if 0
-	for (i = 0;; i++) {
-		while (!(SysTick->CTRL & (1 << 16)));
-		SysTick->CTRL &= (~(1 << 16));
-		audio_loop();
+	#endif
+	
+	/************ CAMERA TEST ****************/
+	
+		// QVGA RGB16
+	char sub_adr = 0x0B;
+	char cam_test = ov7670_test(sub_adr);
+	uart_printf("CAM at 0x0B is %x\n", cam_test);
+	while(1);
 
-		/* TODO: ultra-sonic sensor code */
-
-		/* 8 tasks ought to be enough for anybody, right? */
-		switch (i & 0x7) {
-			case 0:		/* Do collision awareness checking? */
-			case 1:
-			case 2:
-			case 3:
-			case 4:
-			case 5:
-			case 6:
-			case 7:
-				break;
-		}
+	/*****************************************/
+	while (1)
+	{
+		uart_printf("US is %i\n", us());
 	}
 	
-	#endif
+	/*****************************************/
+
+
+	int us_time;
 
 	motor_go(MOTOR_DIR_FORWARD);
 	
-	/*while(1)
+	while(1)
 	{
+		us_time = us();
+		uart_printf("US is %i\n", us_time);
+		
 		if(ms_left_pressed())
 		{
+			uart_printf("Vänster intryckt!\n");
+
+			motor_go(MOTOR_DIR_STAHP);
+			util_delay(MOTOR_TIME_LONG);
+			
 			motor_go(MOTOR_DIR_LEFT);
 			util_delay(MOTOR_TIME_45);
+			
+			motor_go(MOTOR_DIR_STAHP);
+			util_delay(MOTOR_TIME_LONG);
 			
 			motor_go(MOTOR_DIR_BACKWARD);
 			util_delay(MOTOR_TIME_SHORT);
 			
+			motor_go(MOTOR_DIR_STAHP);
+			util_delay(MOTOR_TIME_LONG);
+			
 			motor_go(MOTOR_DIR_RIGHT);
 			util_delay(MOTOR_TIME_45);
+			
+			motor_go(MOTOR_DIR_STAHP);
+			util_delay(MOTOR_TIME_LONG);
 			
 			motor_go(MOTOR_DIR_FORWARD);
 		}
 		else if(ms_right_pressed())
 		{
+			uart_printf("Höger intryckt!\n");
+
+			motor_go(MOTOR_DIR_STAHP);
+			util_delay(MOTOR_TIME_LONG);
+			
 			motor_go(MOTOR_DIR_RIGHT);
 			util_delay(MOTOR_TIME_45);
+			
+			motor_go(MOTOR_DIR_STAHP);
+			util_delay(MOTOR_TIME_LONG);
 			
 			motor_go(MOTOR_DIR_BACKWARD);
 			util_delay(MOTOR_TIME_SHORT);
 			
+			motor_go(MOTOR_DIR_STAHP);
+			util_delay(MOTOR_TIME_LONG);
+			
 			motor_go(MOTOR_DIR_LEFT);
 			util_delay(MOTOR_TIME_45);
 			
+			motor_go(MOTOR_DIR_STAHP);
+			util_delay(MOTOR_TIME_LONG);
+			
 			motor_go(MOTOR_DIR_FORWARD);
 		}
-		else if (us() > 9000)	// It's over 9000!!!! Turn!
+		else if (us_time < 10000)
 		{
+			uart_printf("Under 10 000!\n");
+
 			motor_go(MOTOR_DIR_LEFT);
+			uart_printf("Kör vänster!\n");
 			util_delay(MOTOR_TIME_90);
 			
 			motor_go(MOTOR_DIR_FORWARD);
+			uart_printf("Kör framåt!\n");
 			util_delay(MOTOR_TIME_SHORT);
-			
+
 			motor_go(MOTOR_DIR_RIGHT);
+			uart_printf("Kör höger!\n");
 			util_delay(MOTOR_TIME_90);
 		}
-	}*/
-	
-	util_delay(2000000);
-	uart_printf("Going forward\n");
-	motor_go(MOTOR_DIR_FORWARD);
-	util_delay(2000000);
-	uart_printf("Going left\n");
-	motor_go(MOTOR_DIR_LEFT);
-	util_delay(2000000);
-	uart_printf("Going right\n");
-	motor_go(MOTOR_DIR_RIGHT);
-	util_delay(2000000);
-	uart_printf("Going backwards\n");
-	motor_go(MOTOR_DIR_BACKWARD);
-	util_delay(2000000);
-	uart_printf("Stopping\n");
-	motor_go(MOTOR_DIR_STAHP);
-
-	for (;;) {
-		
 	}
-
+	
+	/*****************************************/
+	/*
+	int us_time;
+	
+	while(1)
+	{
+		radiolink_recv(4, &us_time);
+		uart_printf("US: %i\n", us_time);
+	}
+	*/
+	
 	return 0;
 }

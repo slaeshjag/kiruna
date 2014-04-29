@@ -13,6 +13,9 @@
 #define	MOTOR_TIME_45		 50000
 
 #define MOTOR_TIME_SHORT	100000
+#define MOTOR_TIME_LONG		10000000
+
+
 
 enum motor_direction {
 	MOTOR_DIR_FORWARD,
