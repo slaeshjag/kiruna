@@ -203,7 +203,7 @@ unsigned char radiolink_recv(int size, unsigned char *data) {
 	return status;
 }
 
-void radiolink_init() {
+void radiolink_init(unsigned char rx_packet_size) {
 	unsigned char reg[5];
 	unsigned char status, config;
 	CSN_PORT->DIR |= CSN_PIN;
@@ -227,7 +227,7 @@ void radiolink_init() {
 	
 	//uart_printf("config 0x%x\n", reg[0]);
 	/*Fifo size, 0-32*/
-	reg[0] = 32;
+	reg[0] = rx_packet_size;
 	radiolink_write_reg(REG_RX_PW_P0, 1, reg);
 	status = radiolink_status();
 	

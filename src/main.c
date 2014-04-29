@@ -120,6 +120,8 @@ int main(int ram, char **argv) {
 	uart_printf("ms_init() done\n");
 	i2c_init();
 	uart_printf("i2c_init() done\n");
+	radiolink_init(32);
+	uart_printf("radiolink_init() done\n");
 
 	uart_printf("AutoKorg™ READY TO WRECK SOME HAVOC!\n");
 	
@@ -128,7 +130,6 @@ int main(int ram, char **argv) {
 	
 	/*****************************************/
 	
-	#if 0
 	while(1) {
 		unsigned char data[32];
 		radiolink_recv(32, data);
@@ -140,7 +141,6 @@ int main(int ram, char **argv) {
 	
 	while(1)
 		microphone_send();
-	#endif
 	
 	/************ CAMERA TEST ****************/
 	
