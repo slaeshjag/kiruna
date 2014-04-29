@@ -20,7 +20,7 @@ void us_trig(void)		// Ultrasonic trigger
 	US_PORT->DATA		&= ~(1<<US_TRIG);	//set PIO0_2 low
 }
 
-int us_read(void)	// blocking, not used
+int us_read(void)	// blocking
 {
 	int pulseWidth = 0;
 	

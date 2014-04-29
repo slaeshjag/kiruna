@@ -4,7 +4,8 @@
 
 void speaker_prebuffer();
 void speaker_output();
-void microphone_sample();
+unsigned char microphone_sample();
+void microphone_send();
 void audio_loop();
 
 

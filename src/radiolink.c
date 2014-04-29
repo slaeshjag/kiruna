@@ -183,7 +183,8 @@ unsigned char radiolink_recv(int size, unsigned char *data) {
 	util_delay(130);
 	
 	/*uart_printf("wating for data\n");*/
-	while(!((status = radiolink_status()) & 0x40));
+	while(!((status = radiolink_status()) & 0x40))
+		uart_printf("%i\n", status);
 	/*uart_printf("got some data\n");*/
 	
 	cmd_start();
@@ -204,31 +205,35 @@ unsigned char radiolink_recv(int size, unsigned char *data) {
 
 void radiolink_init() {
 	unsigned char reg[5];
-	unsigned char data[] = "zzzz";
 	unsigned char status;
 	CSN_PORT->DIR |= CSN_PIN;
 	CE_PORT->DIR |= CE_PIN;
 	CSN_PORT->MASKED_ACCESS[CSN_PIN] = ~0;
 	CE_PORT->MASKED_ACCESS[CE_PIN] = 0;
-	util_delay(DELAY*10000);
 	
-	uart_printf("status 0x%x\n", radiolink_status());
+	util_delay(DELAY*100);
 	
+	radiolink_status();
 	radiolink_flush();
 	
 	reg[0] = 0x0A;
 	radiolink_write_reg(REG_CONFIG, 1, reg);
-	util_delay(DELAY*30000);
+	util_delay(150000);
 	
 	radiolink_read_reg(REG_CONFIG, 1, reg);
 	
-	uart_printf("config 0x%x\n", reg[0]);
-	uart_printf("status 0x%x\n", status = radiolink_status());
+	//uart_printf("config 0x%x\n", reg[0]);
+	status = radiolink_status();
 	
+	/*Clear fifo flags*/
 	radiolink_write_reg(REG_STATUS, 1, &status);
 	
 	radiolink_read_reg(REG_FIFO_STATUS, 1, reg);
-	uart_printf("fifo 0x%x\n", reg[0]);
+	//uart_printf("fifo 0x%x\n", reg[0]);
+	
+	/*Fifo size, 0-32*/
+	reg[0] = 32;
+	radiolink_write_reg(REG_RX_PW_P0, 1, reg);
 	
 	/*for(;;) {
 		uart_printf("status 0x%x\n", radiolink_send(4, data));
@@ -237,13 +242,10 @@ void radiolink_init() {
 		util_delay(50000);
 	}*/
 	
-	reg[0] = 4;
-	radiolink_write_reg(REG_RX_PW_P0, 1, reg);
-	
-	for(;;) {
+	/*for(;;) {
 		radiolink_recv(4, data);
 		uart_printf("got data: %s\n", data);
 	}
 	
-	for(;;);
+	for(;;);*/
 }

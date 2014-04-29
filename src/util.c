@@ -19,16 +19,31 @@ inline void gpio_set_pin(int port, int pin, int data) {
 }
 
 
-void util_delay(int us) {
+void util_delay_small(int us) {
 	int n;
 
-	LPC_TMR32B1->TCR = 0x3;
+	LPC_TMR16B0->TCR |= 0x3;
+	LPC_TMR16B0->PR = 0;
 	n = SYSTEM_CLOCK / 1000000 * us;
-	LPC_TMR32B1->TCR = 0x1;
-	while (LPC_TMR32B1->TC < n);
-	LPC_TMR32B1->TCR = 0x3;
+	LPC_TMR16B0->TCR &= (~0x2);
+	LPC_TMR16B0->CTCR = 0x0;
+	while ((LPC_TMR16B0->TC) < n);
+	LPC_TMR16B0->TCR = 0x3;
 
 	return;
+}
+
+
+void util_delay(int us) {
+	int us_out;
+
+	for (; us > 0;) {
+		if (us > 1000)
+			us_out = 1000, us -= 1000;
+		else
+			us_out = us, us = 0;
+		util_delay_small(us_out);
+	}
 }
 
 

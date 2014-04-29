@@ -44,8 +44,7 @@ void __startup() {
 	return;
 }
 
-
-void arne() {
+void unhandled_irq(void) {
 	return;
 }
 
@@ -92,46 +91,59 @@ void arne() {
 	0,
 };*/
 
-extern void (* const __vectors[32])(void)  __attribute__ ((section(".vectors"))) = {
+void systick_irq();
+
+extern void (* const __vectors[])(void);
+void (* const __vectors[32])(void)  __attribute__ ((section(".vectors"))) = {
 	(void (*)(void)) & __stack_end,	
 	__startup,
-	0,          /* NMI Handler */
-	0,          /* Hard Fault Handler */
-	0,          /* Reserved */
-	0,          /* Reserved */
-	0,          /* Reserved */
-	0,          /* Reserved */
-	0,          /* Reserved */
-	0,          /* Reserved */
-	0,          /* Reserved */
-	0,          /* SVCall Handler */
-	0,          /* Reserved */
-	0,          /* Reserved */
-	0,          /* PendSV Handler */
-	0,          /* SysTick Handler */
-	0,          /* IRQ0 */
-	0,          /* IRQ1 */
-	0,          /* IRQ2 */
-	0,          /* IRQ3 */
-	0,          /* IRQ4 */
-	0,          /* IRQ5 */
-	0,          /* IRQ6 */
-	0,          /* IRQ7 */
-	0,          /* IRQ8 */
-	0,          /* IRQ9 */
-	0,          /* IRQ10 */
-	0,          /* IRQ11 */
-	0,          /* IRQ12 */
-	0,          /* IRQ13 */
-	0,          /* IRQ14 - SPI1    */
-	0,          /* IRQ15 - I2C     */
-	arne,
-	0,          /* IRQ16 - CT16B0  */
-	0,          /* IRQ17 - CT16B1  */
-	0,          /* IRQ18 - CT32B0  */
-	0,          /* IRQ19 - CT32B1  */
-	0,          /* IRQ20 - SPI0    */
-	0           /* IRQ21 - UART    */
-
+	unhandled_irq,                            // The NMI handler
+	unhandled_irq,                      // The hard fault handler
+	0,                      				// Reserved
+	0,                      				// Reserved
+	0,                      				// Reserved
+	0,                                      // Reserved
+	0,                                      // Reserved
+	0,                                      // Reserved
+	0,                                      // Reserved
+	unhandled_irq,                      	// SVCall handler
+	0,                      				// Reserved
+	0,                                      // Reserved
+	unhandled_irq,                      	// The PendSV handler
+	systick_irq,                      	// The SysTick handler
+	unhandled_irq,                      // PIO0_0  Wakeup
+	unhandled_irq,                      // PIO0_1  Wakeup
+	unhandled_irq,                      // PIO0_2  Wakeup
+	unhandled_irq,                      // PIO0_3  Wakeup
+	unhandled_irq,                      // PIO0_4  Wakeup
+	unhandled_irq,                      // PIO0_5  Wakeup
+	unhandled_irq,                      // PIO0_6  Wakeup
+	unhandled_irq,                      // PIO0_7  Wakeup
+	unhandled_irq,                      // PIO0_8  Wakeup
+	unhandled_irq,                      // PIO0_9  Wakeup
+	unhandled_irq,                      // PIO0_10 Wakeup
+	unhandled_irq,                      // PIO0_11 Wakeup
+	unhandled_irq,                      // PIO1_0  Wakeup
+	unhandled_irq,							// C_CAN Interrupt
+	unhandled_irq, 						// SPI/SSP1 Interrupt
+	unhandled_irq,                      	// I2C0
+	#if 0
+	unhandled_irq,                   // CT16B0 (16-bit Timer 0)          <--------------------- want
+	unhandled_irq,                   // CT16B1 (16-bit Timer 1)
+	unhandled_irq,                   // CT32B0 (32-bit Timer 0)
+	unhandled_irq,                   // CT32B1 (32-bit Timer 1)
+	unhandled_irq,                      	// SPI/SSP0 Interrupt
+	unhandled_irq,                      	// UART0
+	0, 				                     	// Reserved
+	0,                      				// Reserved
+	unhandled_irq,                      	// ADC   (A/D Converter)
+	unhandled_irq,                      	// WDT   (Watchdog Timer)
+	unhandled_irq,                      	// BOD   (Brownout Detect)
+	0,                      				// Reserved
+	unhandled_irq,                     // PIO INT3
+	unhandled_irq,                     // PIO INT2
+	unhandled_irq,                     // PIO INT1
+	unhandled_irq,                     // PIO INT0
+	#endif
 };
 

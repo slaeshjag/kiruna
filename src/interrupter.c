@@ -1,6 +1,7 @@
 #include "system/LPC11xx.h"
 #include "uart.h"
 #include "util.h"
+#include "audio.h"
 
 
 /*
