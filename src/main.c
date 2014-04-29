@@ -112,27 +112,26 @@ int main(int ram, char **argv) {
 	
 	initialize();
 	motor_init();
-	//radiolink_init();
+	radiolink_init();
 	//us_init();
 	//ms_init();
 	util_delay(200);
 
 	uart_printf("AutoKorg™ READY TO WRECK SOME HAVOC!\n");
 	
-	
-	#if 0
 	while(1) {
 		unsigned char data[32];
 		radiolink_recv(32, data);
 		uart_send_raw(data, 32);
 	}
-
+	
 	//speaker_prebuffer();
-	systick_enable();
+	/*systick_enable();
 	
 	while(1)
 		microphone_send();
-	
+	*/
+	#if 0
 	for (i = 0;; i++) {
 		while (!(SysTick->CTRL & (1 << 16)));
 		SysTick->CTRL &= (~(1 << 16));
