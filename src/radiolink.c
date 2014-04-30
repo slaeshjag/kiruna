@@ -40,7 +40,7 @@ enum Cmd {
 	CMD_REUSE_TX = 0xE3,
 	CMD_PAYLOAD_WIDTH = 0x60,
 	CMD_SEND_ACK_PAYLOAD = 0xA8,
-	CMD_NO_AUTOACK = 0xB0,
+	CMD_SEND_PAYLOAD_NOACK = 0xB0,
 	CMD_NOP = 0xFF,
 };
 
@@ -164,25 +164,61 @@ unsigned char radiolink_send(int size, unsigned char *data) {
 		cmd_start();
 		status = spi_send_recv(CMD_SEND_PAYLOAD);
 		for(i = 0; i < packet_size; i++) {
-			spi_send_recv(i <= size ? data[i] : 0xFF);
+			spi_send_recv(i < size ? data[i] : 0xFF);
+		}
+		cmd_end();
+		
+		do {
+			status = radiolink_status();
+			/*uart_printf("arne 0x%x\n", status);*/
+			if(status & 0x10) {
+				radiolink_flush();
+				goto error;
+			}
+		} while(!(status & 0x20));
+	}
+	
+	
+	error:
+	ce_off();
+	status = radiolink_status();
+	radiolink_write_reg(REG_STATUS, 1, &status);
+	
+	return status;
+}
+
+unsigned char radiolink_send_ureliable(int size, unsigned char *data) {
+	unsigned char status;
+	int i;
+	
+	ce_on();
+	util_delay(10);
+	
+	
+	for(; size > 0; size -= packet_size) {
+		do {
+			status = radiolink_status();
+			/*uart_printf("arne 0x%x\n", status);*/
+			if(status & 0x10) {
+				radiolink_flush();
+				status = radiolink_status();
+				radiolink_write_reg(REG_STATUS, 1, &status);
+			}
+		} while(status & 0x1);
+		
+		cmd_start();
+		status = spi_send_recv(CMD_SEND_PAYLOAD_NOACK);
+		for(i = 0; i < packet_size; i++) {
+			spi_send_recv(i < size ? data[i] : 0xFF);
 		}
 		cmd_end();
 	}
 	
-	do {
-		status = radiolink_status();
-		/*uart_printf("arne 0x%x\n", status);*/
-		if(status & 0x10) {
-			radiolink_flush();
-			goto error;
-		}
-	} while(!(status & 0x20));
-	
-	error:
-	status = radiolink_status();
-	radiolink_write_reg(REG_STATUS, 1, &status);
+	if((status = radiolink_status()) & 0x10)
+		radiolink_flush();
 	
 	ce_off();
+	radiolink_write_reg(REG_STATUS, 1, &status);
 	
 	return status;
 }
@@ -207,7 +243,7 @@ unsigned char radiolink_recv(int size, unsigned char *data) {
 		spi_send_recv(CMD_RECV_PAYLOAD);
 		for(i = 0; i < packet_size; i++) {
 			tmp = spi_send_recv(CMD_NOP);
-			if(i <= size)
+			if(i < size)
 				data[i] = tmp;
 		}
 		cmd_end();

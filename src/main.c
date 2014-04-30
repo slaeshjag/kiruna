@@ -56,7 +56,7 @@ void initialize(void) {
 	uart_printf("ms_init() done\n");
 	i2c_init();
 	uart_printf("i2c_init() done\n");
-	radiolink_init(32);
+	radiolink_init(16);
 	uart_printf("radiolink_init() done\n");
 }
 
