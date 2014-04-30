@@ -1,5 +1,9 @@
 #include "system/LPC11xx.h"
 #include "motor.h"
+#include "ultrasonic.h"
+#include "microswitch.h"
+#include "util.h"
+#include "uart.h"
 
 #define	MOTOR_REGISTER	MOTOR_PORT->MASKED_ACCESS[MOTOR_MASK]	// Masked changes only the bits specified in brackets
 
@@ -53,3 +57,88 @@ void motor_go(enum motor_direction dir) {
 	return;
 }
 
+
+void motor_logic() {
+	int us_time;
+
+	motor_go(MOTOR_DIR_FORWARD);
+	
+	while(1)
+	{
+		us_time = us();
+		uart_printf("US is %i\n", us_time);
+		
+		if(ms_left_pressed())
+		{
+			uart_printf("Vänster intryckt!\n");
+
+			motor_go(MOTOR_DIR_STAHP);
+			util_delay(MOTOR_TIME_LONG);
+			
+			motor_go(MOTOR_DIR_LEFT);
+			util_delay(MOTOR_TIME_45);
+			
+			motor_go(MOTOR_DIR_STAHP);
+			util_delay(MOTOR_TIME_LONG);
+			
+			motor_go(MOTOR_DIR_BACKWARD);
+			util_delay(MOTOR_TIME_SHORT);
+			
+			motor_go(MOTOR_DIR_STAHP);
+			util_delay(MOTOR_TIME_LONG);
+			
+			motor_go(MOTOR_DIR_RIGHT);
+			util_delay(MOTOR_TIME_45);
+			
+			motor_go(MOTOR_DIR_STAHP);
+			util_delay(MOTOR_TIME_LONG);
+			
+			motor_go(MOTOR_DIR_FORWARD);
+		}
+		else if(ms_right_pressed())
+		{
+			uart_printf("Höger intryckt!\n");
+
+			motor_go(MOTOR_DIR_STAHP);
+			util_delay(MOTOR_TIME_LONG);
+			
+			motor_go(MOTOR_DIR_RIGHT);
+			util_delay(MOTOR_TIME_45);
+			
+			motor_go(MOTOR_DIR_STAHP);
+			util_delay(MOTOR_TIME_LONG);
+			
+			motor_go(MOTOR_DIR_BACKWARD);
+			util_delay(MOTOR_TIME_SHORT);
+			
+			motor_go(MOTOR_DIR_STAHP);
+			util_delay(MOTOR_TIME_LONG);
+			
+			motor_go(MOTOR_DIR_LEFT);
+			util_delay(MOTOR_TIME_45);
+			
+			motor_go(MOTOR_DIR_STAHP);
+			util_delay(MOTOR_TIME_LONG);
+			
+			motor_go(MOTOR_DIR_FORWARD);
+		}
+		else if (us_time < 10000)
+		{
+			uart_printf("Under 10 000!\n");
+
+			motor_go(MOTOR_DIR_LEFT);
+			uart_printf("Kör vänster!\n");
+			util_delay(MOTOR_TIME_90);
+			
+			motor_go(MOTOR_DIR_FORWARD);
+			uart_printf("Kör framåt!\n");
+			util_delay(MOTOR_TIME_SHORT);
+
+			motor_go(MOTOR_DIR_RIGHT);
+			uart_printf("Kör höger!\n");
+			util_delay(MOTOR_TIME_90);
+		}
+	}
+
+	return;
+}
