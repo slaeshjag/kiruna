@@ -226,6 +226,15 @@ uint8_t uart_recv_char(void) {
 }
 
 
+void uart_recv_raw(char *buff, int bytes) {
+	int i;
+
+	for (i = 0; i < bytes; i++)
+		buff[i] = uart_recv_char();
+	return;
+}
+
+
 uint16_t uart_recv_try(void) {
 	if (LPC_UART->LSR & 1)
 		return LPC_UART->RBR | 0x100;

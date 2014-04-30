@@ -8,7 +8,9 @@ void uart_send_string(char *s);
 void uart_send_hex(unsigned int data);
 int uart_printf(char *format, ...);
 uint8_t uart_recv_char(void);
+void uart_recv_raw(char *buff, int bytes);
 uint16_t uart_recv_try(void);
 void uart_loop();
+
 
 #endif
