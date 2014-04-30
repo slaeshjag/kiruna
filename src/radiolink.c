@@ -73,6 +73,8 @@ enum Reg {
 	REG_FEATURE = 0x1D,
 };
 
+static char packet_size = 0;
+
 static inline void cmd_start() {
 	CSN_PORT->MASKED_ACCESS[CSN_PIN] = 0;
 	util_delay(DELAY);
@@ -145,54 +147,71 @@ unsigned char radiolink_send(int size, unsigned char *data) {
 	unsigned char status;
 	int i;
 	
-	cmd_start();
-	status = spi_send_recv(CMD_SEND_PAYLOAD);
-	for(i = 0; i < size; i++) {
-		spi_send_recv(data[i]);
-	}
-	cmd_end();
-	
 	ce_on();
-	/*migth need to fix*/
 	util_delay(10);
-	ce_off();
+	
+	
+	for(; size > 0; size -= packet_size) {
+		do {
+			status = radiolink_status();
+			/*uart_printf("arne 0x%x\n", status);*/
+			if(status & 0x10) {
+				radiolink_flush();
+				goto error;
+			}
+		} while(status & 0x1);
+		
+		cmd_start();
+		status = spi_send_recv(CMD_SEND_PAYLOAD);
+		for(i = 0; i < packet_size; i++) {
+			spi_send_recv(i <= size ? data[i] : 0xFF);
+		}
+		cmd_end();
+	}
 	
 	do {
 		status = radiolink_status();
 		/*uart_printf("arne 0x%x\n", status);*/
 		if(status & 0x10) {
 			radiolink_flush();
-			break;
+			goto error;
 		}
 	} while(!(status & 0x20));
 	
+	error:
+	status = radiolink_status();
 	radiolink_write_reg(REG_STATUS, 1, &status);
+	
+	ce_off();
 	
 	return status;
 }
 
 unsigned char radiolink_recv(int size, unsigned char *data) {
-	unsigned char status, config;
+	unsigned char status = 0xFF, config, tmp;
 	int i;
+	
+	if(!size)
+		return 0x0;
 	
 	radiolink_read_reg(REG_CONFIG, 1, &config);
 	config |= 0x1;
 	radiolink_write_reg(REG_CONFIG, 1, &config);
 	
 	ce_on();
-	util_delay(10);
+	//util_delay(10);
 	
-	/*uart_printf("wating for data\n");*/
-	while(!((status = radiolink_status()) & 0x40));
-		//uart_printf("%i\n", status);
-	//uart_printf("got some data\n");
-	
-	cmd_start();
-	spi_send_recv(CMD_RECV_PAYLOAD);
-	for(i = 0; i < size; i++) {
-		data[i] = spi_send_recv(CMD_NOP);
+	for(; size > 0; size -= packet_size) {
+		while(!((status = radiolink_status()) & 0x40));
+		cmd_start();
+		spi_send_recv(CMD_RECV_PAYLOAD);
+		for(i = 0; i < packet_size; i++) {
+			tmp = spi_send_recv(CMD_NOP);
+			if(i <= size)
+				data[i] = tmp;
+		}
+		cmd_end();
 	}
-	cmd_end();
 	
 	ce_off();
 	
@@ -203,9 +222,14 @@ unsigned char radiolink_recv(int size, unsigned char *data) {
 	return status;
 }
 
-void radiolink_init(unsigned char rx_packet_size) {
+int radiolink_init(char _packet_size) {
 	unsigned char reg[5];
 	unsigned char status, config;
+	
+	if(_packet_size > 32)
+		return -1;
+	
+	packet_size = _packet_size;
 	CSN_PORT->DIR |= CSN_PIN;
 	CE_PORT->DIR |= CE_PIN;
 	CSN_PORT->MASKED_ACCESS[CSN_PIN] = ~0;
@@ -227,7 +251,7 @@ void radiolink_init(unsigned char rx_packet_size) {
 	
 	//uart_printf("config 0x%x\n", reg[0]);
 	/*Fifo size, 0-32*/
-	reg[0] = rx_packet_size;
+	reg[0] = _packet_size;
 	radiolink_write_reg(REG_RX_PW_P0, 1, reg);
 	status = radiolink_status();
 	
@@ -239,6 +263,7 @@ void radiolink_init(unsigned char rx_packet_size) {
 	radiolink_read_reg(REG_FIFO_STATUS, 1, reg);
 	
 	uart_printf("radiolink init: status 0x%x config 0x%x fifo 0x%x\n", status, config, reg[0]);
+	//TODO: check for error status, etc
 	
 	/*for(;;) {
 		uart_printf("status 0x%x\n", radiolink_send(4, data));
@@ -253,4 +278,6 @@ void radiolink_init(unsigned char rx_packet_size) {
 	}
 	
 	for(;;);*/
+	
+	return 0;
 }
