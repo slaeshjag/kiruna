@@ -34,7 +34,7 @@ void speaker_output() {
 	if (spk_buffer_index == 1024)
 		spk_buffer_index = 0;
 	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x80;
-	spk_buffer_index &= 0x3FF;
+	//spk_buffer_index &= 0x3FF;
 }
 
 unsigned char microphone_sample() {
@@ -84,20 +84,7 @@ void speaker_prebuffer() {
 
 
 void audio_loop() {
-	uint16_t sample;
-
-	microphone_sample();
-	if (spk_buffer_next != spk_buffer_index)
-		speaker_output();
-	
-	for (;;) {
-		if (!(sample = uart_recv_try()))
-			break;
-		sample &= 0xFF;
-		spk_buffer[spk_buffer_next++] = sample;
-		if (spk_buffer_next == 1024)
-			spk_buffer_next = 0;
-	}
-
-	return;
+	radiolink_recv(32, &spk_buffer[spk_buffer_next]);
+	if (spk_buffer_next == 1024)
+		spk_buffer_next = 0;
 }

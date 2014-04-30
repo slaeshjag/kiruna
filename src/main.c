@@ -56,16 +56,13 @@ void initialize(void) {
 	uart_printf("ms_init() done\n");
 	i2c_init();
 	uart_printf("i2c_init() done\n");
-	radiolink_init(16);
+	radiolink_init(32);
 	uart_printf("radiolink_init() done\n");
 }
 
 void systick_irq() {
-	microphone_sample();
-	/*LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
-	spi_send_recv(~data);
-	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x80;*/
-	//data += 5;
+	//microphone_sample();
+	speaker_output();
 }
 
 void systick_enable() {
@@ -76,8 +73,6 @@ void systick_enable() {
 }
 
 int main(int ram, char **argv) {
-	int i;
-	
 	initialize();
 	uart_printf("AutoKorg™ READY TO WRECK SOME HAVOC!\n");
 	
@@ -86,17 +81,25 @@ int main(int ram, char **argv) {
 	
 	/*****************************************/
 	
-	while(1) {
+	/*while(1) {
 		unsigned char data[32];
 		radiolink_recv(32, data);
 		uart_send_raw(data, 32);
+	}*/
+	
+	while(1) {
+		unsigned char data[32];
+		uart_recv_raw(data, 32);
+		radiolink_send_unreliable(32, data);
 	}
-
+	
 	//speaker_prebuffer();
 	systick_enable();
 	
-	while(1)
-		microphone_send();
+	while(1) {
+		//microphone_send();
+		audio_loop();
+	}
 	
 	/************ CAMERA TEST ****************/
 	

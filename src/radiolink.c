@@ -187,7 +187,7 @@ unsigned char radiolink_send(int size, unsigned char *data) {
 	return status;
 }
 
-unsigned char radiolink_send_ureliable(int size, unsigned char *data) {
+unsigned char radiolink_send_unreliable(int size, unsigned char *data) {
 	unsigned char status;
 	int i;
 	
