@@ -27,5 +27,6 @@ enum motor_direction {
 
 void motor_init(void);
 void motor_go(enum motor_direction dir);
+void motor_logic();
 
 #endif

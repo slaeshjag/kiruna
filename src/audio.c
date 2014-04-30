@@ -16,6 +16,16 @@ int spk_buffer_index = 0;
 int spk_buffer_next = 0;
 
 void audio_init() {
+	/*Enable ADC*/
+	LPC_IOCON->R_PIO0_11 = 0x2;
+	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 13);
+	/*48 MHz / 12 = 4 MHz*/
+	LPC_ADC->INTEN = 0;
+	LPC_SYSCON->PDRUNCFG &= ~(0x1 << 4);
+	LPC_ADC->CR = 0x1 | (12 << 8) | (1 << 24);
+	
+	/*Enable DAC*/
+	LPC_GPIO0->DIR |= 0x80;
 }
 
 void speaker_output() {
