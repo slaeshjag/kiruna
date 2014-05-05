@@ -85,6 +85,7 @@ void speaker_prebuffer() {
 
 void audio_loop() {
 	radiolink_recv(32, &spk_buffer[spk_buffer_next]);
+	spk_buffer_next += 32;
 	if (spk_buffer_next == 1024)
 		spk_buffer_next = 0;
 }

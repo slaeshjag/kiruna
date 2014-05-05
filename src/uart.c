@@ -229,8 +229,10 @@ uint8_t uart_recv_char(void) {
 void uart_recv_raw(unsigned char *buff, int bytes) {
 	int i;
 
-	for (i = 0; i < bytes; i++)
+	for (i = 0; i < bytes; i++) {
 		buff[i] = uart_recv_char();
+		//uart_printf("arne 0x%X\n", buff[i]);
+	}
 	return;
 }
 

@@ -73,11 +73,11 @@ void systick_enable() {
 }
 
 int main(int ram, char **argv) {
+	unsigned char data[32];
+	unsigned int lol = 0;
 	initialize();
+	util_delay(200000);
 	uart_printf("AutoKorg™ READY TO WRECK SOME HAVOC!\n");
-	
-	util_delay(1000000);
-
 	
 	/*****************************************/
 	
@@ -88,9 +88,10 @@ int main(int ram, char **argv) {
 	}*/
 	
 	while(1) {
-		unsigned char data[32];
 		uart_recv_raw(data, 32);
 		radiolink_send_unreliable(32, data);
+		uart_printf("sent shit\r\n");
+		util_delay(20);
 	}
 	
 	//speaker_prebuffer();
