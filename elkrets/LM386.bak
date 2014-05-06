@@ -1400,4 +1400,6 @@ F 3 "" H 6200 5600 60  0000 C CNN
 	1    6200 5600
 	0    -1   -1   0   
 $EndComp
+Text Label 7650 5200 0    60   ~ 0
+Mic Förstärkare
 $EndSCHEMATC
