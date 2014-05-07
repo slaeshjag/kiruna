@@ -9,6 +9,8 @@
 #include "ultrasonic.h"
 #include "microswitch.h"
 
+#define STOPPING_DISTANCE	15000
+
 
 
 void initialize(void) {
@@ -116,12 +118,12 @@ int main(int ram, char **argv) {
 	uart_printf("us_init() done\n");
 	ms_init();
 	uart_printf("ms_init() done\n");
-	i2c_init();
+	ov7670_init();
 	uart_printf("i2c_init() done\n");
-
-	uart_printf("AutoKorg™ 0980 READY TO WRECK SOME HAVOC!\n");
 	
 	util_delay(1000000);
+	
+	uart_printf("AutoKorg™ 0980 READY TO WRECK SOME HAVOC!\n");
 
 	
 	/*****************************************/
@@ -141,101 +143,181 @@ int main(int ram, char **argv) {
 	#endif
 	
 	/************ CAMERA TEST ****************/
-	
-		// QVGA RGB16
-	char sub_adr = 0x0B;
-	char cam_test = ov7670_test(sub_adr);
-	uart_printf("CAM at 0x0B is %x\n", cam_test);
-	while(1);
 
-	/*****************************************/
+	while(1);
+	
+	/*************** US TEST *****************/
+	/*
 	while (1)
 	{
-		uart_printf("US is %i\n", us());
+		//uart_printf("US is %i\n", us());
 	}
-	
-	/*****************************************/
+	*/
+	/************** MAIN CODE ***************/
 
 
 	int us_time;
-
-	motor_go(MOTOR_DIR_FORWARD);
+	int is_paused = 1;
+	int normalize_stop_counter = 0;
+	int normalize_stop_loop = 0;
+	int is_stopped = 0;
+	int normalize_start_counter = 0;
+	int normalize_start_loop = 0;
+	
+	motor_go(MOTOR_DIR_STAHP, 100);
 	
 	while(1)
 	{
 		us_time = us();
 		uart_printf("US is %i\n", us_time);
 		
-		if(ms_left_pressed())
+		if (is_paused)	// MÅSTE VARA FÖRST
+		{
+			if (us_time < 2000)
+			{
+				is_paused = 0;
+				util_delay(MOTOR_TIME_SHORT);	// Time to remove "hand", so it doesn't pause quickly again
+				motor_go(MOTOR_DIR_FORWARD, 100);
+			}
+		}
+		else if (us_time < 2000)	// "Hand" appears, pause
+		{
+			//uart_printf("Under 2000, pausas!\n");
+			is_paused = 1;
+			motor_go(MOTOR_DIR_STAHP, 100);
+			util_delay(MOTOR_TIME_SHORT);	// Time to remove "hand", so it doesn't unpause
+			
+			normalize_stop_counter = 0;	// we clear our normalizer in case it was counting before we paused
+			normalize_stop_loop = 0;
+		}
+		
+		else if(ms_left_pressed())
 		{
 			uart_printf("Vänster intryckt!\n");
-
-			motor_go(MOTOR_DIR_STAHP);
-			util_delay(MOTOR_TIME_LONG);
 			
-			motor_go(MOTOR_DIR_LEFT);
-			util_delay(MOTOR_TIME_45);
-			
-			motor_go(MOTOR_DIR_STAHP);
-			util_delay(MOTOR_TIME_LONG);
-			
-			motor_go(MOTOR_DIR_BACKWARD);
+			motor_go(MOTOR_DIR_STAHP, 100);
 			util_delay(MOTOR_TIME_SHORT);
 			
-			motor_go(MOTOR_DIR_STAHP);
+			
+			/*motor_go(MOTOR_DIR_LEFT, 100);
+			util_delay(MOTOR_TIME_SHORT);
+
+			motor_go(MOTOR_DIR_STAHP, 100);
+			util_delay(MOTOR_TIME_SHORT);
+
+
+
+			/*motor_go(MOTOR_DIR_STAHP, 100);
 			util_delay(MOTOR_TIME_LONG);
 			
-			motor_go(MOTOR_DIR_RIGHT);
+			motor_go(MOTOR_DIR_LEFT, 100);
 			util_delay(MOTOR_TIME_45);
 			
-			motor_go(MOTOR_DIR_STAHP);
+			motor_go(MOTOR_DIR_STAHP, 100);
 			util_delay(MOTOR_TIME_LONG);
 			
-			motor_go(MOTOR_DIR_FORWARD);
+			motor_go(MOTOR_DIR_BACKWARD, 100);
+			util_delay(MOTOR_TIME_SHORT);
+			
+			motor_go(MOTOR_DIR_STAHP, 100);
+			util_delay(MOTOR_TIME_LONG);
+			
+			motor_go(MOTOR_DIR_RIGHT, 100);
+			util_delay(MOTOR_TIME_45);
+			
+			motor_go(MOTOR_DIR_STAHP, 100);
+			util_delay(MOTOR_TIME_LONG);
+			
+			motor_go(MOTOR_DIR_FORWARD, 100);*/
 		}
 		else if(ms_right_pressed())
 		{
 			uart_printf("Höger intryckt!\n");
-
-			motor_go(MOTOR_DIR_STAHP);
-			util_delay(MOTOR_TIME_LONG);
 			
-			motor_go(MOTOR_DIR_RIGHT);
-			util_delay(MOTOR_TIME_45);
-			
-			motor_go(MOTOR_DIR_STAHP);
-			util_delay(MOTOR_TIME_LONG);
-			
-			motor_go(MOTOR_DIR_BACKWARD);
+			motor_go(MOTOR_DIR_STAHP, 100);
 			util_delay(MOTOR_TIME_SHORT);
 			
-			motor_go(MOTOR_DIR_STAHP);
+			
+			/*motor_go(MOTOR_DIR_RIGHT, 100);
+			util_delay(MOTOR_TIME_SHORT);
+
+			motor_go(MOTOR_DIR_STAHP, 100);
+			util_delay(MOTOR_TIME_SHORT);
+			
+			
+
+			/*motor_go(MOTOR_DIR_STAHP, 100);
 			util_delay(MOTOR_TIME_LONG);
 			
-			motor_go(MOTOR_DIR_LEFT);
+			motor_go(MOTOR_DIR_RIGHT, 100);
 			util_delay(MOTOR_TIME_45);
 			
-			motor_go(MOTOR_DIR_STAHP);
+			motor_go(MOTOR_DIR_STAHP, 100);
 			util_delay(MOTOR_TIME_LONG);
 			
-			motor_go(MOTOR_DIR_FORWARD);
+			motor_go(MOTOR_DIR_BACKWARD, 100);
+			util_delay(MOTOR_TIME_SHORT);
+			
+			motor_go(MOTOR_DIR_STAHP, 100);
+			util_delay(MOTOR_TIME_LONG);
+			
+			motor_go(MOTOR_DIR_LEFT, 100);
+			util_delay(MOTOR_TIME_45);
+			
+			motor_go(MOTOR_DIR_STAHP, 100);
+			util_delay(MOTOR_TIME_LONG);
+			
+			motor_go(MOTOR_DIR_FORWARD, 100);*/
 		}
-		else if (us_time < 10000)
+
+		else if (normalize_stop_loop > 0)	// we are here checking multiple times to ensure we need to stop
 		{
-			uart_printf("Under 10 000!\n");
-
-			motor_go(MOTOR_DIR_LEFT);
-			uart_printf("Kör vänster!\n");
-			util_delay(MOTOR_TIME_90);
+			if (us_time < STOPPING_DISTANCE) normalize_stop_counter++;
 			
-			motor_go(MOTOR_DIR_FORWARD);
-			uart_printf("Kör framåt!\n");
-			util_delay(MOTOR_TIME_SHORT);
-
-			motor_go(MOTOR_DIR_RIGHT);
-			uart_printf("Kör höger!\n");
-			util_delay(MOTOR_TIME_90);
+			if (normalize_stop_loop == 1)
+			{
+				if (normalize_stop_counter > 2)
+				{
+					//uart_printf("Under 20 000 3/5 times, stopping!\n");
+					motor_go(MOTOR_DIR_STAHP, 100);
+					is_stopped = 1;
+				}
+				normalize_stop_loop = 0;
+				normalize_stop_counter = 0;
+			}
+			else normalize_stop_loop--;
 		}
+		else if (us_time < STOPPING_DISTANCE)	// to ensure its not just >one< bogus value, we check multiple times
+		{
+			normalize_stop_loop = 5;
+			//uart_printf("Under 20000, checking for more bogus values.\n");
+			//util_delay(MOTOR_TIME_SHORT);	// only to catch the uart_printf, should be removed
+		}
+		else if (normalize_start_loop > 0)
+		{
+			normalize_start_counter++;
+			
+			if (normalize_start_loop == 1)
+			{
+				if (normalize_start_counter > 5)
+				{
+					//uart_printf("Over 20 000 5/10 times, starting!\n");
+					motor_go(MOTOR_DIR_FORWARD, 100);
+					is_stopped = 0;
+				}
+				normalize_start_loop = 0;
+				normalize_start_counter = 0;
+			}
+			else normalize_start_loop--;
+		}
+		else if (is_stopped)
+		{
+			normalize_start_loop = 10;	// is stopped and over stopping distance
+			//uart_printf("Over 20 000 and stopped, checking for more bogus values.\n");
+			//util_delay(MOTOR_TIME_SHORT);	// only to catch the uart_printf, should be removed
+
+		}
+		else motor_go(MOTOR_DIR_FORWARD, 100);
 	}
 	
 	/*****************************************/
