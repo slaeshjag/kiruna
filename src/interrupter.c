@@ -2,7 +2,7 @@
 #include "uart.h"
 #include "util.h"
 #include "audio.h"
-
+#include "radiolink.h"
 
 /*
  * Presuming that the LPC1114 runs on 48 MHz (PCLK) and an interrupt should occur each 128 us;

@@ -23,6 +23,7 @@
 #define	__SPI_H__
 
 
+void spi_init();
 uint8_t spi_send_recv(uint8_t data) ;
 
 

@@ -40,7 +40,7 @@ enum Cmd {
 	CMD_REUSE_TX = 0xE3,
 	CMD_PAYLOAD_WIDTH = 0x60,
 	CMD_SEND_ACK_PAYLOAD = 0xA8,
-	CMD_NO_AUTOACK = 0xB0,
+	CMD_SEND_PAYLOAD_NOACK = 0xB0,
 	CMD_NOP = 0xFF,
 };
 
@@ -72,6 +72,8 @@ enum Reg {
 	REG_DYNPD = 0x1C,
 	REG_FEATURE = 0x1D,
 };
+
+static char packet_size = 0;
 
 static inline void cmd_start() {
 	CSN_PORT->MASKED_ACCESS[CSN_PIN] = 0;
@@ -135,7 +137,7 @@ unsigned char radiolink_flush() {
 	spi_send_recv(CMD_FLUSH_TX);
 	cmd_end();
 	cmd_start();
-	status = spi_send_recv(CMD_FLUSH_TX);
+	status = spi_send_recv(CMD_FLUSH_RX);
 	cmd_end();
 	
 	return status;
@@ -145,54 +147,107 @@ unsigned char radiolink_send(int size, unsigned char *data) {
 	unsigned char status;
 	int i;
 	
-	cmd_start();
-	status = spi_send_recv(CMD_SEND_PAYLOAD);
-	for(i = 0; i < size; i++) {
-		spi_send_recv(data[i]);
+	ce_on();
+	util_delay(10);
+	
+	
+	for(; size > 0; size -= packet_size) {
+		do {
+			status = radiolink_status();
+			/*uart_printf("arne 0x%x\n", status);*/
+			if(status & 0x10) {
+				radiolink_flush();
+				goto error;
+			}
+		} while(status & 0x1);
+		
+		cmd_start();
+		status = spi_send_recv(CMD_SEND_PAYLOAD);
+		for(i = 0; i < packet_size; i++) {
+			spi_send_recv(i < size ? data[i] : 0xFF);
+		}
+		cmd_end();
+		
+		do {
+			status = radiolink_status();
+			/*uart_printf("arne 0x%x\n", status);*/
+			if(status & 0x10) {
+				radiolink_flush();
+				goto error;
+			}
+		} while(!(status & 0x20));
 	}
-	cmd_end();
+	
+	
+	error:
+	ce_off();
+	status = radiolink_status();
+	radiolink_write_reg(REG_STATUS, 1, &status);
+	
+	return status;
+}
+
+unsigned char radiolink_send_unreliable(int size, unsigned char *data) {
+	unsigned char status;
+	int i;
 	
 	ce_on();
-	/*migth need to fix*/
 	util_delay(10);
-	ce_off();
 	
-	do {
-		status = radiolink_status();
-		/*uart_printf("arne 0x%x\n", status);*/
-		if(status & 0x10) {
-			radiolink_flush();
-			break;
+	
+	for(; size > 0; size -= packet_size) {
+		do {
+			status = radiolink_status();
+			/*uart_printf("arne 0x%x\n", status);*/
+			if(status & 0x10) {
+				radiolink_flush();
+				status = radiolink_status();
+				radiolink_write_reg(REG_STATUS, 1, &status);
+			}
+		} while(status & 0x1);
+		
+		cmd_start();
+		status = spi_send_recv(CMD_SEND_PAYLOAD_NOACK);
+		for(i = 0; i < packet_size; i++) {
+			spi_send_recv(i < size ? data[i] : 0xFF);
 		}
-	} while(!(status & 0x20));
+		cmd_end();
+	}
 	
+	if((status = radiolink_status()) & 0x10)
+		radiolink_flush();
+	
+	ce_off();
 	radiolink_write_reg(REG_STATUS, 1, &status);
 	
 	return status;
 }
 
 unsigned char radiolink_recv(int size, unsigned char *data) {
-	unsigned char status, config;
+	unsigned char status = 0xFF, config, tmp;
 	int i;
+	
+	if(!size)
+		return 0x0;
 	
 	radiolink_read_reg(REG_CONFIG, 1, &config);
 	config |= 0x1;
 	radiolink_write_reg(REG_CONFIG, 1, &config);
 	
 	ce_on();
-	util_delay(130);
+	//util_delay(10);
 	
-	/*uart_printf("wating for data\n");*/
-	while(!((status = radiolink_status()) & 0x40))
-		uart_printf("%i\n", status);
-	/*uart_printf("got some data\n");*/
-	
-	cmd_start();
-	spi_send_recv(CMD_RECV_PAYLOAD);
-	for(i = 0; i < size; i++) {
-		data[i] = spi_send_recv(CMD_NOP);
+	for(; size > 0; size -= packet_size) {
+		while(!((status = radiolink_status()) & 0x40));
+		cmd_start();
+		spi_send_recv(CMD_RECV_PAYLOAD);
+		for(i = 0; i < packet_size; i++) {
+			tmp = spi_send_recv(CMD_NOP);
+			if(i < size)
+				data[i] = tmp;
+		}
+		cmd_end();
 	}
-	cmd_end();
 	
 	ce_off();
 	
@@ -203,37 +258,48 @@ unsigned char radiolink_recv(int size, unsigned char *data) {
 	return status;
 }
 
-void radiolink_init() {
+int radiolink_init(char _packet_size) {
 	unsigned char reg[5];
-	unsigned char status;
+	unsigned char status, config;
+	
+	if(_packet_size > 32)
+		return -1;
+	
+	packet_size = _packet_size;
 	CSN_PORT->DIR |= CSN_PIN;
 	CE_PORT->DIR |= CE_PIN;
 	CSN_PORT->MASKED_ACCESS[CSN_PIN] = ~0;
 	CE_PORT->MASKED_ACCESS[CE_PIN] = 0;
 	
-	util_delay(DELAY*100);
+	util_delay(DELAY*10000);
 	
 	radiolink_status();
-	radiolink_flush();
 	
+	reg[0] = 0x00;
+	radiolink_write_reg(REG_CONFIG, 1, reg);
+	util_delay(150000);
 	reg[0] = 0x0A;
 	radiolink_write_reg(REG_CONFIG, 1, reg);
 	util_delay(150000);
 	
 	radiolink_read_reg(REG_CONFIG, 1, reg);
+	config = reg[0];
 	
 	//uart_printf("config 0x%x\n", reg[0]);
+	/*Fifo size, 0-32*/
+	reg[0] = _packet_size;
+	radiolink_write_reg(REG_RX_PW_P0, 1, reg);
 	status = radiolink_status();
 	
 	/*Clear fifo flags*/
-	radiolink_write_reg(REG_STATUS, 1, &status);
+	reg[0] = 0xFF;
+	radiolink_write_reg(REG_STATUS, 1, reg);
 	
+	radiolink_flush();
 	radiolink_read_reg(REG_FIFO_STATUS, 1, reg);
-	//uart_printf("fifo 0x%x\n", reg[0]);
 	
-	/*Fifo size, 0-32*/
-	reg[0] = 32;
-	radiolink_write_reg(REG_RX_PW_P0, 1, reg);
+	uart_printf("radiolink init: status 0x%x config 0x%x fifo 0x%x\n", status, config, reg[0]);
+	//TODO: check for error status, etc
 	
 	/*for(;;) {
 		uart_printf("status 0x%x\n", radiolink_send(4, data));
@@ -248,4 +314,6 @@ void radiolink_init() {
 	}
 	
 	for(;;);*/
+	
+	return 0;
 }

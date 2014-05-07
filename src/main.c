@@ -35,69 +35,36 @@ void initialize(void) {
 	LPC_SYSCON->CLKOUTUEN = 0x1;*/
 	
 	/*********** Enable UART0 **********/
-	
-	LPC_SYSCON->UARTCLKDIV = 1;
-	/* Enable RXD, TXD on the IO pins */
-	LPC_IOCON->PIO1_6 &= ~0x7;
-	LPC_IOCON->PIO1_6 |= 1;
-	LPC_IOCON->PIO1_7 &= ~0x7;
-	LPC_IOCON->PIO1_7 |= 1;
-
-	/* Enable UART clock bit */
-	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 12);
-	/* Set up FIFO */
-	LPC_UART->FCR = 0x7;
-	/* Set line control (stop bits etc.) */
-	LPC_UART->LCR = 0x83;
-	regval = ((SYSTEM_CLOCK/LPC_SYSCON->SYSAHBCLKDIV)/16/UART_BAUD_RATE);
-	LPC_UART->FDR = 0x10;
-	LPC_UART->DLL = regval & 0xFF;
-	LPC_UART->DLM = (regval >> 8) & 0xFF;
-	LPC_UART->LCR = 0x3;
+	uart_init();
 	
 	/********* Enable SPI0 ************/
-	LPC_IOCON->SCK_LOC  = 0x0;
-	//LPC_IOCON->PIO0_6 &= ~0x7;
-	LPC_IOCON->SWCLK_PIO0_10 = 0x2;
-	LPC_IOCON->PIO0_8 &= ~0x7;
-	LPC_IOCON->PIO0_8 |= 0x1;
-	LPC_IOCON->PIO0_9 &= ~0x7;
-	LPC_IOCON->PIO0_9 |= 0x1;
-	//LPC_IOCON->SCK_LOC  = 2;
-	//LPC_SYSCON->PRESETCTRL |= 0x5;
-	//LPC_SYSCON->SYSAHBCLKCTRL &= ~(1 << 11);
-	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 11);
-	LPC_SYSCON->SSP0CLKDIV = 4;
-	LPC_SYSCON->PRESETCTRL |= 0x1;
-	
-	LPC_SSP0->CPSR = 0x2;
-	LPC_SSP0->CR0 = 0x107;
-	LPC_SSP0->CR1 = 0x2;
-	
-	/*Enable ADC*/
-	LPC_IOCON->R_PIO0_11 = 0x2;
-	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 13);
-	/*48 MHz / 12 = 4 MHz*/
-	LPC_ADC->INTEN = 0;
-	LPC_SYSCON->PDRUNCFG &= ~(0x1 << 4);
-	LPC_ADC->CR = 0x1 | (12 << 8) | (1 << 24);
-	
-	/*Enable DAC*/
-	LPC_GPIO0->DIR |= 0x80;
+	spi_init();
+
+	/* Enable timers */
+	LPC_SYSCON->SYSAHBCLKDIV |= (1 << 10);
+	LPC_SYSCON->SYSAHBCLKDIV |= (1 << 9);
+	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 7);
+
+	audio_init();
 	
 	/*Disable systick*/
 	SysTick->CTRL = 0;
-	
-	/* Enable clock for tmr16B1 (used by util_delay) */
-	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 7);
+
+	motor_init();
+	uart_printf("motor_init() done\n");
+	us_init();
+	uart_printf("us_init() done\n");
+	ms_init();
+	uart_printf("ms_init() done\n");
+	i2c_init();
+	uart_printf("i2c_init() done\n");
+	radiolink_init(32);
+	uart_printf("radiolink_init() done\n");
 }
 
 void systick_irq() {
-	microphone_sample();
-	/*LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
-	spi_send_recv(~data);
-	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x80;*/
-	//data += 5;
+	//microphone_sample();
+	speaker_output();
 }
 
 void systick_enable() {
@@ -108,39 +75,34 @@ void systick_enable() {
 }
 
 int main(int ram, char **argv) {
-	int i;
-	
+	unsigned char data[32];
+	unsigned int lol = 0;
 	initialize();
-	uart_printf("initialize() done\n");
-	motor_init();
-	uart_printf("motor_init() done\n");
-	us_init();
-	uart_printf("us_init() done\n");
-	ms_init();
-	uart_printf("ms_init() done\n");
-	ov7670_init();
-	uart_printf("i2c_init() done\n");
-	
-	util_delay(1000000);
-	
-	uart_printf("AutoKorg™ 0980 READY TO WRECK SOME HAVOC!\n");
-
+	util_delay(200000);
+	uart_printf("AutoKorg™ READY TO WRECK SOME HAVOC!\n");
 	
 	/*****************************************/
 	
-	#if 0
-	while(1) {
+	/*while(1) {
 		unsigned char data[32];
 		radiolink_recv(32, data);
 		uart_send_raw(data, 32);
+	}*/
+	
+	while(1) {
+		uart_recv_raw(data, 32);
+		radiolink_send_unreliable(32, data);
+		uart_printf("sent shit\r\n");
+		util_delay(20);
 	}
-
+	
 	//speaker_prebuffer();
 	systick_enable();
 	
-	while(1)
-		microphone_send();
-	#endif
+	while(1) {
+		//microphone_send();
+		audio_loop();
+	}
 	
 	/************ CAMERA TEST ****************/
 
