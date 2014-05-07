@@ -28,6 +28,6 @@ enum motor_direction {
 };
 
 void motor_init(void);
-void motor_go(enum motor_direction dir, unsigned int speed);
+void motor_logic(void);
 
 #endif
