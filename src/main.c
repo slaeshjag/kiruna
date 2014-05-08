@@ -2,6 +2,7 @@
 #include "system/LPC11xx.h"
 #include "util.h"
 #include "uart.h"
+#include "main.h"
 #include "spi.h"
 #include "i2c.h"
 #include "radiolink.h"
@@ -61,8 +62,9 @@ void initialize(void) {
 }
 
 void systick_irq() {
-	//microphone_sample();
-	speaker_output();
+	global_timer++;
+	microphone_sample();
+	//speaker_output();
 }
 
 void systick_enable() {
@@ -87,19 +89,19 @@ int main(int ram, char **argv) {
 		uart_send_raw(data, 32);
 	}*/
 	
-	while(1) {
+	/*while(1) {
 		uart_recv_raw(data, 32);
 		radiolink_send_unreliable(32, data);
 		uart_printf("sent shit\r\n");
 		util_delay(20);
-	}
+	}*/
 	
 	//speaker_prebuffer();
 	systick_enable();
 	
 	while(1) {
-		//microphone_send();
-		audio_loop();
+		microphone_send();
+		//audio_loop();
 	}
 	
 	/************ CAMERA TEST ****************/

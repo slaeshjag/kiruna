@@ -3,7 +3,7 @@
 #include "spi.h"
 #include "radiolink.h"
 
-unsigned char mic_buffer[2][32];
+unsigned char mic_buffer[2][16];
 static unsigned char *sample_buffer = mic_buffer[0];
 static unsigned char *send_buffer = mic_buffer[1];
 int send_data = 0;
@@ -47,7 +47,7 @@ unsigned char microphone_sample() {
 	
 	sample_buffer[index++] = data;
 	
-	if(index == 32) {
+	if(index == 16) {
 		index = 0;
 		tmp = sample_buffer;
 		sample_buffer = send_buffer;
@@ -62,9 +62,10 @@ unsigned char microphone_sample() {
 void microphone_send() {
 	if(!send_data)
 		return;
-	
-	radiolink_send(32, send_buffer);
-	
+//	radiolink_send(16, send_buffer);
+	radiolink_send(16, "ARNEarneARNEarne");
+	uart_printf("Arne\n");
+
 	send_data = 0;
 }
 
@@ -88,4 +89,5 @@ void audio_loop() {
 	spk_buffer_next += 32;
 	if (spk_buffer_next == 1024)
 		spk_buffer_next = 0;
+	uart_printf("got data %i %i\n", spk_buffer_next, spk_buffer_index);
 }

@@ -150,7 +150,6 @@ unsigned char radiolink_send(int size, unsigned char *data) {
 	ce_on();
 	util_delay(10);
 	
-	
 	for(; size > 0; size -= packet_size) {
 		do {
 			status = radiolink_status();
@@ -194,7 +193,6 @@ unsigned char radiolink_send_unreliable(int size, unsigned char *data) {
 	ce_on();
 	util_delay(10);
 	
-	
 	for(; size > 0; size -= packet_size) {
 		do {
 			status = radiolink_status();
@@ -229,7 +227,11 @@ unsigned char radiolink_recv(int size, unsigned char *data) {
 	
 	if(!size)
 		return 0x0;
-	
+
+	uart_printf("0x%X -- \n", (unsigned int) data);
+	radiolink_read_reg(REG_FIFO_STATUS, 1, &status);
+	uart_printf("0x%X 0x%X\n", status, radiolink_status());
+
 	radiolink_read_reg(REG_CONFIG, 1, &config);
 	config |= 0x1;
 	radiolink_write_reg(REG_CONFIG, 1, &config);
@@ -281,7 +283,11 @@ int radiolink_init(char _packet_size) {
 	reg[0] = 0x0A;
 	radiolink_write_reg(REG_CONFIG, 1, reg);
 	util_delay(150000);
-	
+
+	reg[0] = 125;
+	radiolink_write_reg(REG_RF_CH, 1, reg);
+	util_delay(100000);
+
 	radiolink_read_reg(REG_CONFIG, 1, reg);
 	config = reg[0];
 	
