@@ -1,0 +1,20 @@
+xst -intstyle ise -ifn "/home/axel/Projekt/kiruna/xc9572/skosnoere/skosnoere.xst" -ofn "/home/axel/Projekt/kiruna/xc9572/skosnoere/skosnoere.syr" 
+ngdbuild -intstyle ise -dd _ngo -uc skosnoere.ucf -p xc9572xl-PC44-10 skosnoere.ngc skosnoere.ngd  
+cpldfit -intstyle ise -p xc9572xl-10-PC44 -ofmt vhdl -optimize speed -htmlrpt -loc on -slew fast -init low -inputs 54 -pterms 25 -unused float -power std -terminate keeper skosnoere.ngd 
+XSLTProcess skosnoere_build.xml 
+tsim -intstyle ise skosnoere skosnoere.nga 
+hprep6 -s IEEE1149 -n skosnoere -i skosnoere 
+xst -intstyle ise -ifn "/home/axel/Projekt/kiruna/xc9572/skosnoere/skosnoere.xst" -ofn "/home/axel/Projekt/kiruna/xc9572/skosnoere/skosnoere.syr" 
+ngdbuild -intstyle ise -dd _ngo -uc skosnoere.ucf -p xc9572xl-PC44-10 skosnoere.ngc skosnoere.ngd  
+xst -intstyle ise -ifn "/home/axel/Projekt/kiruna/xc9572/skosnoere/skosnoere.xst" -ofn "/home/axel/Projekt/kiruna/xc9572/skosnoere/skosnoere.syr" 
+ngdbuild -intstyle ise -dd _ngo -uc skosnoere.ucf -p xc9572xl-PC44-10 skosnoere.ngc skosnoere.ngd  
+cpldfit -intstyle ise -p xc9572xl-10-PC44 -ofmt vhdl -optimize speed -htmlrpt -loc on -slew fast -init low -inputs 54 -pterms 25 -unused float -power std -terminate keeper skosnoere.ngd 
+XSLTProcess skosnoere_build.xml 
+tsim -intstyle ise skosnoere skosnoere.nga 
+hprep6 -s IEEE1149 -n skosnoere -i skosnoere 
+xst -intstyle ise -ifn "/home/axel/Projekt/kiruna/xc9572/skosnoere/skosnoere.xst" -ofn "/home/axel/Projekt/kiruna/xc9572/skosnoere/skosnoere.syr" 
+ngdbuild -intstyle ise -dd _ngo -uc skosnoere.ucf -p xc9572xl-PC44-10 skosnoere.ngc skosnoere.ngd  
+cpldfit -intstyle ise -p xc9572xl-10-PC44 -ofmt vhdl -optimize speed -htmlrpt -loc on -slew fast -init low -inputs 54 -pterms 25 -unused float -power std -terminate keeper skosnoere.ngd 
+XSLTProcess skosnoere_build.xml 
+tsim -intstyle ise skosnoere skosnoere.nga 
+hprep6 -s IEEE1149 -n skosnoere -i skosnoere 
