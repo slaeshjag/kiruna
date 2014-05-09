@@ -18,9 +18,11 @@
  */
  
 #include <stdint.h>
+#include <limits.h>
 #include "system/LPC11xx.h"
 #include "spi.h"
 #include "uart.h"
+#include "main.h"
 #include "util.h"
 
 #define CSN_PORT LPC_GPIO1
@@ -221,13 +223,29 @@ unsigned char radiolink_send_unreliable(int size, unsigned char *data) {
 	return status;
 }
 
-unsigned char radiolink_recv(int size, unsigned char *data) {
-	unsigned char status = 0xFF, config, tmp;
+
+int radiolink_send_stubborn(int size, unsigned char *data, int timeout) {
+	int status, time_now;
+	time_now = global_timer;
+	
+	for (;;)
+		if ((status = radiolink_send(size, data)) & 0x10) {
+			if (global_timer - time_now >= timeout)
+				return 0;
+		} else
+			return 1;
+
+}
+
+
+unsigned char radiolink_recv_timeout(int size, unsigned char *data, int timeout) {
+	unsigned char status = 0xFF, config, tmp, time_now;
 	int i;
 	
 	if(!size)
 		return 0x0;
 
+	time_now = global_timer;
 	uart_printf("0x%X -- \n", (unsigned int) data);
 	radiolink_read_reg(REG_FIFO_STATUS, 1, &status);
 	uart_printf("0x%X 0x%X\n", status, radiolink_status());
@@ -240,7 +258,9 @@ unsigned char radiolink_recv(int size, unsigned char *data) {
 	//util_delay(10);
 	
 	for(; size > 0; size -= packet_size) {
-		while(!((status = radiolink_status()) & 0x40));
+		while (global_timer - time_now < timeout && !((status = radiolink_status()) & 0x40));
+		if (!(status & 0x40))
+			return 0xFF;
 		cmd_start();
 		spi_send_recv(CMD_RECV_PAYLOAD);
 		for(i = 0; i < packet_size; i++) {
@@ -259,6 +279,11 @@ unsigned char radiolink_recv(int size, unsigned char *data) {
 	radiolink_write_reg(REG_STATUS, 1, &status);
 	return status;
 }
+
+unsigned char radiolink_recv(int size, unsigned char *data) {
+	return radiolink_recv_timeout(size, data, INT_MAX);
+}
+
 
 int radiolink_init(char _packet_size) {
 	unsigned char reg[5];

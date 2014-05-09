@@ -3,4 +3,7 @@
 
 int global_timer;
 
+#define	MOTHERSHIP
+
+
 #endif

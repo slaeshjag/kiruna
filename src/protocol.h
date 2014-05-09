@@ -2,7 +2,13 @@
 #define	__PROTOCOL_H__
 
 
-#define	PROTOCOL_MAX_TIMESLICE  32
+#ifdef MOTHERSHIP
+#define	PROTOCOL_MAX_TIMESLICE  	800
+#else
+#define	PROTOCOL_MAX_TIMESLICE		4
+#endif
+#define	PROTOCOL_PACKET_SIZE		16
+#define	PROTOCOL_MOTOR_KILL_DELAY	3
 
 
 enum protocol_command {
@@ -22,7 +28,7 @@ enum protocol_state {
 	PROTOCOL_STATE_MASTER_GET_MIC,
 	PROTOCOL_STATE_MASTER_SEND_SPEAK,
 	PROTOCOL_STATE_SLAVE_SEND_CAMERA,
-	PROTOCOL_STATE_MASTER_RECV_CAMERA,
+	PROTOCOL_STATE_MASTER_GET_CAMERA,
 };
 
 
@@ -36,6 +42,8 @@ struct protocol_cmd_header {
 
 
 void protocol_init();
+void protocol_loop();
+void protocol_get_motor(int *left, int *right, int *run);
 
 
 #endif
