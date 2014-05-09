@@ -51,7 +51,7 @@ void protocol_loop() {
 	unsigned char cmd_packet[16];
 	struct protocol_cmd_header *cmd = (void *) cmd_packet;
 	int last_timer;
-	static int len, resume = 0;
+	static int len = 0, resume = 0;
 	last_timer = global_timer;
 	
 	#ifdef MOTHERSHIP
@@ -61,6 +61,7 @@ void protocol_loop() {
 
 	/* State-maskinen Gösta */
 	for (;;) {
+		uart_printf("In state %i %i\n", state, len);
 		switch (state) {
 			case PROTOCOL_STATE_SLAVE_WAIT:
 				
@@ -117,15 +118,21 @@ void protocol_loop() {
 				if (!radiolink_recv_timeout(PROTOCOL_PACKET_SIZE, cmd_packet, PROTOCOL_MAX_TIMESLICE - (global_timer - last_timer)))
 					return;
 				len--;
-				if (protocol_is_sync(cmd_packet))
+				if (protocol_is_sync(cmd_packet)) {
 					state = PROTOCOL_STATE_SLAVE_WAIT;
+					break;
+				}
+				#ifdef MOTHERSHIP
 				speaker_fill(cmd_packet, PROTOCOL_PACKET_SIZE);
+				#endif
 				if (!len)
 					state = PROTOCOL_STATE_SLAVE_WAIT;
 				break;
 			case PROTOCOL_STATE_SLAVE_SEND_MIC:
+				#ifdef MOTHERSHIP
 				if (!microphone_send())
 					break;
+				#endif
 				len--;
 				if (!len)
 					state = PROTOCOL_STATE_SLAVE_WAIT;
@@ -134,13 +141,20 @@ void protocol_loop() {
 			case PROTOCOL_STATE_MASTER_GET_MIC:
 				if (!radiolink_recv_timeout(PROTOCOL_PACKET_SIZE, cmd_packet, PROTOCOL_MAX_TIMESLICE - (global_timer - last_timer)))
 					return;
+				if (protocol_is_sync(cmd_packet))
+					state = PROTOCOL_STATE_MASTER_WAIT;
 				len--;
+				if (!len)
+					state = PROTOCOL_STATE_MASTER_WAIT;
 				uart_send_raw(cmd_packet, PROTOCOL_PACKET_SIZE);
 				break;
 			case PROTOCOL_STATE_MASTER_SEND_SPEAK:
 				if (!resume)
 					uart_get_data(cmd_packet, PROTOCOL_PACKET_SIZE);
 				resume = (!radiolink_send_unreliable(PROTOCOL_PACKET_SIZE, cmd_packet)) ? 1 : 0;
+				len--;
+				if (!len)
+					state = PROTOCOL_STATE_MASTER_WAIT;
 				break;
 			default:
 				uart_printf("Unhandled state %i\n", state);

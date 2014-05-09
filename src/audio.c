@@ -78,6 +78,8 @@ unsigned char microphone_sample() {
 int microphone_send() {
 	if(!send_data)
 		return 0;
+	if (send_buffer[0] == 0xFF)
+		send_buffer[0] = 0xFE;
 	radiolink_send_unreliable(16, send_buffer);
 //	radiolink_send(16, "ARNEarneARNEarne");
 
