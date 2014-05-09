@@ -1,5 +1,4 @@
 #include <stdint.h>
-#include "protocol.h"
 #include "radiolink.h"
 #include "uart.h"
 #include "main.h"

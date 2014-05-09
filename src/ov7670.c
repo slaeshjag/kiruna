@@ -16,9 +16,11 @@ void ov7670_write_reg(char slave_sub_adr, char data);
 
 static unsigned char camera_spi(unsigned char data) {
 	unsigned char ret;
-	LPC_GPIO0->MASKED_ACCESS[0x20] = 0;
+	util_delay(5);
+	LPC_GPIO0->MASKED_ACCESS[0x40] = 0;
 	ret = spi_send_recv(data);
-	LPC_GPIO0->MASKED_ACCESS[0x20] = ~0;
+	util_delay(5);
+	LPC_GPIO0->MASKED_ACCESS[0x40] = ~0;
 	return ret;
 }
 
@@ -26,12 +28,14 @@ void ov7670_init(void)
 {
 	/*SPI slave selct pin*/
 	LPC_IOCON->PIO0_6 = 0x0;
-	LPC_GPIO0->DIR |= 0x20;
-	LPC_GPIO0->MASKED_ACCESS[0x20] = 0xFF;
+	LPC_GPIO0->DIR |= 0x40;
+	LPC_GPIO0->MASKED_ACCESS[0x40] = 0xFF;
+	uart_printf("derp\n");
 	
 	/*Vsync*/
 	LPC_IOCON->PIO0_1 = 0x0;
 	LPC_GPIO0->DIR &= ~0x2;
+	uart_printf("derp2\n");
 	
 	// I2C basic configuration at 15.2
 	
@@ -51,6 +55,7 @@ void ov7670_init(void)
 	LPC_I2C->SCLL	= 60;
 	
 	LPC_I2C->CONSET		|= (1<<6);	//I2EN: I2C interface enabled (SDA and SCL not ignored) (15.7.1)
+	uart_printf("derp3\n");
 	
 	
 	/******************* CAM SETTINGS ************************/
@@ -62,21 +67,25 @@ void ov7670_init(void)
 	temp = ov7670_read_reg(0x3E);			// default 0x00 ?????
 	util_delay(5);
 	ov7670_write_reg(0x3E, (temp|0b00001000));	// COM14: Manual scaling enabled
+	uart_printf("derp4\n");
 	
 	// Scaling parameter where?!
 	
 	temp = ov7670_read_reg(0x12);					// default 0x00 ?????
 	util_delay(5);
 	ov7670_write_reg(0x12, ((temp & 0b01000000)|0b00001100));	// COM7: enable QVGA & RGB, ignore reserved
+	uart_printf("derp5\n");
 
 	
 	temp = ov7670_read_reg(0x40);					// default 0xC0
 	util_delay(5);
 	ov7670_write_reg(0x40, ((temp & 0b00001111)|0b11010000));	// COM15: enable [00] to [FF], RGB565, ignore reserved
+	uart_printf("derp6\n");
 	
 	temp = ov7670_read_reg(0x8C);			// default 0x00
 	util_delay(5);
 	ov7670_write_reg(0x8C, (temp & 0b11111101));	// RGB444: RGB565 effective only when RGB444[1] is low, ignore rest
+	uart_printf("derp7\n");
 }
 
 void ov7670_write(char slave_sub_adr)
@@ -241,4 +250,20 @@ void ov7670_get_data_packet(unsigned char *buf) {
 	}
 	
 	packet_number++;
+}
+
+
+void ov7670_test() {
+	unsigned char buff[16];
+
+	ov7670_fifo_reset();
+	util_delay(10000);
+	ov7670_fifo_unreset();
+	util_delay(10000);
+	for (;;) {
+		ov7670_get_data_packet(buff);
+		uart_send_raw(buff, 16);
+	}
+
+	return;
 }

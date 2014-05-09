@@ -8,6 +8,7 @@
 #include "audio.h"
 #include "ov7670.h"
 #include "motor.h"
+#include "protocol.h"
 
 
 void initialize(void) {
@@ -96,9 +97,12 @@ int main(int ram, char **argv) {
 	
 	//speaker_prebuffer();
 	systick_enable();
+
+	ov7670_test();
 	
 	while(1) {
-		microphone_send();
+		protocol_loop();
+		//microphone_send();
 		//audio_loop();
 	}
 	

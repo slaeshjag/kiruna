@@ -3,7 +3,7 @@
 
 
 #ifdef MOTHERSHIP
-#define	PROTOCOL_MAX_TIMESLICE  	800
+#define	PROTOCOL_MAX_TIMESLICE  	8000
 #else
 #define	PROTOCOL_MAX_TIMESLICE		4
 #endif
