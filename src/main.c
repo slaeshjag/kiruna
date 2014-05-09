@@ -57,6 +57,8 @@ void initialize(void) {
 	uart_printf("ov7670_init() done\n");
 	radiolink_init(32);
 	uart_printf("radiolink_init() done\n");
+	protocol_init();
+	uart_printf("protocol_init() done\n");
 }
 
 void systick_irq() {
@@ -98,8 +100,10 @@ int main(int ram, char **argv) {
 	systick_enable();
 	
 	while(1) {
-		microphone_send();
+		//microphone_send();
 		//audio_loop();
+		protocol_loop();
+		uart_printf("Released\n");
 	}
 	
 	/************ CAMERA TEST ****************/

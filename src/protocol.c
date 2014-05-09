@@ -5,6 +5,7 @@
 #include "main.h"
 #include "audio.h"
 #include "uart_buffer.h"
+#include "protocol.h"
 
 static enum protocol_state state;
 

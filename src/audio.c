@@ -4,6 +4,8 @@
 #include "radiolink.h"
 #include "main.h"
 
+static int late_dac = 0;
+
 #ifdef MOTHERSHIP
 
 unsigned char mic_buffer[2][16];
@@ -32,11 +34,17 @@ void audio_init() {
 }
 
 void speaker_output() {
+	if (radio_used()) {
+		late_dac = 1;
+		return;
+	}
+
 	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
 	spi_send_recv(spk_buffer[spk_buffer_index++]);
 	if (spk_buffer_index == 1024)
 		spk_buffer_index = 0;
 	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x80;
+	late_dac = 0;
 	//spk_buffer_index &= 0x3FF;
 }
 
@@ -110,4 +118,10 @@ void audio_loop() {
 	uart_printf("got data %i %i\n", spk_buffer_next, spk_buffer_index);
 }
 
+
 #endif
+
+int audio_late_dac() {
+	return late_dac;
+}
+

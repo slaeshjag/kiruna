@@ -34,7 +34,6 @@ enum protocol_state {
 
 struct protocol_cmd_header {
 	unsigned int		cmd		: 3;
-	unsigned int		packet_seq	: 5;
 	unsigned int		length		: 4;
 	unsigned int		go_direction	: 3;
 	/* 17 more bits to fill */
