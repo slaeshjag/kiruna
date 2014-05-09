@@ -317,11 +317,12 @@ int radiolink_init(char _packet_size) {
 	reg[0] = 0x0A;
 	radiolink_write_reg(REG_CONFIG, 1, reg);
 	util_delay(150000);
-
+	
+	/*RF channel*/
 	reg[0] = 125;
 	radiolink_write_reg(REG_RF_CH, 1, reg);
 	util_delay(100000);
-
+	
 	radiolink_read_reg(REG_CONFIG, 1, reg);
 	config = reg[0];
 	

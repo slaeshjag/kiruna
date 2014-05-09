@@ -111,13 +111,12 @@ void speaker_prebuffer() {
 
 
 void audio_loop() {
-	radiolink_recv(32, &spk_buffer[spk_buffer_next]);
-	spk_buffer_next += 32;
+	radiolink_recv(16, &spk_buffer[spk_buffer_next]);
+	spk_buffer_next += 16;
 	if (spk_buffer_next == 1024)
 		spk_buffer_next = 0;
-	uart_printf("got data %i %i\n", spk_buffer_next, spk_buffer_index);
+	return;
 }
-
 
 #endif
 
