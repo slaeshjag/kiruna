@@ -4,16 +4,14 @@
 #include "uart.h"
 #include "main.h"
 #include "spi.h"
-#include "i2c.h"
 #include "radiolink.h"
-#include "motor.h"
 #include "audio.h"
-#include "ultrasonic.h"
-#include "microswitch.h"
-
+#include "i2c.h"
+#include "motor.h"
 
 
 void initialize(void) {
+	unsigned int regval;
 	/* TODO: Set CPU clock etc. */
 	
 	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 16);
@@ -55,8 +53,8 @@ void initialize(void) {
 	uart_printf("us_init() done\n");
 	ms_init();
 	uart_printf("ms_init() done\n");
-	i2c_init();
-	uart_printf("i2c_init() done\n");
+	ov7670_init();
+	uart_printf("ov7670_init() done\n");
 	radiolink_init(32);
 	uart_printf("radiolink_init() done\n");
 }
@@ -105,22 +103,19 @@ int main(int ram, char **argv) {
 	}
 	
 	/************ CAMERA TEST ****************/
-	
-		// QVGA RGB16
-	char sub_adr = 0x0B;
-	char cam_test = ov7670_test(sub_adr);
-	uart_printf("CAM at 0x0B is %x\n", cam_test);
-	while(1);
 
-	/*****************************************/
+	while(1);
+	
+	/*************** US TEST *****************/
+	/*
 	while (1)
 	{
-		uart_printf("US is %i\n", us());
+		//uart_printf("US is %i\n", us());
 	}
+	*/
+	/************** MAIN CODE ***************/
 	
-	/*****************************************/
-
-	motor_logic();
+	motor_logic();		// BLOCKING
 	
 	/*****************************************/
 	/*

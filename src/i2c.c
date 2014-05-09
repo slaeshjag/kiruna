@@ -8,43 +8,57 @@
 
 #define SLAVE_SUB_ADR	0x12
 
+char ov7670_read_reg(char slave_sub_adr);
+void ov7670_write_reg(char slave_sub_adr, char data);
 
-void i2c_init(void)
+
+
+void ov7670_init(void)
 {
 	// I2C basic configuration at 15.2
 	
-	// Initialize clock pin (SCL)
-	//LPC_IOCON->PIO0_4		&= ~(0x307);	//I2CMODE: Standard mode/Fast-mode I2C. Also 0 FUNC bits (7.4.11)
+	LPC_I2C->CONCLR		= 0x6C;		// Clearing: AA, SI, STA and I2EN
+	
 	LPC_SYSCON->SYSAHBCLKCTRL	|= (1<<5);	//Enables clock for I2C (3.5.14)
 	LPC_SYSCON->PRESETCTRL		|= (0x2);	//I2C reset not allowed (3.5.2)
 
-	LPC_IOCON->PIO0_4		= 0x1;		//FUNC: Select I2C function SCL (7.4.11)
-	
-	// Initialize data pin (SDA)
-	//LPC_IOCON->PIO0_5	&= ~(0x303);	//I2CMODE: Standard mode/Fast-mode I2C. Also zero some FUNC bits (7.4.12)
+	LPC_IOCON->PIO0_4	= 0x1;		//FUNC: Select I2C function SCL (7.4.11)
 	LPC_IOCON->PIO0_5	= 0x1;		//FUNC: Select I2C function SDA (7.4.12)
-	
-	LPC_I2C->CONCLR			= 0x6C;		// ?????????????	01101100
-	
+		
 	/*	System clock at 48 MHz, and we want I2C in Fast-Mode (400 kHz).
 	 * 	Thus our divider should be 120. HIGH and LOW should be of equal length,
 	 * 	so each is set at 60 (15.7.5).
 	 */
 	LPC_I2C->SCLH	= 60;
-	LPC_I2C->SCLL	= 60;	
+	LPC_I2C->SCLL	= 60;
+	
+	LPC_I2C->CONSET		|= (1<<6);	//I2EN: I2C interface enabled (SDA and SCL not ignored) (15.7.1)
 	
 	
-	LPC_I2C->CONSET			|= (1<<6);	//I2EN: I2C interface enabled (15.7.1)
+	/******************* CAM SETTINGS ************************/
 	
-	/*When I2EN is “0”, the SDA and SCL input signals are ignored, the I2C block is in the “not
-	addressed” slave state, and the STO bit is forced to “0”.*/
+	char temp = ov7670_read_reg(0x0C);		// default 0x00 ???????
+	util_delay(5);
+	ov7670_write_reg(0x0C, (temp|0b00001000));	// COM3: enable scaling
 	
-	/* Master Transmit mode: (15.8.1)
-	The STA, STO and SI bits must be 0. The SI Bit is cleared by writing 1 to the
-	SIC bit in the CONCLR register. THe STA bit should be cleared after writing the 
-	slave address.
-	*/
+	temp = ov7670_read_reg(0x3E);			// default 0x00 ?????
+	util_delay(5);
+	ov7670_write_reg(0x3E, (temp|0b00001000));	// COM14: Manual scaling enabled
+	
+	// Scaling parameter where?!
+	
+	temp = ov7670_read_reg(0x12);					// default 0x00 ?????
+	util_delay(5);
+	ov7670_write_reg(0x12, ((temp & 0b01000000)|0b00001100));	// COM7: enable QVGA & RGB, ignore reserved
 
+	
+	temp = ov7670_read_reg(0x40);					// default 0xC0
+	util_delay(5);
+	ov7670_write_reg(0x40, ((temp & 0b00001111)|0b11010000));	// COM15: enable [00] to [FF], RGB565, ignore reserved
+	
+	temp = ov7670_read_reg(0x8C);			// default 0x00
+	util_delay(5);
+	ov7670_write_reg(0x8C, (temp & 0b11111101));	// RGB444: RGB565 effective only when RGB444[1] is low, ignore rest
 }
 
 void ov7670_write(char slave_sub_adr)
@@ -63,9 +77,9 @@ void ov7670_write(char slave_sub_adr)
 	while(1)
 	{
 		temp = (LPC_I2C->STAT & 0xF8);
-		if (temp == 0x18) break;
-		else if (temp == 0x20) break;
-		else if (temp == 0x38) break;
+		if (temp == 0x18)	break; 	// (SLA+W) sent, ACKed.
+		else if (temp == 0x20)	break; 	// (SLA+W) sent, NACKed.
+		else if (temp == 0x38)	break; 	// (SLA+W) sent, arbitration lost.
 	}
 		
 	/******************** SUB-ADDRESS ************************/
@@ -75,9 +89,9 @@ void ov7670_write(char slave_sub_adr)
 	while(1)					//Waiting for ACK from slave confirming received data (15.10.1)
 	{
 		temp = (LPC_I2C->STAT & 0xF8);
-		if (temp == 0x28) break;
-		else if (temp == 0x30) break;
-		else if (temp == 0x38) break;
+		if (temp == 0x28)	break;	// DATA (sub-adr) sent, ACKed.
+		else if (temp == 0x30)	break;	// DATA (sub-adr) sent, NACKed.
+		else if (temp == 0x38)	break;	// DATA (sub-adr) sent, arbitration lost.
 	}
 
 	/******************** STOP ************************/
@@ -86,7 +100,7 @@ void ov7670_write(char slave_sub_adr)
 	LPC_I2C->CONCLR		= (1<<3);	//Clear SI (15.7.6)
 }
 
-void ov7670_write_data(char slave_sub_adr, char data)
+void ov7670_write_reg(char slave_sub_adr, char data)
 {
 	int temp;
 	
@@ -102,21 +116,9 @@ void ov7670_write_data(char slave_sub_adr, char data)
 	while(1)
 	{
 		temp = (LPC_I2C->STAT & 0xF8);
-		if (temp == 0x18)
-		{
-			uart_printf("(SLA+W) sent, ACKed.\n");
-			break;
-		}
-		else if (temp == 0x20)
-		{
-			uart_printf("(SLA+W) sent, NACKed.\n");
-			break;
-		}
-		else if (temp == 0x38)
-		{
-			uart_printf("(SLA+W) sent, arbitration lost.\n");
-			break;
-		}
+		if (temp == 0x18)	break; 	// (SLA+W) sent, ACKed.
+		else if (temp == 0x20)	break; 	// (SLA+W) sent, NACKed.
+		else if (temp == 0x38)	break; 	// (SLA+W) sent, arbitration lost.
 	}
 	
 	/******************** SUB-ADDRESS ************************/
@@ -126,21 +128,9 @@ void ov7670_write_data(char slave_sub_adr, char data)
 	while(1)					//Waiting for ACK from slave confirming received data (15.10.1)
 	{
 		temp = (LPC_I2C->STAT & 0xF8);
-		if (temp == 0x28)
-		{
-			uart_printf("DATA (sub-adr) sent, ACKed.\n");
-			break;
-		}
-		else if (temp == 0x30)
-		{
-			uart_printf("DATA (sub-adr) sent, NACKed.\n");
-			break;
-		}
-		else if (temp == 0x38)
-		{
-			uart_printf("DATA (sub-adr) sent, arbitration lost.\n");
-			break;
-		}
+		if (temp == 0x28)	break;	// DATA (sub-adr) sent, ACKed.
+		else if (temp == 0x30)	break;	// DATA (sub-adr) sent, NACKed.
+		else if (temp == 0x38)	break;	// DATA (sub-adr) sent, arbitration lost.
 	}
 	
 	/************************ DATA ***************************/
@@ -150,30 +140,18 @@ void ov7670_write_data(char slave_sub_adr, char data)
 	while(1)				//Waiting for ACK from slave confirming received data (15.10.1)
 	{
 		temp = (LPC_I2C->STAT & 0xF8);
-		if (temp == 0x28)
-		{
-			uart_printf("DATA sent, ACKed.\n");
-			break;
-		}
-		else if (temp == 0x30)
-		{
-			uart_printf("DATA sent, NACKed.\n");
-			break;
-		}
-		else if (temp == 0x38)
-		{
-			uart_printf("DATA sent, arbitration lost.\n");
-			break;
-		}
+		if (temp == 0x28)	break;	// DATA sent, ACKed.
+		else if (temp == 0x30)	break;	// DATA sent, NACKed.
+		else if (temp == 0x38)	break;	// DATA sent, arbitration lost.
 	}
 
-	/******************** STOP ************************/
+	/*********************** STOP ***************************/
 
 	LPC_I2C->CONSET		|= (1<<4);	//Send STOP flag (P). Bit cleared when detected on bus. (15.7.1)
 	LPC_I2C->CONCLR		= (1<<3);	//Clear SI (15.7.6)
 }
 
-char ov7670_read(int slave_sub_adr)
+char ov7670_read(int slave_sub_adr)	// This should be used only after a write() (see read_reg()) or a write_reg()
 {
 	int temp;
 	
@@ -189,9 +167,9 @@ char ov7670_read(int slave_sub_adr)
 	while(1)
 	{
 		temp = (LPC_I2C->STAT & 0xF8);
-		if (temp == 0x40) break;
-		else if (temp == 0x48) break;
-		else if (temp == 0x38) break;
+		if (temp == 0x40) 	break;	// (SLA+R) sent, ACKed.
+		else if (temp == 0x48)	break;	// (SLA+R) sent, NACKed.
+		else if (temp == 0x38)	break;	// Arbitration lost.
 	}
 	
 	/***************** READ DATA **********************/
@@ -200,8 +178,8 @@ char ov7670_read(int slave_sub_adr)
 	while(1)				//Waiting for ACK from slave confirming received data (15.10.1)
 	{
 		temp = (LPC_I2C->STAT & 0xF8);
-		if (temp == 0x50) break;
-		else if (temp == 0x58) break;
+		if (temp == 0x50)	break;	// DATA (sub-adr value) received, ACK sent.
+		else if (temp == 0x58)	break;	// DATA (sub-adr value) received, NACK sent.
 	}
 
 	/******************** STOP ************************/
@@ -212,9 +190,11 @@ char ov7670_read(int slave_sub_adr)
 	return LPC_I2C->DAT;
 }
 
-char ov7670_test(char slave_sub_adr)
+char ov7670_read_reg(char slave_sub_adr)
 {
 	ov7670_write(slave_sub_adr);
-	util_delay(5);
+	util_delay(5);				// A delay must be set or it will fail in between them (usually set to 5)
 	return ov7670_read(slave_sub_adr);
 }
+
+
