@@ -103,8 +103,6 @@ void speaker_prebuffer() {
 
 
 void audio_loop() {
-	uint16_t sample;
-
 	radiolink_recv(16, &spk_buffer[spk_buffer_next]);
 	spk_buffer_next += 16;
 	if (spk_buffer_next == 1024)

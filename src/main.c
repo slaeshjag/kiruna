@@ -6,7 +6,7 @@
 #include "spi.h"
 #include "radiolink.h"
 #include "audio.h"
-#include "i2c.h"
+#include "ov7670.h"
 #include "motor.h"
 #include "ultrasonic.h"
 #include "microswitch.h"
@@ -105,9 +105,9 @@ int main(int ram, char **argv) {
 	/************ CAMERA TEST ****************/
 	
 		// QVGA RGB16
-	char sub_adr = 0x0B;
+	/*char sub_adr = 0x0B;
 	char cam_test = ov7670_test(sub_adr);
-	uart_printf("CAM at 0x0B is %x\n", cam_test);
+	uart_printf("CAM at 0x0B is %x\n", cam_test);*/
 	/*****************************************/
 
 	motor_logic();

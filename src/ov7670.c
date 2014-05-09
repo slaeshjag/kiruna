@@ -1,6 +1,7 @@
 #include "system/LPC11xx.h"
 #include "uart.h"
 #include "util.h"
+#include "spi.h"
 
 
 #define SLAVE_ADR_W	0x42
@@ -8,13 +9,30 @@
 
 #define SLAVE_SUB_ADR	0x12
 
+unsigned short packet_number;
+
 char ov7670_read_reg(char slave_sub_adr);
 void ov7670_write_reg(char slave_sub_adr, char data);
 
-
+static unsigned char camera_spi(unsigned char data) {
+	unsigned char ret;
+	LPC_GPIO0->MASKED_ACCESS[0x20] = 0;
+	ret = spi_send_recv(data);
+	LPC_GPIO0->MASKED_ACCESS[0x20] = ~0;
+	return ret;
+}
 
 void ov7670_init(void)
 {
+	/*SPI slave selct pin*/
+	LPC_IOCON->PIO0_6 = 0x0;
+	LPC_GPIO0->DIR |= 0x20;
+	LPC_GPIO0->MASKED_ACCESS[0x20] = 0xFF;
+	
+	/*Vsync*/
+	LPC_IOCON->PIO0_1 = 0x0;
+	LPC_GPIO0->DIR &= ~0x2;
+	
 	// I2C basic configuration at 15.2
 	
 	LPC_I2C->CONCLR		= 0x6C;		// Clearing: AA, SI, STA and I2EN
@@ -197,4 +215,30 @@ char ov7670_read_reg(char slave_sub_adr)
 	return ov7670_read(slave_sub_adr);
 }
 
+void ov7670_fifo_reset() {
+	camera_spi(0x0);
+}
 
+void ov7670_fifo_unreset() {
+	packet_number = 0;
+	camera_spi(0xFF);
+	camera_spi(0xFF);
+}
+
+void ov7670_vsync_reset() {
+	while(!LPC_GPIO0->MASKED_ACCESS[0x02]);
+	ov7670_fifo_reset();
+}
+
+void ov7670_get_data_packet(unsigned char *buf) {
+	int i;
+	
+	buf[0] = packet_number >> 8;
+	buf[1] = packet_number;
+	
+	for(i = 2; i < 16; i++) {
+		buf[i] = camera_spi(0xFF);
+	}
+	
+	packet_number++;
+}

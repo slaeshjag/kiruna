@@ -4,7 +4,7 @@
 #include "motor.h"
 #include "ultrasonic.h"
 #include "microswitch.h"
-#include "i2c.h"
+#include "ov7670.h"
 
 #define	MOTOR_REGISTER	MOTOR_PORT->MASKED_ACCESS[MOTOR_MASK]	// Masked changes only the bits specified in brackets
 
