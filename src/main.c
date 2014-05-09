@@ -2,11 +2,12 @@
 #include "system/LPC11xx.h"
 #include "util.h"
 #include "uart.h"
+#include "main.h"
 #include "spi.h"
-#include "i2c.h"
 #include "radiolink.h"
-#include "motor.h"
 #include "audio.h"
+#include "i2c.h"
+#include "motor.h"
 #include "ultrasonic.h"
 #include "microswitch.h"
 
@@ -54,8 +55,8 @@ void initialize(void) {
 	uart_printf("us_init() done\n");
 	ms_init();
 	uart_printf("ms_init() done\n");
-	i2c_init();
-	uart_printf("i2c_init() done\n");
+	ov7670_init();
+	uart_printf("ov7670_init() done\n");
 	radiolink_init(16);
 	uart_printf("radiolink_init() done\n");
 }
@@ -63,10 +64,6 @@ void initialize(void) {
 void systick_irq() {
 	microphone_sample();
 	//speaker_output();
-	/*LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
-	spi_send_recv(~data);
-	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x80;*/
-	//data += 5;
 }
 
 void systick_enable() {
@@ -77,20 +74,16 @@ void systick_enable() {
 }
 
 int main(int ram, char **argv) {
-	int i;
-	
 	initialize();
+	util_delay(200000);
 	uart_printf("AutoKorg™ READY TO WRECK SOME HAVOC!\n");
-	
-	util_delay(1000000);
 
-	
 	/*****************************************/
 	
 	while(1) {
-		unsigned char data[16];
-		radiolink_recv(16, data);
-		uart_send_raw(data, 16);
+		unsigned char data[32];
+		radiolink_recv(32, data);
+		uart_send_raw(data, 32);
 	}
 	
 	/*while(1) {
@@ -115,28 +108,8 @@ int main(int ram, char **argv) {
 	char sub_adr = 0x0B;
 	char cam_test = ov7670_test(sub_adr);
 	uart_printf("CAM at 0x0B is %x\n", cam_test);
-	while(1);
-
-	/*****************************************/
-	while (1)
-	{
-		uart_printf("US is %i\n", us());
-	}
-	
 	/*****************************************/
 
 	motor_logic();
-	
-	/*****************************************/
-	/*
-	int us_time;
-	
-	while(1)
-	{
-		radiolink_recv(4, &us_time);
-		uart_printf("US: %i\n", us_time);
-	}
-	*/
-	
 	return 0;
 }

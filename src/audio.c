@@ -2,8 +2,11 @@
 #include "uart.h"
 #include "spi.h"
 #include "radiolink.h"
+#include "main.h"
 
-unsigned char mic_buffer[2][32];
+#ifdef MOTHERSHIP
+
+unsigned char mic_buffer[2][16];
 static unsigned char *sample_buffer = mic_buffer[0];
 static unsigned char *send_buffer = mic_buffer[1];
 int send_data = 0;
@@ -37,6 +40,19 @@ void speaker_output() {
 	//spk_buffer_index &= 0x3FF;
 }
 
+
+void speaker_fill(unsigned char *data, int data_len) {
+	int i;
+	for (i = 0; i < data_len; i++) {
+		spk_buffer[spk_buffer_next++] = data[i];
+		if (spk_buffer_next == 1024)
+			spk_buffer_next = 0;
+	}
+
+	return;
+}
+
+
 unsigned char microphone_sample() {
 	unsigned char data;
 	void *tmp;
@@ -47,7 +63,7 @@ unsigned char microphone_sample() {
 	
 	sample_buffer[index++] = data;
 	
-	if(index == 32) {
+	if(index == 16) {
 		index = 0;
 		tmp = sample_buffer;
 		sample_buffer = send_buffer;
@@ -59,13 +75,16 @@ unsigned char microphone_sample() {
 	return data;
 }
 
-void microphone_send() {
+int microphone_send() {
 	if(!send_data)
-		return;
-	
-	radiolink_send(32, send_buffer);
-	
+		return 0;
+	if (send_buffer[0] == 0xFF)
+		send_buffer[0] = 0xFE;
+	radiolink_send_unreliable(16, send_buffer);
+//	radiolink_send(16, "ARNEarneARNEarne");
+
 	send_data = 0;
+	return 1;
 }
 
 void speaker_prebuffer() {
@@ -92,3 +111,5 @@ void audio_loop() {
 		spk_buffer_next = 0;
 	return;
 }
+
+#endif

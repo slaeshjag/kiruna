@@ -2,7 +2,7 @@
 #include "uart.h"
 #include "util.h"
 #include "audio.h"
-
+#include "radiolink.h"
 
 /*
  * Presuming that the LPC1114 runs on 48 MHz (PCLK) and an interrupt should occur each 128 us;
@@ -27,9 +27,7 @@ void interrupter_timer16_init(void)
 	
 	NVIC_EnableIRQ(TIMER_16_0_IRQn);		//enable interrupt
 	LPC_TMR16B0->TCR		|= 0x3;		//reset and enable counter (18.7.2)
-	LPC_TMR16B0->TCR		&= ~(0x2);	//clear reset bit (18.7.2)
-	
-	uart_printf("interrupter init done!\n");
+	LPC_TMR16B0->TCR		&= ~(0x2);	//clear reset bit (18.7.2)	
 }
 
 
