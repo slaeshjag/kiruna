@@ -62,6 +62,7 @@ void initialize(void) {
 
 void systick_irq() {
 	microphone_sample();
+	//speaker_output();
 	/*LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
 	spi_send_recv(~data);
 	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x80;*/
@@ -87,16 +88,26 @@ int main(int ram, char **argv) {
 	/*****************************************/
 	
 	while(1) {
-		unsigned char data[32];
-		radiolink_recv(32, data);
-		uart_send_raw(data, 32);
+		unsigned char data[16];
+		radiolink_recv(16, data);
+		uart_send_raw(data, 16);
 	}
+	
+	/*while(1) {
+		unsigned char data[16];
+		for(i = 0; i < 16; i++)
+			data[i] = uart_recv_char();
+		radiolink_send_unreliable(16, data);
+		
+	}*/
 
 	//speaker_prebuffer();
 	systick_enable();
 	
-	while(1)
+	while(1) {
+		//audio_loop();
 		microphone_send();
+	}
 	
 	/************ CAMERA TEST ****************/
 	
