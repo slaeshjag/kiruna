@@ -4,7 +4,9 @@
 #include "motor.h"
 #include "ultrasonic.h"
 #include "microswitch.h"
-#include "i2c.h"
+#include "ov7670.h"
+#include "protocol.h"
+
 
 #define	MOTOR_REGISTER	MOTOR_PORT->MASKED_ACCESS[MOTOR_MASK]	// Masked changes only the bits specified in brackets
 
@@ -98,13 +100,21 @@ void motor_go(enum motor_direction dir, unsigned int speed)
 	int is_stopped = 0;
 	int normalize_start_counter = 0;
 	int normalize_start_loop = 0;
+	
+	int radio_motor_left;
+	int radio_motor_right;
+	int radio_motor_speed;
 
 void motor_logic(void)
 {
 	value = us_read_nonblock();
 	if (value < 0) return;
 	
-	uart_printf("US is %i\n", value);	
+	uart_printf("US is %i\n", value);
+	
+	protocol_get_motor(&radio_motor_left, &radio_motor_right, &radio_motor_speed);	// Getting radio commands
+	
+	radio_motor_speed *= 100;	// Because received value is either 0 or 1 (for now), not in percentage.
 	
 	if (is_paused)
 	{
@@ -113,29 +123,19 @@ void motor_logic(void)
 			uart_printf("is paused and left/right is pressed - unpausing!\n");
 			util_delay(MOTOR_TIME_SHORT);
 			is_paused = 0;
+			normalize_stop_loop = 0;	// if pause was done while we were normalizing, reset values
+			normalize_start_counter = 0;
 		}
-	}
-	/*if (is_paused)	// MÅSTE VARA FÖRST
-	{
-		if (value < PAUSING_DISTANCE)
+		else if(radio_motor_speed)	// We've received some form of command via radio to go forward, so un-pause
 		{
+			uart_printf("is paused and radio sent moving command - unpausing!\n");
+			util_delay(MOTOR_TIME_SHORT);
 			is_paused = 0;
-			uart_printf("Paused and under pausing distance, unpausing!\n");
-			util_delay(MOTOR_TIME_SHORT);	// Time to remove "hand", so it doesn't pause quickly again
-			motor_go(MOTOR_DIR_FORWARD, 100);
+			normalize_stop_loop = 0;	// if pause was done while we were normalizing, reset values
+			normalize_start_counter = 0;
 		}
 	}
-	else if (value < PAUSING_DISTANCE)	// "Hand" appears, pause
-	{
-		uart_printf("Under pausing distance, pausing!\n");
-		is_paused = 1;
-		motor_go(MOTOR_DIR_STAHP, 100);
-		util_delay(MOTOR_TIME_SHORT);	// Time to remove "hand", so it doesn't unpause
-		
-		//normalize_stop_counter = 0;	// we clear our normalizer in case it was counting before we paused
-		//normalize_stop_loop = 0;
-	}*/
-	
+	/****************************/
 	else if(ms_left_pressed())
 	{
 		uart_printf("Left pressed, pausing!\n");
@@ -214,8 +214,16 @@ void motor_logic(void)
 		
 		motor_go(MOTOR_DIR_FORWARD, 100);*/
 	}
-
-	else if (normalize_stop_loop > 0)	// we are here checking multiple times to ensure we need to stop
+	else if (!radio_motor_speed)	// If radio sends stop, or radiolink is dropped value is 0
+	{
+		uart_printf("Radiolink 'sends' stop, stopping!\n");
+		
+		motor_go(MOTOR_DIR_STAHP, 100);
+		util_delay(MOTOR_TIME_SHORT);
+		is_paused = 1;
+	}
+	/****************************/
+	else if (normalize_stop_loop > 0)	// we are here checking US values multiple times to ensure we need to stop
 	{
 		if (value < STOPPING_DISTANCE) normalize_stop_counter++;
 		
@@ -239,6 +247,7 @@ void motor_logic(void)
 		uart_printf("Under 20, checking for more bogus values.\n");
 				util_delay(MOTOR_TIME_SHORT);	// for prints
 	}
+	/****************************/
 	else if (normalize_start_loop > 0)
 	{
 		normalize_start_counter++;
@@ -257,14 +266,34 @@ void motor_logic(void)
 		}
 		else normalize_start_loop--;
 	}
-	else if (is_stopped)
+	else if (is_stopped)	// if is stopped and over stopping distance
 	{
-		normalize_start_loop = 5;	// if is stopped and over stopping distance
+		normalize_start_loop = 5;
 		uart_printf("Over 20 and stopped, checking for more bogus values.\n");
 				util_delay(MOTOR_TIME_SHORT);	// for prints
 
 	}
-	else motor_go(MOTOR_DIR_FORWARD, 100);
+	/****************************/
+	else if (radio_motor_left && radio_motor_right)
+	{
+		uart_printf("Received going forward from radio\n");
+		motor_go(MOTOR_DIR_FORWARD, radio_motor_speed);
+	}
+	else if (radio_motor_left)
+	{
+		uart_printf("Received turning left from radio\n");
+		motor_go(MOTOR_DIR_LEFT, radio_motor_speed);
+	}
+	else if (radio_motor_right)
+	{
+		uart_printf("Received going forward from radio\n");
+		motor_go(MOTOR_DIR_RIGHT, radio_motor_speed);
+	}
+	else
+	{
+		uart_printf("Received going backward from radio\n");
+		motor_go(MOTOR_DIR_BACKWARD, radio_motor_speed);
+	}
 	
 	us_trig();
 }

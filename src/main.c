@@ -5,14 +5,13 @@
 #include "spi.h"
 #include "radiolink.h"
 #include "audio.h"
-#include "i2c.h"
+#include "ov7670.h"
 #include "motor.h"
 #include "ultrasonic.h"
 #include "microswitch.h"
 
 
 void initialize(void) {
-	unsigned int regval;
 	/* TODO: Set CPU clock etc. */
 	
 	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 16);
@@ -55,9 +54,9 @@ void initialize(void) {
 	ms_init();
 	uart_printf("ms_init() done\n");
 	/*ov7670_init();
-	uart_printf("ov7670_init() done\n");
-	radiolink_init(32);
-	uart_printf("radiolink_init() done\n");*/
+	uart_printf("ov7670_init() done\n");*/
+	radiolink_init(16);
+	uart_printf("radiolink_init() done\n");
 }
 
 void systick_irq() {
@@ -82,7 +81,6 @@ int main(int ram, char **argv) {
 
 	util_delay(200000);
 	uart_printf("AutoKorg™ READY TO WRECK SOME HAVOC!\n");
-	us_trig();
 	
 	/*****************************************/
 	
@@ -107,31 +105,12 @@ int main(int ram, char **argv) {
 		audio_loop();
 	}
 	*/
-	/************ CAMERA TEST ****************/
-
-	//while(1);
+	/*******************************************/
 	
-	/*************** US TEST *****************/
-	/*
-	while (1)
-	{
-		int val = us_read_block();
-		if (val > 0) uart_printf("US is %i\n", val);
+	us_trig();
+	while (1) {
+		protocol_loop();
+		motor_logic();
 	}
-	*/
-	/************** MAIN CODE ***************/
-	while(1) motor_logic();
-	
-	/****************************************/
-	/*
-	int us_time;
-	
-	while(1)
-	{
-		radiolink_recv(4, &us_time);
-		uart_printf("US: %i\n", us_time);
-	}
-	*/
-	
 	return 0;
 }

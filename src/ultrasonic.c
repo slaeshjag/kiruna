@@ -20,7 +20,6 @@ enum {
 } us_state = STATE_NONE;
 
 int us_counter = 0;
-int us_hasUnreadValue = 0;
 int us_value = 0;
 
 
@@ -35,61 +34,20 @@ void us_trig(void)		// Ultrasonic trigger, BLOCKING
 	us_state = STATE_COUNTING;
 }
 
-int us_read(void)	// blocking, not used
-{
-	int pulseWidth = 0;
-	
-	while ((US_PORT->DATA & (1<<US_ECHO)) == 0);		//while pulse is travelling
-	
-	while ((US_PORT->DATA & (1<<US_ECHO))) pulseWidth++;	//measuring the distance of pulse
-		
-	return pulseWidth;
-}
-
-
-int us(void)		// not used (anymore)
-{
-	us_trig();
-	return us_read();
-}
-
-
-void us_handler(void)
+void us_handler(void)			// This is run from the systick interrupter
 {
 	if (us_state == STATE_COUNTING)	// when 1 we want to read the pulse (if there is one anymore)
 	{
 		if (US_PORT->DATA & (1<<US_ECHO)) us_counter++;	// measuring length of pulse
-		else {						// here pulse has ended
-			us_state = STATE_DONE;
-		}
+		else us_state = STATE_DONE;			// here pulse has ended
 	}
 }
 
 int us_read_nonblock() {
-	if(us_state != STATE_DONE)
-		return -1;
+	if(us_state != STATE_DONE) return -1;
 	
 	us_state = STATE_NONE;
-	
 	return us_counter;
-}
-
-int us_read_block()
-{
-	us_trig();
-	uart_printf("Done trigging\n");
-	
-	util_delay(10000);
-	
-	
-	while (!us_hasUnreadValue);
-	
-	uart_printf("Value available\n");
-	
-	int temp = us_value;
-	us_hasUnreadValue = 0;	// when we read the value we trig it to get the coming one
-	
-	return temp;
 }
 
 

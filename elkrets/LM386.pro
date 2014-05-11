@@ -1,4 +1,4 @@
-update=2014-05-05 15:11:46
+update=2014-05-09 14:12:31
 last_client=eeschema
 [eeschema]
 version=1
@@ -40,3 +40,4 @@ LibName28=atmel
 LibName29=contrib
 LibName30=valves
 LibName31=lpc1114fn28
+LibName32=xc9572

@@ -1,0 +1,75 @@
+<html><head><link type='text/css' href='style.css' rel='stylesheet'></head><body class='pgBgnd'>
+<h3 align='center'>Equations</h3>
+<table width='90%' align='center' border='1' cellpadding='0' cellspacing='0'>
+<tr><td>
+</td></tr><tr><td>
+********** Mapped Logic **********
+</td></tr><tr><td>
+FDCPE_FIFO_RESET: FDCPE port map (FIFO_RESET,FIFO_RESET_D,nSLAVE_SELECT,'0','0');
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIFO_RESET_D <= (NOT MOSI_P(0) AND NOT MOSI_P(1) AND NOT MOSI_P(2) AND NOT MOSI_P(3) AND 
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	NOT MOSI_P(4) AND NOT MOSI_P(5) AND NOT MOSI_P(6) AND NOT MOSI_P(7));
+</td></tr><tr><td>
+FDCPE_MISO: FDCPE port map (MISO_I,MISO,SCK,'0','0');
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MISO <= ((nSLAVE_SELECT AND CAMERA_DATA(7))
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	OR (NOT nSLAVE_SELECT AND XLXI_26/Q(6)));
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MISO <= MISO_I when MISO_OE = '1' else 'Z';
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MISO_OE <= NOT nSLAVE_SELECT;
+</td></tr><tr><td>
+FDCPE_MOSI_P0: FDCPE port map (MOSI_P(0),MOSI,SCK,'0','0',NOT nSLAVE_SELECT);
+</td></tr><tr><td>
+FDCPE_MOSI_P1: FDCPE port map (MOSI_P(1),MOSI_P(0),SCK,'0','0',NOT nSLAVE_SELECT);
+</td></tr><tr><td>
+FDCPE_MOSI_P2: FDCPE port map (MOSI_P(2),MOSI_P(1),SCK,'0','0',NOT nSLAVE_SELECT);
+</td></tr><tr><td>
+FDCPE_MOSI_P3: FDCPE port map (MOSI_P(3),MOSI_P(2),SCK,'0','0',NOT nSLAVE_SELECT);
+</td></tr><tr><td>
+FDCPE_MOSI_P4: FDCPE port map (MOSI_P(4),MOSI_P(3),SCK,'0','0',NOT nSLAVE_SELECT);
+</td></tr><tr><td>
+FDCPE_MOSI_P5: FDCPE port map (MOSI_P(5),MOSI_P(4),SCK,'0','0',NOT nSLAVE_SELECT);
+</td></tr><tr><td>
+FDCPE_MOSI_P6: FDCPE port map (MOSI_P(6),MOSI_P(5),SCK,'0','0',NOT nSLAVE_SELECT);
+</td></tr><tr><td>
+FDCPE_MOSI_P7: FDCPE port map (MOSI_P(7),MOSI_P(6),SCK,'0','0',NOT nSLAVE_SELECT);
+</td></tr><tr><td>
+</td></tr><tr><td>
+READ_STROBE <= (NOT nSLAVE_SELECT AND NOT FIFO_RESET);
+</td></tr><tr><td>
+FDCPE_XLXI_26/Q0: FDCPE port map (XLXI_26/Q(0),XLXI_26/Q_D(0),SCK,'0','0');
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;XLXI_26/Q_D(0) <= (nSLAVE_SELECT AND CAMERA_DATA(0));
+</td></tr><tr><td>
+FDCPE_XLXI_26/Q1: FDCPE port map (XLXI_26/Q(1),XLXI_26/Q_D(1),SCK,'0','0');
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;XLXI_26/Q_D(1) <= ((nSLAVE_SELECT AND CAMERA_DATA(1))
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	OR (NOT nSLAVE_SELECT AND XLXI_26/Q(0)));
+</td></tr><tr><td>
+FDCPE_XLXI_26/Q2: FDCPE port map (XLXI_26/Q(2),XLXI_26/Q_D(2),SCK,'0','0');
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;XLXI_26/Q_D(2) <= ((nSLAVE_SELECT AND CAMERA_DATA(2))
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	OR (NOT nSLAVE_SELECT AND XLXI_26/Q(1)));
+</td></tr><tr><td>
+FDCPE_XLXI_26/Q3: FDCPE port map (XLXI_26/Q(3),XLXI_26/Q_D(3),SCK,'0','0');
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;XLXI_26/Q_D(3) <= ((nSLAVE_SELECT AND CAMERA_DATA(3))
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	OR (NOT nSLAVE_SELECT AND XLXI_26/Q(2)));
+</td></tr><tr><td>
+FDCPE_XLXI_26/Q4: FDCPE port map (XLXI_26/Q(4),XLXI_26/Q_D(4),SCK,'0','0');
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;XLXI_26/Q_D(4) <= ((nSLAVE_SELECT AND CAMERA_DATA(4))
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	OR (NOT nSLAVE_SELECT AND XLXI_26/Q(3)));
+</td></tr><tr><td>
+FDCPE_XLXI_26/Q5: FDCPE port map (XLXI_26/Q(5),XLXI_26/Q_D(5),SCK,'0','0');
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;XLXI_26/Q_D(5) <= ((nSLAVE_SELECT AND CAMERA_DATA(5))
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	OR (NOT nSLAVE_SELECT AND XLXI_26/Q(4)));
+</td></tr><tr><td>
+FDCPE_XLXI_26/Q6: FDCPE port map (XLXI_26/Q(6),XLXI_26/Q_D(6),SCK,'0','0');
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;XLXI_26/Q_D(6) <= ((nSLAVE_SELECT AND CAMERA_DATA(6))
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	OR (NOT nSLAVE_SELECT AND XLXI_26/Q(5)));
+</td></tr><tr><td>
+Register Legend:
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FDCPE (Q,D,C,CLR,PRE,CE); 
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FTCPE (Q,D,C,CLR,PRE,CE); 
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LDCP  (Q,D,G,CLR,PRE); 
+</td></tr><tr><td>
+</td></tr>
+</table>
+<form><span class="pgRef"><table width="90%" align="center"><tr>
+<td align="left"><input type="button" onclick="javascript:parent.leftnav.showTop()" onmouseover="window.status='goto top of page'; return true;" onmouseout="window.status=''" value="back to top"></td>
+<td align="right"><input type="button" onclick="window.print()" onmouseover="window.status='print page'; return true;" onmouseout="window.status=''" value="print page"></td>
+</tr></table></span></form>
+</body></html>
