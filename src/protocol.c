@@ -41,9 +41,11 @@ int protocol_is_sync(unsigned char *data) {
 
 
 void protocol_get_motor(int *left, int *right, int *run) {
+	#ifdef MOTHERSHIP
 	*left = (motor_state.motor_state & 01);
 	*right = (motor_state.motor_state & 02) >> 01;
 	*run = (motor_state.motor_state & 04) >> 02;
+	#endif
 	return;
 }
 

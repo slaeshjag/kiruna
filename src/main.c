@@ -8,6 +8,7 @@
 #include "audio.h"
 #include "ov7670.h"
 #include "motor.h"
+#include "uart_buffer.h"
 
 
 void initialize(void) {
@@ -41,7 +42,9 @@ void initialize(void) {
 	LPC_SYSCON->SYSAHBCLKDIV |= (1 << 9);
 	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 7);
 
+	#ifdef MOTHERSHIP
 	audio_init();
+	#endif
 	
 	/*Disable systick*/
 	SysTick->CTRL = 0;
@@ -62,7 +65,7 @@ void initialize(void) {
 
 void systick_irq() {
 	global_timer++;
-	microphone_sample();
+	//microphone_sample();
 	//speaker_output();
 }
 
@@ -98,8 +101,13 @@ int main(int ram, char **argv) {
 	systick_enable();
 	
 	while(1) {
-		microphone_send();
+		//microphone_send();
 		//audio_loop();
+		protocol_loop();
+		#ifndef MOTHERSHIP
+		uart_buff_loop();
+		#endif
+		
 	}
 	
 	/************ CAMERA TEST ****************/
