@@ -7,6 +7,8 @@
 #include "audio.h"
 #include "i2c.h"
 #include "motor.h"
+#include "ultrasonic.h"
+#include "microswitch.h"
 
 
 void initialize(void) {
@@ -52,15 +54,16 @@ void initialize(void) {
 	uart_printf("us_init() done\n");
 	ms_init();
 	uart_printf("ms_init() done\n");
-	ov7670_init();
+	/*ov7670_init();
 	uart_printf("ov7670_init() done\n");
 	radiolink_init(32);
-	uart_printf("radiolink_init() done\n");
+	uart_printf("radiolink_init() done\n");*/
 }
 
 void systick_irq() {
 	//microphone_sample();
-	speaker_output();
+	//speaker_output();
+	us_handler();
 }
 
 void systick_enable() {
@@ -74,8 +77,12 @@ int main(int ram, char **argv) {
 	unsigned char data[32];
 	unsigned int lol = 0;
 	initialize();
+
+	systick_enable();
+
 	util_delay(200000);
 	uart_printf("AutoKorg™ READY TO WRECK SOME HAVOC!\n");
+	us_trig();
 	
 	/*****************************************/
 	
@@ -84,7 +91,7 @@ int main(int ram, char **argv) {
 		radiolink_recv(32, data);
 		uart_send_raw(data, 32);
 	}*/
-	
+	/*
 	while(1) {
 		uart_recv_raw(data, 32);
 		radiolink_send_unreliable(32, data);
@@ -99,23 +106,23 @@ int main(int ram, char **argv) {
 		//microphone_send();
 		audio_loop();
 	}
-	
+	*/
 	/************ CAMERA TEST ****************/
 
-	while(1);
+	//while(1);
 	
 	/*************** US TEST *****************/
 	/*
 	while (1)
 	{
-		//uart_printf("US is %i\n", us());
+		int val = us_read_block();
+		if (val > 0) uart_printf("US is %i\n", val);
 	}
 	*/
 	/************** MAIN CODE ***************/
+	while(1) motor_logic();
 	
-	motor_logic();		// BLOCKING
-	
-	/*****************************************/
+	/****************************************/
 	/*
 	int us_time;
 	
