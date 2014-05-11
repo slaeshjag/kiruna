@@ -24,6 +24,7 @@
 #include "uart.h"
 #include "main.h"
 #include "util.h"
+#include "audio.h"
 
 #define CSN_PORT LPC_GPIO1
 #define CE_PORT LPC_GPIO1
@@ -31,6 +32,7 @@
 #define CE_PIN (1 << 8)
 
 #define DELAY 5
+static int radio_used_flag = 0;
 
 enum Cmd {
 	CMD_REG_READ = 0x0,
@@ -78,13 +80,20 @@ enum Reg {
 static char packet_size = 0;
 
 static inline void cmd_start() {
+	radio_used_flag = 1;
 	CSN_PORT->MASKED_ACCESS[CSN_PIN] = 0;
 	util_delay(DELAY);
 }
 
 static inline void cmd_end() {
+	radio_used_flag = 0;
 	CSN_PORT->MASKED_ACCESS[CSN_PIN] = ~0;
 	util_delay(DELAY);
+	if (audio_late_dac()) {
+		#ifdef MOTHERSHIP
+		speaker_output();
+		#endif
+	}
 }
 
 static inline void ce_on() {
@@ -348,4 +357,9 @@ int radiolink_init(char _packet_size) {
 	for(;;);*/
 	
 	return 0;
+}
+
+
+int radio_used() {
+	return radio_used_flag;
 }

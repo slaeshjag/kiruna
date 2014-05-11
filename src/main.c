@@ -8,9 +8,7 @@
 #include "audio.h"
 #include "ov7670.h"
 #include "motor.h"
-#include "ultrasonic.h"
-#include "microswitch.h"
-
+#include "uart_buffer.h"
 
 
 void initialize(void) {
@@ -44,7 +42,9 @@ void initialize(void) {
 	LPC_SYSCON->SYSAHBCLKDIV |= (1 << 9);
 	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 7);
 
+	#ifdef MOTHERSHIP
 	audio_init();
+	#endif
 	
 	/*Disable systick*/
 	SysTick->CTRL = 0;
@@ -59,10 +59,13 @@ void initialize(void) {
 	uart_printf("ov7670_init() done\n");
 	radiolink_init(16);
 	uart_printf("radiolink_init() done\n");
+	protocol_init();
+	uart_printf("protocol_init() done\n");
 }
 
 void systick_irq() {
-	microphone_sample();
+	global_timer++;
+	//microphone_sample();
 	//speaker_output();
 }
 
@@ -77,14 +80,14 @@ int main(int ram, char **argv) {
 	initialize();
 	util_delay(200000);
 	uart_printf("AutoKorg™ READY TO WRECK SOME HAVOC!\n");
-
+	
 	/*****************************************/
 	
-	while(1) {
+	/*while(1) {
 		unsigned char data[32];
 		radiolink_recv(32, data);
 		uart_send_raw(data, 32);
-	}
+	}*/
 	
 	/*while(1) {
 		unsigned char data[16];
@@ -93,16 +96,23 @@ int main(int ram, char **argv) {
 		radiolink_send_unreliable(16, data);
 		
 	}*/
-
+	
 	//speaker_prebuffer();
 	systick_enable();
 	
 	while(1) {
+		//microphone_send();
 		//audio_loop();
-		microphone_send();
+		protocol_loop();
+		#ifndef MOTHERSHIP
+		uart_buff_loop();
+		#endif
+		
 	}
 	
 	/************ CAMERA TEST ****************/
+
+	while(1);
 	
 		// QVGA RGB16
 	/*char sub_adr = 0x0B;
