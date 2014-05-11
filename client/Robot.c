@@ -186,7 +186,7 @@ int main(int argc, char **argv) {
 	read(serial_port, svar, sizeof("Arne"));
 	
 	printf("%s", svar);*/
-	
+	initiate_serial_port();
 	for(;;) {
 		
 		//Program loop.
@@ -309,7 +309,11 @@ void initiate_buttons(void){
 
 void initiate_serial_port(void){
 	
-	serial_port = open(MODEMDEVICE, O_RDWR | O_NOCTTY /*| O_NDELAY*/);
+	if((serial_port = open(MODEMDEVICE, O_RDWR | O_NOCTTY /*| O_NDELAY*/)) < 0){
+		
+		printf("AAAAAAH!! Serial port not working.\n");
+		return;
+	}
 	//Open serial port as ReadWrite.
 	
 	ioctl(serial_port, TCGETS2, &config);
