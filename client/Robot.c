@@ -95,9 +95,9 @@ typedef enum {
 	
 	MOTORS_FORWARD = 0x700,
 	MOTORS_BACKWARDS = 0x400,
-	TURN_LEFT = 0x600,
-	TURN_RIGHT = 0x500,
-	STOP = ~(0x700),
+	TURN_LEFT = 0x500,
+	TURN_RIGHT = 0x600,
+	STOP = 0x0,
 	SYNC = 0xFFFF,
 	SEND_MIC = 0x0,
 	SEND_SPEAKER = 0x1,
@@ -122,7 +122,7 @@ DARNIT_TILESHEET *ts;
 DARNIT_TILE *t;
 
 int serial_port, package_count, package_in_buff, image_i = 0, audio_i = 0, hello;
-int robot_state = 0, robot_packages = 0, robot_motors = 0, send_audio = 0;
+unsigned short robot_state = 0, robot_packages = 0, robot_motors = 0, send_audio = 0;
 int state = 0, stickyness = 100;
 int* package_buff, image_data;
 
@@ -414,28 +414,60 @@ void click(int x, int y, DARNIT_TEXT_SURFACE *textplace){
 	
 	if(check_true(hits, button_up)){
 		
-		d_text_surface_string_append(textplace, "\n Uppknappen klickades.");	   
+		d_text_surface_string_append(textplace, "\n Uppknappen klickades.");
+		
+		if(state == UI){
+			robot_motors = MOTORS_FORWARD;
+			robot_state = NEW_FRAME;  
+			send_message(); 
+			
+			//Tell the robot to drive forwards, and send us camera data.
+		}
 	}
 	
 	else if(check_true(hits, button_down)){
 		   
 		//Down button click.
 		   
-		d_text_surface_string_append(textplace, "\n Nerknappen klickades.");	
+		d_text_surface_string_append(textplace, "\n Nerknappen klickades.");
+		
+		if(state == UI){
+			robot_motors = MOTORS_BACKWARDS;
+			robot_state = NEW_FRAME;  
+			send_message(); 
+			
+			//Tell the robot to drive backwards, and send us camera data.
+		}
 	}
 	
 	else if(check_true(hits, button_left)){
 		
 		//Left button click.
 		
-		d_text_surface_string_append(textplace, "\n Vänsterknappen klickades.");		   
+		d_text_surface_string_append(textplace, "\n Vänsterknappen klickades.");
+		
+		if(state == UI){
+			robot_motors = TURN_LEFT;
+			robot_state = NEW_FRAME;  
+			send_message(); 
+			
+			//Tell the robot to turn left, and send us camera data.	
+		}	   
 	}
 	
 	else if(check_true(hits, button_right)){
 		   
 		//Right button click.
 		   
-		d_text_surface_string_append(textplace, "\n Högerknappen klickades.");	
+		d_text_surface_string_append(textplace, "\n Högerknappen klickades.");
+			
+		if(state == UI){
+			robot_motors = TURN_RIGHT;
+			robot_state = NEW_FRAME;  
+			send_message(); 
+			
+			//Tell the robot to turn right, and send us camera data.	
+		}
 	}
 	
 	else if(check_true(hits, button_menu)){
@@ -483,6 +515,14 @@ void click(int x, int y, DARNIT_TEXT_SURFACE *textplace){
 		//And if we *haven't* pressed a button, this is where we go.
 		
 		d_text_surface_string_append(textplace, "\n Non-click click thing.");
+		
+		if(state == UI){
+			robot_motors = STOP;
+			robot_state = NEW_FRAME;  
+			send_message(); 
+			
+			//Tell the robot to shut down its motors, and send us camera data.	
+		}
 	}
 }
 
@@ -503,6 +543,21 @@ int check_true(unsigned int* hits, unsigned int value){
 	else{
 		return 0;
 	}
+}
+
+void send_message(){
+	
+	unsigned short message = robot_motors | robot_state;
+	
+	if(!send_audio){
+		
+		write(serial_port, message, sizeof(message));
+	}
+	else{
+		
+		
+	}
+	
 }
 
 void * musikka(){
@@ -703,10 +758,6 @@ void audio_buff_fill(){
 	
 	
 }
-
-void send_message(){
-	
-	}
 
 /*void * communication(){
 	
