@@ -21,6 +21,8 @@ static unsigned char camera_spi(unsigned char data) {
 	ret = spi_send_recv(data);
 	util_delay(5);
 	LPC_GPIO0->MASKED_ACCESS[0x40] = ~0;
+	util_delay(5);
+	spi_send_recv(0xFF);
 	return ret;
 }
 
@@ -60,7 +62,15 @@ void ov7670_init(void)
 	
 	/******************* CAM SETTINGS ************************/
 	
-	char temp = ov7670_read_reg(0x0C);		// default 0x00 ???????
+	char temp;
+	
+	// Reset camera
+	ov7670_write_reg(0x12, 0x80);
+	util_delay(5);
+	ov7670_write_reg(0x12, 0x0);
+	util_delay(5);
+	
+	/*temp = ov7670_read_reg(0x0C);		// default 0x00 ???????
 	util_delay(5);
 	ov7670_write_reg(0x0C, (temp|0b00001000));	// COM3: enable scaling
 	
@@ -73,7 +83,7 @@ void ov7670_init(void)
 	
 	temp = ov7670_read_reg(0x12);					// default 0x00 ?????
 	util_delay(5);
-	ov7670_write_reg(0x12, ((temp & 0b01000000)|0b00001100));	// COM7: enable QVGA & RGB, ignore reserved
+	ov7670_write_reg(0x12, ((temp & 0b01000000)|0b00010110));	// COM7: enable QVGA & RGB, ignore reserved
 	uart_printf("derp5\n");
 
 	
@@ -85,7 +95,7 @@ void ov7670_init(void)
 	temp = ov7670_read_reg(0x8C);			// default 0x00
 	util_delay(5);
 	ov7670_write_reg(0x8C, (temp & 0b11111101));	// RGB444: RGB565 effective only when RGB444[1] is low, ignore rest
-	uart_printf("derp7\n");
+	uart_printf("derp7\n");*/
 }
 
 void ov7670_write(char slave_sub_adr)
@@ -235,17 +245,17 @@ void ov7670_fifo_unreset() {
 }
 
 void ov7670_vsync_reset() {
-	while(!LPC_GPIO0->MASKED_ACCESS[0x02]);
 	ov7670_fifo_reset();
+	while(LPC_GPIO0->MASKED_ACCESS[0x02]);
 }
 
 void ov7670_get_data_packet(unsigned char *buf) {
 	int i;
 	
-	buf[0] = packet_number >> 8;
-	buf[1] = packet_number;
+	//buf[0] = packet_number >> 8;
+	//buf[1] = packet_number;
 	
-	for(i = 2; i < 16; i++) {
+	for(i = 0; i < 16; i++) {
 		buf[i] = camera_spi(0xFF);
 	}
 	
@@ -254,16 +264,20 @@ void ov7670_get_data_packet(unsigned char *buf) {
 
 
 void ov7670_test() {
+	int i;
 	unsigned char buff[16];
-
-	ov7670_fifo_reset();
-	util_delay(10000);
+	
+	uart_printf("waiting for vsync\r\n");
+	ov7670_vsync_reset();
 	ov7670_fifo_unreset();
-	util_delay(10000);
-	for (;;) {
+	util_delay(80);
+	for (i = 0; i < (320*240)/16; i++) {
 		ov7670_get_data_packet(buff);
 		uart_send_raw(buff, 16);
 	}
+	
+	uart_printf("\r\ndone.\r\n");
+	while(1);
 
 	return;
 }
