@@ -18,6 +18,31 @@ else \
 	} \
 uart_send_raw((unsigned char *) s, width)
 
+
+void uart_init() {
+	unsigned int regval;
+	
+	LPC_SYSCON->UARTCLKDIV = 1;
+	/* Enable RXD, TXD on the IO pins */
+	LPC_IOCON->PIO1_6 &= ~0x7;
+	LPC_IOCON->PIO1_6 |= 1;
+	LPC_IOCON->PIO1_7 &= ~0x7;
+	LPC_IOCON->PIO1_7 |= 1;
+
+	/* Enable UART clock bit */
+	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 12);
+	/* Set up FIFO */
+	LPC_UART->FCR = 0x7;
+	/* Set line control (stop bits etc.) */
+	LPC_UART->LCR = 0x83;
+	regval = ((SYSTEM_CLOCK/LPC_SYSCON->SYSAHBCLKDIV)/16/UART_BAUD_RATE);
+	LPC_UART->FDR = 0x10;
+	LPC_UART->DLL = regval & 0xFF;
+	LPC_UART->DLM = (regval >> 8) & 0xFF;
+	LPC_UART->LCR = 0x3;
+}
+
+
 void uart_send_char(unsigned char c) {
 	while (!(LPC_UART->LSR & (1 << 5)));
 	LPC_UART->THR = c;
@@ -198,6 +223,17 @@ int uart_printf(char *format, ...) {
 uint8_t uart_recv_char(void) {
 	while(!(LPC_UART->LSR & 1));
 	return LPC_UART->RBR;
+}
+
+
+void uart_recv_raw(unsigned char *buff, int bytes) {
+	int i;
+
+	for (i = 0; i < bytes; i++) {
+		buff[i] = uart_recv_char();
+		//uart_printf("arne 0x%X\n", buff[i]);
+	}
+	return;
 }
 
 

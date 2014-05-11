@@ -2,14 +2,18 @@
 #include "system/LPC11xx.h"
 #include "util.h"
 #include "uart.h"
+#include "main.h"
 #include "spi.h"
-#include "motor.h"
+#include "radiolink.h"
 #include "audio.h"
+#include "ov7670.h"
+#include "motor.h"
+#include "ultrasonic.h"
+#include "microswitch.h"
 
 
 
 void initialize(void) {
-	unsigned int regval;
 	/* TODO: Set CPU clock etc. */
 	
 	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 16);
@@ -30,184 +34,82 @@ void initialize(void) {
 	LPC_SYSCON->CLKOUTUEN = 0x1;*/
 	
 	/*********** Enable UART0 **********/
-	
-	LPC_SYSCON->UARTCLKDIV = 1;
-	/* Enable RXD, TXD on the IO pins */
-	LPC_IOCON->PIO1_6 &= ~0x7;
-	LPC_IOCON->PIO1_6 |= 1;
-	LPC_IOCON->PIO1_7 &= ~0x7;
-	LPC_IOCON->PIO1_7 |= 1;
-
-	/* Enable UART clock bit */
-	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 12);
-	/* Set up FIFO */
-	LPC_UART->FCR = 0x7;
-	/* Set line control (stop bits etc.) */
-	LPC_UART->LCR = 0x83;
-	regval = ((SYSTEM_CLOCK/LPC_SYSCON->SYSAHBCLKDIV)/16/UART_BAUD_RATE);
-	LPC_UART->FDR = 0x10;
-	LPC_UART->DLL = regval & 0xFF;
-	LPC_UART->DLM = (regval >> 8) & 0xFF;
-	LPC_UART->LCR = 0x3;
+	uart_init();
 	
 	/********* Enable SPI0 ************/
-	LPC_IOCON->SCK_LOC  = 0x0;
-	//LPC_IOCON->PIO0_6 &= ~0x7;
-	LPC_IOCON->SWCLK_PIO0_10 = 0x2;
-	LPC_IOCON->PIO0_8 &= ~0x7;
-	LPC_IOCON->PIO0_8 |= 0x1;
-	LPC_IOCON->PIO0_9 &= ~0x7;
-	LPC_IOCON->PIO0_9 |= 0x1;
-	//LPC_IOCON->SCK_LOC  = 2;
-	//LPC_SYSCON->PRESETCTRL |= 0x5;
-	//LPC_SYSCON->SYSAHBCLKCTRL &= ~(1 << 11);
-	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 11);
-	LPC_SYSCON->SSP0CLKDIV = 4;
-	LPC_SYSCON->PRESETCTRL |= 0x1;
-	
-	LPC_SSP0->CPSR = 0x2;
-	LPC_SSP0->CR0 = 0x107;
-	LPC_SSP0->CR1 = 0x2;
+	spi_init();
 
 	/* Enable timers */
 	LPC_SYSCON->SYSAHBCLKDIV |= (1 << 10);
 	LPC_SYSCON->SYSAHBCLKDIV |= (1 << 9);
 	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 7);
+
+	audio_init();
 	
-	/*Enable ADC*/
-	LPC_IOCON->R_PIO0_11 = 0x2;
-	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 13);
-	/*48 MHz / 12 = 4 MHz*/
-	LPC_ADC->INTEN = 0;
-	LPC_SYSCON->PDRUNCFG &= ~(0x1 << 4);
-	LPC_ADC->CR = 0x1 | (12 << 8) | (1 << 24);
-	
-	/*Enable DAC*/
-	LPC_GPIO0->DIR |= 0x80;
+	/*Disable systick*/
+	SysTick->CTRL = 0;
+
+	motor_init();
+	uart_printf("motor_init() done\n");
+	us_init();
+	uart_printf("us_init() done\n");
+	ms_init();
+	uart_printf("ms_init() done\n");
+	ov7670_init();
+	uart_printf("ov7670_init() done\n");
+	radiolink_init(16);
+	uart_printf("radiolink_init() done\n");
 }
 
 void systick_irq() {
-	static unsigned char data = 0;
 	microphone_sample();
-	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x0;
-	spi_send_recv(data);
-	LPC_GPIO0->MASKED_ACCESS[0x80] = 0x80;
-	if(!data)
-		data = 0x10;
-	else
-		data = 0;
-	
+	//speaker_output();
 }
 
-int main(int ram, char **argv) {
-	uint16_t sample;
-	int i;
-	
-	initialize();
-	motor_init();
-	us_init();
-	ms_init();
-	util_delay(200);
-
-	uart_printf("AutoKorg™ READY TO WRECK SOME HAVOC!\n");
-	
-	/* Attempt to plan the flow */
-
-	//speaker_prebuffer();
-
-	SysTick->CTRL = 0;
+void systick_enable() {
 	/* Trig 8000 times per second */
 	SysTick->LOAD = SYSTEM_CLOCK / 8000;
 	SysTick->VAL = 0;
 	SysTick->CTRL = 0x1 | 0x2 | 0x4;
-	
-	while(1);
-		//microphone_send();
-	
-	for (i = 0;; i++) {
-		while (!(SysTick->CTRL & (1 << 16)));
-		SysTick->CTRL &= (~(1 << 16));
-		audio_loop();
+}
 
-		/* TODO: ultra-sonic sensor code */
+int main(int ram, char **argv) {
+	initialize();
+	util_delay(200000);
+	uart_printf("AutoKorg™ READY TO WRECK SOME HAVOC!\n");
 
-		/* 8 tasks ought to be enough for anybody, right? */
-		switch (i & 0x7) {
-			case 0:		/* Do collision awareness checking? */
-			case 1:
-			case 2:
-			case 3:
-			case 4:
-			case 5:
-			case 6:
-			case 7:
-				break;
-		}
-	}
-
-	motor_go(MOTOR_DIR_FORWARD);
+	/*****************************************/
 	
-	while(1)
-	{
-		if(ms_left_pressed())
-		{
-			motor_go(MOTOR_DIR_LEFT);
-			util_delay(MOTOR_TIME_45);
-			
-			motor_go(MOTOR_DIR_BACKWARD);
-			util_delay(MOTOR_TIME_SHORT);
-			
-			motor_go(MOTOR_DIR_RIGHT);
-			util_delay(MOTOR_TIME_45);
-			
-			motor_go(MOTOR_DIR_FORWARD);
-		}
-		else if(ms_right_pressed())
-		{
-			motor_go(MOTOR_DIR_RIGHT);
-			util_delay(MOTOR_TIME_45);
-			
-			motor_go(MOTOR_DIR_BACKWARD);
-			util_delay(MOTOR_TIME_SHORT);
-			
-			motor_go(MOTOR_DIR_LEFT);
-			util_delay(MOTOR_TIME_45);
-			
-			motor_go(MOTOR_DIR_FORWARD);
-		}
-		else if (us() > 9000)	// It's over 9000!!!! Turn!
-		{
-			motor_go(MOTOR_DIR_LEFT);
-			util_delay(MOTOR_TIME_90);
-			
-			motor_go(MOTOR_DIR_FORWARD);
-			util_delay(MOTOR_TIME_SHORT);
-			
-			motor_go(MOTOR_DIR_RIGHT);
-			util_delay(MOTOR_TIME_90);
-		}
+	while(1) {
+		unsigned char data[32];
+		radiolink_recv(32, data);
+		uart_send_raw(data, 32);
 	}
 	
-	MOTOR_PORT->MASKED_ACCESS[MOTOR_MASK] |= (MOTOR_MASK);
-	util_delay(2000000);
-	uart_printf("Going forward\n");
-	motor_go(MOTOR_DIR_FORWARD);
-	util_delay(2000000);
-	uart_printf("Going left\n");
-	motor_go(MOTOR_DIR_LEFT);
-	util_delay(2000000);
-	uart_printf("Going right\n");
-	motor_go(MOTOR_DIR_RIGHT);
-	util_delay(2000000);
-	uart_printf("Going backwards\n");
-	motor_go(MOTOR_DIR_BACKWARD);
-	util_delay(2000000);
-	uart_printf("Stopping\n");
-	motor_go(MOTOR_DIR_STAHP);
-
-	for (;;) {
+	/*while(1) {
+		unsigned char data[16];
+		for(i = 0; i < 16; i++)
+			data[i] = uart_recv_char();
+		radiolink_send_unreliable(16, data);
 		
-	}
+	}*/
 
+	//speaker_prebuffer();
+	systick_enable();
+	
+	while(1) {
+		//audio_loop();
+		microphone_send();
+	}
+	
+	/************ CAMERA TEST ****************/
+	
+		// QVGA RGB16
+	/*char sub_adr = 0x0B;
+	char cam_test = ov7670_test(sub_adr);
+	uart_printf("CAM at 0x0B is %x\n", cam_test);*/
+	/*****************************************/
+
+	motor_logic();
 	return 0;
 }

@@ -4,12 +4,18 @@
 *.bin
 *.dat
 *.ogg
+*.wav
 *.swp
 *.elf
 *.exe
 *.dll
 *.so
+*.old
 *.orig
 *.remote
 *.swo
+<<<<<<< HEAD
+=======
+arne.*
+>>>>>>> a05f4757320c190d01883d7cacd1212dfab3f926
 client/Robot
