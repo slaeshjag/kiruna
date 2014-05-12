@@ -67,8 +67,10 @@ void initialize(void) {
 
 void systick_irq() {
 	global_timer++;
+	#ifdef MOTHERSHIP
 	microphone_sample();
 	speaker_output();
+	#endif
 	us_handler();
 }
 

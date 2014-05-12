@@ -55,8 +55,9 @@ void protocol_loop() {
 	struct protocol_cmd_header *cmd = (void *) cmd_packet;
 	int last_timer;
 	static int len = 0, resume = 0;
+	static int timeout;
+
 	last_timer = global_timer;
-	
 	#ifdef MOTHERSHIP
 	if (++motor_state.no_update_count >= PROTOCOL_MOTOR_KILL_DELAY)
 		motor_state.motor_state = 0;
@@ -67,6 +68,8 @@ void protocol_loop() {
 		#ifdef MOTHERSHIP
 		uart_printf("In state %i %i\n", state, len);
 		#endif
+		if (len > 16)
+			len = 1;
 		switch (state) {
 			case PROTOCOL_STATE_SLAVE_WAIT:
 				
@@ -79,7 +82,7 @@ void protocol_loop() {
 				motor_state.no_update_count = 0;
 				#endif
 
-				len = cmd->length;
+				len = cmd->length + 1;
 				switch (cmd->cmd) {
 					case PROTOCOL_CMD_MIC:
 						state = PROTOCOL_STATE_SLAVE_SEND_MIC;
@@ -110,9 +113,11 @@ void protocol_loop() {
 						state = PROTOCOL_STATE_MASTER_GET_CAMERA;
 						break;
 					default:
+						len = 0;
 						break;
 				}
 
+				timeout = global_timer;
 				if (!radiolink_send_stubborn(PROTOCOL_PACKET_SIZE, cmd_packet, PROTOCOL_MAX_TIMESLICE - (global_timer - last_timer))) {
 					resume = 1;
 					return;
@@ -149,9 +154,11 @@ void protocol_loop() {
 					return;
 				if (protocol_is_sync(cmd_packet))
 					state = PROTOCOL_STATE_MASTER_WAIT;
-				len--;
-				if (!len)
-					state = PROTOCOL_STATE_MASTER_WAIT;
+				else {
+					len--;
+					if (!len)
+						state = PROTOCOL_STATE_MASTER_WAIT;
+				}
 				uart_send_raw(cmd_packet, PROTOCOL_PACKET_SIZE);
 				break;
 			case PROTOCOL_STATE_MASTER_SEND_SPEAK:
