@@ -65,34 +65,36 @@ int main(int argc, char **argv) {
 	if ((flags = fcntl(STDIN_FILENO, F_GETFL, 0)) == -1)
 		flags = 0;
 	fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
-
+	
+	buf[0] = 0xFF;
+	
 	for(;;) {
 		if(read(STDIN_FILENO, &c, 1) > 0) {
 			switch(c) {
 				case 'w':
-					buf[0] = 0x84;
-					buf[1] = 0x3;
+					buf[1] = 0x84;
+					buf[2] = 0x3;
 					break;
 				case 'a':
-					buf[0] = 0x84;
-					buf[1] = 0x2;
+					buf[1] = 0x84;
+					buf[2] = 0x2;
 					break;
 				case 's':
-					buf[0] = 0x4;
-					buf[1] = 0x2;
+					buf[1] = 0x4;
+					buf[2] = 0x2;
 					break;
 				case 'd':
-					buf[0] = 0x4;
-					buf[1] = 0x3;
+					buf[1] = 0x4;
+					buf[2] = 0x3;
 					break;
 				case 'm':
-					buf[0] = (15 << 3);
-					buf[1] = 0;
+					buf[1] = (15 << 3);
+					buf[2] = 0;
 					break;
 				
 				default:
-					buf[0] = 0x4;
-					buf[1] = 0x0;
+					buf[1] = 0x4;
+					buf[2] = 0x0;
 					break;
 			}
 			printf("wrote %i\n", write(fd, buf, 16));

@@ -4,11 +4,9 @@
       var design = "skosnoere";
       var device = "XC9572XL";
       signals = new Array("FIFO_RESET","MISO","MOSI_P0_SPECSIG","MOSI_P1_SPECSIG","MOSI_P2_SPECSIG","MOSI_P3_SPECSIG","MOSI_P4_SPECSIG","MOSI_P5_SPECSIG","MOSI_P6_SPECSIG","MOSI_P7_SPECSIG","READ_STROBE","XLXI_26Q0_SPECSIG","XLXI_26Q1_SPECSIG","XLXI_26Q2_SPECSIG","XLXI_26Q3_SPECSIG","XLXI_26Q4_SPECSIG","XLXI_26Q5_SPECSIG","XLXI_26Q6_SPECSIG");
-      sigNegs = new Array("ON","OFF","OFF","OFF","OFF","OFF","OFF","OFF","OFF","OFF","OFF","OFF","OFF","OFF","OFF","OFF","OFF","OFF");
+      sigNegs = new Array("ON","ON","OFF","OFF","OFF","OFF","OFF","OFF","OFF","OFF","OFF","OFF","OFF","OFF","OFF","OFF","OFF","OFF");
       sigTypes = new Array("D","D","D","D","D","D","D","D","D","D","","D","D","D","D","D","D","D");
 
-      
-        specSig["CAMERA_DATA7_SPECSIG"]=new Array("CAMERA_DATA<7>");
       
         specSig["CAMERA_DATA0_SPECSIG"]=new Array("CAMERA_DATA<0>");
       
@@ -23,6 +21,8 @@
         specSig["CAMERA_DATA5_SPECSIG"]=new Array("CAMERA_DATA<5>");
       
         specSig["CAMERA_DATA6_SPECSIG"]=new Array("CAMERA_DATA<6>");
+      
+        specSig["CAMERA_DATA7_SPECSIG"]=new Array("CAMERA_DATA<7>");
       
         specSig["b_SPECSIG"]=new Array("(b)");
       
@@ -96,7 +96,9 @@
           
             pterms["FB1_16_3"]=new Array("/nSLAVE_SELECT");
           
-            pterms["FB1_17_1"]=new Array("/nSLAVE_SELECT","/FIFO_RESET");
+            pterms["FB1_17_1"]=new Array("SCK","/FIFO_RESET");
+          
+            pterms["FB1_17_2"]=new Array("/nSLAVE_SELECT","FIFO_RESET");
           
             pterms["FB1_18_1"]=new Array("MOSI_P0_SPECSIG");
           
@@ -109,8 +111,6 @@
             pterms["FB2_2_2"]=new Array("/nSLAVE_SELECT","XLXI_26Q6_SPECSIG");
           
             pterms["FB2_2_3"]=new Array("SCK");
-          
-            pterms["FB2_2_4"]=new Array("/nSLAVE_SELECT");
           
             pterms["FB2_15_1"]=new Array("nSLAVE_SELECT","CAMERA_DATA3_SPECSIG");
           
@@ -238,9 +238,9 @@
           
             ceimp["MOSI_P2_SPECSIG"]=new Array("1");
           prld["MOSI_P2_SPECSIG"]="GND";
-          d2["READ_STROBE"]=new Array("FB1_17_1");
+          d2["READ_STROBE"]=new Array("FB1_17_1","FB1_17_2");
           
-            d2imp["READ_STROBE"]=new Array("1");
+            d2imp["READ_STROBE"]=new Array("1","1");
           
           d2["MOSI_P1_SPECSIG"]=new Array("FB1_18_1");
           
@@ -261,11 +261,7 @@
               clk["MISO"]=new Array("FB2_2_3");
               
                 clkimp["MISO"]=new Array("1");
-              
-              trst["MISO"]=new Array("FB2_2_4");
-              
-                trstimp["MISO"]=new Array("1");
-              prld["MISO"]="GND";
+              prld["MISO"]="VCC";
           d2["XLXI_26Q3_SPECSIG"]=new Array("FB2_15_1","FB2_15_2");
           
             d2imp["XLXI_26Q3_SPECSIG"]=new Array("1","1");

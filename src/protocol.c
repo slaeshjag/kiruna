@@ -106,7 +106,7 @@ void protocol_loop() {
 						for (j = 0; j < 16 - i; j++) {
 							cmd_packet[j] = cmd_packet[i + j];
 						}
-						uart_get_data(&cmd_packet[i], 16 - i);
+						uart_get_data(&cmd_packet[16 - i], i);
 						break;
 					}
 				len = cmd->length + 1;

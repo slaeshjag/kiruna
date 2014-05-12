@@ -5,14 +5,14 @@ Parameter TMPDIR set to xst/projnav.tmp
 
 
 Total REAL time to Xst completion: 0.00 secs
-Total CPU time to Xst completion: 0.04 secs
+Total CPU time to Xst completion: 0.05 secs
  
 --> 
 Parameter xsthdpdir set to xst
 
 
 Total REAL time to Xst completion: 0.00 secs
-Total CPU time to Xst completion: 0.04 secs
+Total CPU time to Xst completion: 0.05 secs
  
 --> 
 Reading design: skosnoere.prj
@@ -79,7 +79,6 @@ wysiwyg                            : NO
 *                          HDL Compilation                              *
 =========================================================================
 Compiling verilog file "skosnoere.vf" in library work
-Module <OBUFE_MXILINX_skosnoere> compiled
 Module <FD_MXILINX_skosnoere> compiled
 Module <NOR8_MXILINX_skosnoere> compiled
 Module <M2_1_MXILINX_skosnoere> compiled
@@ -99,8 +98,6 @@ Analyzing hierarchy for module <skosnoere> in library <work>.
 Analyzing hierarchy for module <IBUF8_MXILINX_skosnoere> in library <work>.
 
 Analyzing hierarchy for module <SR8CLE_MXILINX_skosnoere> in library <work>.
-
-Analyzing hierarchy for module <OBUFE_MXILINX_skosnoere> in library <work>.
 
 Analyzing hierarchy for module <SR8CE_MXILINX_skosnoere> in library <work>.
 
@@ -127,8 +124,9 @@ Analyzing hierarchy for module <M2_1_MXILINX_skosnoere> in library <work>.
 
 Analyzing hierarchy for module <M2_1_MXILINX_skosnoere> in library <work>.
 
+WARNING:Xst:2591 - "skosnoere.vf" line 366: attribute on instance <SLEW> overrides generic/parameter on entity. It is possible that simulator will not take this attribute into account.
 WARNING:Xst:2591 - "skosnoere.vf" line 388: attribute on instance <SLEW> overrides generic/parameter on entity. It is possible that simulator will not take this attribute into account.
-WARNING:Xst:2591 - "skosnoere.vf" line 410: attribute on instance <SLEW> overrides generic/parameter on entity. It is possible that simulator will not take this attribute into account.
+WARNING:Xst:2591 - "skosnoere.vf" line 394: attribute on instance <SLEW> overrides generic/parameter on entity. It is possible that simulator will not take this attribute into account.
 
 =========================================================================
 *                            HDL Analysis                               *
@@ -159,9 +157,12 @@ Module <skosnoere> is correct for synthesis.
     Set user-defined property "DRIVE =  12" for instance <XLXI_61> in unit <skosnoere>.
     Set user-defined property "IOSTANDARD =  DEFAULT" for instance <XLXI_61> in unit <skosnoere>.
     Set user-defined property "SLEW =  SLOW" for instance <XLXI_61> in unit <skosnoere>.
+    Set user-defined property "CAPACITANCE =  DONT_CARE" for instance <XLXI_66> in unit <skosnoere>.
+    Set user-defined property "DRIVE =  12" for instance <XLXI_66> in unit <skosnoere>.
+    Set user-defined property "IOSTANDARD =  DEFAULT" for instance <XLXI_66> in unit <skosnoere>.
+    Set user-defined property "SLEW =  SLOW" for instance <XLXI_66> in unit <skosnoere>.
     Set user-defined property "HU_SET =  XLXI_1_8" for instance <XLXI_1> in unit <skosnoere>.
     Set user-defined property "HU_SET =  XLXI_26_9" for instance <XLXI_26> in unit <skosnoere>.
-    Set user-defined property "HU_SET =  XLXI_30_14" for instance <XLXI_30> in unit <skosnoere>.
     Set user-defined property "HU_SET =  XLXI_47_10" for instance <XLXI_47> in unit <skosnoere>.
     Set user-defined property "HU_SET =  XLXI_56_11" for instance <XLXI_56> in unit <skosnoere>.
     Set user-defined property "HU_SET =  XLXI_57_12" for instance <XLXI_57> in unit <skosnoere>.
@@ -252,13 +253,6 @@ Module <M2_1_MXILINX_skosnoere.8> is correct for synthesis.
 Analyzing module <M2_1_MXILINX_skosnoere.9> in library <work>.
 Module <M2_1_MXILINX_skosnoere.9> is correct for synthesis.
  
-Analyzing module <OBUFE_MXILINX_skosnoere> in library <work>.
-Module <OBUFE_MXILINX_skosnoere> is correct for synthesis.
- 
-    Set user-defined property "CAPACITANCE =  DONT_CARE" for instance <I_36_10> in unit <OBUFE_MXILINX_skosnoere>.
-    Set user-defined property "DRIVE =  12" for instance <I_36_10> in unit <OBUFE_MXILINX_skosnoere>.
-    Set user-defined property "IOSTANDARD =  DEFAULT" for instance <I_36_10> in unit <OBUFE_MXILINX_skosnoere>.
-    Set user-defined property "SLEW =  SLOW" for instance <I_36_10> in unit <OBUFE_MXILINX_skosnoere>.
 Analyzing module <SR8CE_MXILINX_skosnoere> in library <work>.
 Module <SR8CE_MXILINX_skosnoere> is correct for synthesis.
  
@@ -291,11 +285,6 @@ Performing bidirectional port resolution...
 Synthesizing Unit <IBUF8_MXILINX_skosnoere>.
     Related source file is "skosnoere.vf".
 Unit <IBUF8_MXILINX_skosnoere> synthesized.
-
-
-Synthesizing Unit <OBUFE_MXILINX_skosnoere>.
-    Related source file is "skosnoere.vf".
-Unit <OBUFE_MXILINX_skosnoere> synthesized.
 
 
 Synthesizing Unit <SR8CE_MXILINX_skosnoere>.
@@ -397,8 +386,6 @@ Optimizing unit <skosnoere> ...
 
 Optimizing unit <IBUF8_MXILINX_skosnoere> ...
 
-Optimizing unit <OBUFE_MXILINX_skosnoere> ...
-
 Optimizing unit <SR8CE_MXILINX_skosnoere> ...
   implementation constraint: INIT=0	 : Q0
   implementation constraint: INIT=0	 : Q1
@@ -483,23 +470,22 @@ Cell Usage :
 #      FDCP                        : 1
 # IO Buffers                       : 14
 #      IBUF                        : 11
-#      OBUF                        : 2
-#      OBUFT                       : 1
+#      OBUF                        : 3
 # Others                           : 10
 #      AND2B1                      : 9
 #      NOR2                        : 1
 =========================================================================
 
 
-Total REAL time to Xst completion: 4.00 secs
-Total CPU time to Xst completion: 3.62 secs
+Total REAL time to Xst completion: 3.00 secs
+Total CPU time to Xst completion: 3.61 secs
  
 --> 
 
 
-Total memory usage is 512948 kilobytes
+Total memory usage is 512800 kilobytes
 
 Number of errors   :    0 (   0 filtered)
-Number of warnings :    3 (   0 filtered)
+Number of warnings :    4 (   0 filtered)
 Number of infos    :    0 (   0 filtered)
 

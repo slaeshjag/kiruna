@@ -7,7 +7,7 @@
 // \   \   \/     Version : 14.3
 //  \   \         Application : sch2hdl
 //  /   /         Filename : skosnoere.vf
-// /___/   /\     Timestamp : 05/09/2014 10:05:39
+// /___/   /\     Timestamp : 05/12/2014 13:13:10
 // \   \  /  \ 
 //  \___\/\___\ 
 //
@@ -18,24 +18,6 @@
 //    This verilog netlist is translated from an ECS schematic.It can be 
 //    synthesized and simulated, but it should not be modified. 
 //
-`timescale 1ns / 1ps
-
-module OBUFE_MXILINX_skosnoere(E, 
-                               I, 
-                               O);
-
-    input E;
-    input I;
-   output O;
-   
-   wire T;
-   
-   OBUFT  I_36_10 (.I(I), 
-                  .T(T), 
-                  .O(O));
-   INV  I_36_12 (.I(E), 
-                .O(T));
-endmodule
 `timescale 1ns / 1ps
 
 module FD_MXILINX_skosnoere(C, 
@@ -339,57 +321,53 @@ module skosnoere(CAMERA_DATA,
    
    wire [7:0] MOSI_P;
    wire [7:0] shift_out;
+   wire spi_clock;
    wire [7:0] XLXN_6;
    wire XLXN_8;
-   wire XLXN_38;
    wire XLXN_56;
    wire XLXN_69;
    wire XLXN_85;
-   wire XLXN_86;
-   wire XLXN_90;
-   wire XLXN_94;
    wire XLXN_99;
    wire XLXN_105;
    wire XLXN_106;
    wire XLXN_107;
+   wire XLXN_108;
+   wire XLXN_117;
+   wire XLXN_121;
    
    (* HU_SET = "XLXI_1_8" *) 
    IBUF8_MXILINX_skosnoere  XLXI_1 (.I(CAMERA_DATA[7:0]), 
                                    .O(XLXN_6[7:0]));
    (* HU_SET = "XLXI_26_9" *) 
-   SR8CLE_MXILINX_skosnoere  XLXI_26 (.C(XLXN_90), 
-                                     .CE(XLXN_94), 
+   SR8CLE_MXILINX_skosnoere  XLXI_26 (.C(spi_clock), 
+                                     .CE(XLXN_108), 
                                      .CLR(XLXN_8), 
                                      .D(XLXN_6[7:0]), 
-                                     .L(XLXN_38), 
+                                     .L(XLXN_117), 
                                      .SLI(XLXN_105), 
                                      .Q(shift_out[7:0]));
    GND  XLXI_27 (.G(XLXN_105));
    GND  XLXI_29 (.G(XLXN_8));
-   (* HU_SET = "XLXI_30_14" *) 
-   OBUFE_MXILINX_skosnoere  XLXI_30 (.E(XLXN_94), 
-                                    .I(shift_out[7]), 
-                                    .O(MISO));
    IBUF  XLXI_31 (.I(nSLAVE_SELECT), 
-                 .O(XLXN_38));
+                 .O(XLXN_117));
    IBUF  XLXI_32 (.I(SCK), 
-                 .O(XLXN_90));
+                 .O(spi_clock));
    IBUF  XLXI_45 (.I(MOSI), 
                  .O(XLXN_56));
    (* HU_SET = "XLXI_47_10" *) 
-   SR8CE_MXILINX_skosnoere  XLXI_47 (.C(XLXN_90), 
-                                    .CE(XLXN_94), 
+   SR8CE_MXILINX_skosnoere  XLXI_47 (.C(spi_clock), 
+                                    .CE(XLXN_108), 
                                     .CLR(XLXN_85), 
                                     .SLI(XLXN_56), 
                                     .Q(MOSI_P[7:0]));
-   INV  XLXI_52 (.I(XLXN_38), 
-                .O(XLXN_94));
+   INV  XLXI_52 (.I(XLXN_117), 
+                .O(XLXN_108));
    (* SLEW = "SLOW" *) 
    OBUF  XLXI_53 (.I(XLXN_69), 
                  .O(READ_STROBE));
    (* HU_SET = "XLXI_56_11" *) 
-   M2_1_MXILINX_skosnoere  XLXI_56 (.D0(XLXN_86), 
-                                   .D1(XLXN_94), 
+   M2_1_MXILINX_skosnoere  XLXI_56 (.D0(XLXN_108), 
+                                   .D1(spi_clock), 
                                    .S0(XLXN_106), 
                                    .O(XLXN_69));
    (* HU_SET = "XLXI_57_12" *) 
@@ -403,14 +381,18 @@ module skosnoere(CAMERA_DATA,
                                    .I7(MOSI_P[0]), 
                                    .O(XLXN_99));
    (* HU_SET = "XLXI_60_13" *) 
-   FD_MXILINX_skosnoere #( .INIT(1'b0) ) XLXI_60 (.C(XLXN_38), 
+   FD_MXILINX_skosnoere #( .INIT(1'b0) ) XLXI_60 (.C(XLXN_117), 
                                  .D(XLXN_99), 
                                  .Q(XLXN_106));
    (* SLEW = "SLOW" *) 
    OBUF  XLXI_61 (.I(XLXN_107), 
                  .O(FIFO_RESET));
    GND  XLXI_62 (.G(XLXN_85));
-   GND  XLXI_63 (.G(XLXN_86));
    INV  XLXI_65 (.I(XLXN_106), 
                 .O(XLXN_107));
+   (* SLEW = "SLOW" *) 
+   OBUF  XLXI_66 (.I(XLXN_121), 
+                 .O(MISO));
+   INV  XLXI_68 (.I(shift_out[7]), 
+                .O(XLXN_121));
 endmodule

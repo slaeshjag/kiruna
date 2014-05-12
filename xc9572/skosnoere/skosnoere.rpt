@@ -1,7 +1,7 @@
  
 cpldfit:  version P.40xd                            Xilinx Inc.
                                   Fitter Report
-Design Name: skosnoere                           Date:  5- 9-2014, 10:05AM
+Design Name: skosnoere                           Date:  5-12-2014,  1:13PM
 Device Used: XC9572XL-10-PC44
 Fitting Status: Successful
 
@@ -15,8 +15,8 @@ Used/Tot       Used/Tot         Inps Used/Tot    Used/Tot       Used/Tot
 
 Function    Mcells      FB Inps     Pterms      IO          
 Block       Used/Tot    Used/Tot    Used/Tot    Used/Tot    
-FB1           9/18       11/54       24/90       8/ 9
-FB2           5/18       11/54       16/90       5/ 9
+FB1           9/18       11/54       25/90       8/ 9
+FB2           5/18       11/54       15/90       5/ 9
 FB3           4/18        9/54       11/90       0/ 9
 FB4           0/18        0/54        0/90       1/ 7
              -----       -----       -----      -----    
@@ -75,8 +75,8 @@ WARNING:Cpld:1239 - The global clock designation (BUFG) on signal 'XLXN_6<6>' is
 Signal              Total Total Loc     Pin  Pin     Pin     Pwr  Slew Reg Init
 Name                Pts   Inps          No.  Type    Use     Mode Rate State
 FIFO_RESET          2     9     FB1_15  8    I/O     O       STD  SLOW SET
-READ_STROBE         1     2     FB1_17  9    I/O     O       STD  SLOW 
-MISO                4     4     FB2_2   35   I/O     O       STD  SLOW RESET
+READ_STROBE         2     3     FB1_17  9    I/O     O       STD  SLOW 
+MISO                3     4     FB2_2   35   I/O     O       STD  SLOW SET
 
 ** 15 Buried Nodes **
 
@@ -150,7 +150,7 @@ MOSI_P<4>             3       0     0   2     FB1_13        (b)     (b)
 MOSI_P<3>             3       0     0   2     FB1_14  7     GCK/I/O (b)
 FIFO_RESET            2       0     0   3     FB1_15  8     I/O     O
 MOSI_P<2>             3       0     0   2     FB1_16        (b)     (b)
-READ_STROBE           1       0     0   4     FB1_17  9     I/O     O
+READ_STROBE           2       0     0   3     FB1_17  9     I/O     O
 MOSI_P<1>             3       0     0   2     FB1_18        (b)     (b)
 
 Signals Used by Logic in Function Block
@@ -168,7 +168,7 @@ MOSI_P<4>            ....X....XX............................. 3
 MOSI_P<3>            ...X.....XX............................. 3
 FIFO_RESET           .XXXXXXXXX.............................. 9
 MOSI_P<2>            ..X......XX............................. 3
-READ_STROBE          X........X.............................. 2
+READ_STROBE          X........XX............................. 3
 MOSI_P<1>            .X.......XX............................. 3
                     0----+----1----+----2----+----3----+----4
                               0         0         0         0
@@ -178,7 +178,7 @@ Number of signals used by logic mapping into function block:  11
 Signal              Total   Imp   Exp Unused  Loc     Pin   Pin     Pin
 Name                Pt      Pt    Pt  Pt               #    Type    Use
 (unused)              0       0     0   5     FB2_1         (b)     
-MISO                  4       0     0   1     FB2_2   35    I/O     O
+MISO                  3       0     0   2     FB2_2   35    I/O     O
 (unused)              0       0     0   5     FB2_3         (b)     
 (unused)              0       0     0   5     FB2_4         (b)     
 (unused)              0       0     0   5     FB2_5   36    I/O     I
@@ -279,11 +279,9 @@ FDCPE_FIFO_RESET: FDCPE port map (FIFO_RESET,FIFO_RESET_D,nSLAVE_SELECT,'0','0')
 FIFO_RESET_D <= (NOT MOSI_P(0) AND NOT MOSI_P(1) AND NOT MOSI_P(2) AND NOT MOSI_P(3) AND 
 	NOT MOSI_P(4) AND NOT MOSI_P(5) AND NOT MOSI_P(6) AND NOT MOSI_P(7));
 
-FDCPE_MISO: FDCPE port map (MISO_I,MISO,SCK,'0','0');
-MISO <= ((nSLAVE_SELECT AND CAMERA_DATA(7))
+FDCPE_MISO: FDCPE port map (MISO,MISO_D,SCK,'0','0');
+MISO_D <= ((nSLAVE_SELECT AND CAMERA_DATA(7))
 	OR (NOT nSLAVE_SELECT AND XLXI_26/Q(6)));
-MISO <= MISO_I when MISO_OE = '1' else 'Z';
-MISO_OE <= NOT nSLAVE_SELECT;
 
 FDCPE_MOSI_P0: FDCPE port map (MOSI_P(0),MOSI,SCK,'0','0',NOT nSLAVE_SELECT);
 
@@ -302,7 +300,8 @@ FDCPE_MOSI_P6: FDCPE port map (MOSI_P(6),MOSI_P(5),SCK,'0','0',NOT nSLAVE_SELECT
 FDCPE_MOSI_P7: FDCPE port map (MOSI_P(7),MOSI_P(6),SCK,'0','0',NOT nSLAVE_SELECT);
 
 
-READ_STROBE <= (NOT nSLAVE_SELECT AND NOT FIFO_RESET);
+READ_STROBE <= ((SCK AND NOT FIFO_RESET)
+	OR (NOT nSLAVE_SELECT AND FIFO_RESET));
 
 FDCPE_XLXI_26/Q0: FDCPE port map (XLXI_26/Q(0),XLXI_26/Q_D(0),SCK,'0','0');
 XLXI_26/Q_D(0) <= (nSLAVE_SELECT AND CAMERA_DATA(0));

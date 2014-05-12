@@ -6,850 +6,841 @@ DEVICE | 9572XL | 9572XL44PC |
 
 NETWORK | skosnoere | 0 | 0 | 16391
 
-INPUT_INSTANCE | 0 | 0 | NULL | XLXN_90 | skosnoere_COPY_0_COPY_0 | 16 | 1 | 1
-INPUT_NODE_TYPE | 0 | 5 | II_IN
-NODE | SCK | 1044 | PI | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | NULL | 0 | 100 | NOTYPE
-OUTPUT_NODE_TYPE | 0 | 5 | II_IMUX
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
-
-INPUT_INSTANCE | 0 | 0 | NULL | XLXN_38 | skosnoere_COPY_0_COPY_0 | 16 | 1 | 1
-INPUT_NODE_TYPE | 0 | 5 | II_IN
-NODE | nSLAVE_SELECT | 1045 | PI | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | NULL | 0 | 100 | NOTYPE
-OUTPUT_NODE_TYPE | 0 | 5 | II_IMUX
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
-
-INPUT_INSTANCE | 0 | 0 | NULL | XLXN_6<7> | skosnoere_COPY_0_COPY_0 | 16 | 1 | 1
-INPUT_NODE_TYPE | 0 | 5 | II_IN
-NODE | CAMERA_DATA<7> | 1054 | PI | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | NULL | 0 | 100 | NOTYPE
-OUTPUT_NODE_TYPE | 0 | 5 | II_IMUX
-NODE | XLXN_6<7> | 1037 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<7> | 0 | 5 | II_IMUX
-
-MACROCELL_INSTANCE | PrldLow+PinTrst+OptxMapped | shift_out<7> | skosnoere_COPY_0_COPY_0 | 2155889664 | 4 | 2
-INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
-INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_6<7> | 1037 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<7> | 0 | 5 | II_IMUX
-INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXI_26/Q<6> | 1029 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<6>.Q | XLXI_26/Q<6> | 1 | 0 | MC_UIM
-INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
-OUTPUT_NODE_TYPE | 0 | 0 | MC_Q
-NODE | shift_out<7> | 1012 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | shift_out<7>.Q | shift_out<7> | 0 | 0 | MC_Q
-OUTPUT_NODE_TYPE | 2 | 0 | MC_OE
-NODE | shift_out<7>$OE | 1013 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | shift_out<7>.BUFOE.OUT | shift_out<7> | 2 | 0 | MC_OE
-
-SIGNAL_INSTANCE | shift_out<7>.SI | shift_out<7> | 0 | 4 | 4
-INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
-INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_6<7> | 1037 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<7> | 0 | 5 | II_IMUX
-INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXI_26/Q<6> | 1029 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<6>.Q | XLXI_26/Q<6> | 1 | 0 | MC_UIM
-INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
-OUTPUT_NODE_TYPE | 1 | 9 | MC_SI_D1
-SIGNAL | NODE | shift_out<7>.D1 | 1056 | ? | 0 | 4096 | shift_out<7> | NULL | NULL | shift_out<7>.SI | 1 | 9 | MC_SI_D1
-SPPTERM | 0 | IV_ZERO
-OUTPUT_NODE_TYPE | 2 | 9 | MC_SI_D2
-SIGNAL | NODE | shift_out<7>.D2 | 1057 | ? | 0 | 4096 | shift_out<7> | NULL | NULL | shift_out<7>.SI | 2 | 9 | MC_SI_D2
-SPPTERM | 2 | IV_TRUE | XLXN_38 | IV_TRUE | XLXN_6<7>
-SPPTERM | 2 | IV_FALSE | XLXN_38 | IV_TRUE | XLXI_26/Q<6>
-OUTPUT_NODE_TYPE | 3 | 9 | MC_SI_CLKF
-SIGNAL | NODE | shift_out<7>.CLKF | 1058 | ? | 0 | 4096 | shift_out<7> | NULL | NULL | shift_out<7>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
-OUTPUT_NODE_TYPE | 4 | 9 | MC_SI_TRST
-SIGNAL | NODE | shift_out<7>.TRST | 1060 | ? | 0 | 4096 | shift_out<7> | NULL | NULL | shift_out<7>.SI | 4 | 9 | MC_SI_TRST
-SPPTERM | 1 | IV_FALSE | XLXN_38
-
-SRFF_INSTANCE | shift_out<7>.REG | shift_out<7> | 0 | 2 | 1
-INPUT_NODE_TYPE | 0 | 8 | SRFF_D
-NODE | shift_out<7>.D | 1055 | ? | 0 | 0 | shift_out<7> | NULL | NULL | shift_out<7>.XOR | 0 | 7 | ALU_F
-INPUT_NODE_TYPE | 1 | 8 | SRFF_C
-SIGNAL | NODE | shift_out<7>.CLKF | 1058 | ? | 0 | 4096 | shift_out<7> | NULL | NULL | shift_out<7>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
-OUTPUT_NODE_TYPE | 0 | 8 | SRFF_Q
-NODE | shift_out<7>.Q | 1061 | ? | 0 | 0 | shift_out<7> | NULL | NULL | shift_out<7>.REG | 0 | 8 | SRFF_Q
-
-BUF_INSTANCE | shift_out<7>.BUFOE | shift_out<7> | 0 | 1 | 1
-INPUT_NODE_TYPE | 0 | 10 | CTOR_UNKNOWN
-SIGNAL | NODE | shift_out<7>.TRST | 1060 | ? | 0 | 4096 | shift_out<7> | NULL | NULL | shift_out<7>.SI | 4 | 9 | MC_SI_TRST
-SPPTERM | 1 | IV_FALSE | XLXN_38
-OUTPUT_NODE_TYPE | 0 | 10 | BUF_OUT
-NODE | shift_out<7>.BUFOE.OUT | 1059 | ? | 0 | 0 | shift_out<7> | NULL | NULL | shift_out<7>.BUFOE | 0 | 10 | BUF_OUT
-
 INPUT_INSTANCE | 0 | 0 | NULL | XLXN_56 | skosnoere_COPY_0_COPY_0 | 16 | 1 | 1
 INPUT_NODE_TYPE | 0 | 5 | II_IN
 NODE | MOSI | 1046 | PI | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | NULL | 0 | 100 | NOTYPE
 OUTPUT_NODE_TYPE | 0 | 5 | II_IMUX
-NODE | XLXN_56 | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_56 | 0 | 5 | II_IMUX
+NODE | XLXN_56 | 1013 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_56 | 0 | 5 | II_IMUX
+
+INPUT_INSTANCE | 0 | 0 | NULL | spi_clock | skosnoere_COPY_0_COPY_0 | 16 | 1 | 1
+INPUT_NODE_TYPE | 0 | 5 | II_IN
+NODE | SCK | 1047 | PI | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | NULL | 0 | 100 | NOTYPE
+OUTPUT_NODE_TYPE | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
+
+INPUT_INSTANCE | 0 | 0 | NULL | XLXN_117 | skosnoere_COPY_0_COPY_0 | 16 | 1 | 1
+INPUT_NODE_TYPE | 0 | 5 | II_IN
+NODE | nSLAVE_SELECT | 1048 | PI | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | NULL | 0 | 100 | NOTYPE
+OUTPUT_NODE_TYPE | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 
 MACROCELL_INSTANCE | PrldLow+OptxMapped | MOSI_P<0> | skosnoere_COPY_0_COPY_0 | 2155873280 | 3 | 1
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_56 | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_56 | 0 | 5 | II_IMUX
+NODE | XLXN_56 | 1013 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_56 | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 0 | MC_UIM
-NODE | MOSI_P<0> | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<0>.Q | MOSI_P<0> | 1 | 0 | MC_UIM
+NODE | MOSI_P<0> | 1016 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<0>.Q | MOSI_P<0> | 1 | 0 | MC_UIM
 
 SIGNAL_INSTANCE | MOSI_P<0>.SI | MOSI_P<0> | 0 | 3 | 4
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_56 | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_56 | 0 | 5 | II_IMUX
+NODE | XLXN_56 | 1013 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_56 | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 9 | MC_SI_D1
-SIGNAL | NODE | MOSI_P<0>.D1 | 1063 | ? | 0 | 4096 | MOSI_P<0> | NULL | NULL | MOSI_P<0>.SI | 1 | 9 | MC_SI_D1
+SIGNAL | NODE | MOSI_P<0>.D1 | 1058 | ? | 0 | 4096 | MOSI_P<0> | NULL | NULL | MOSI_P<0>.SI | 1 | 9 | MC_SI_D1
 SPPTERM | 0 | IV_ZERO
 OUTPUT_NODE_TYPE | 2 | 9 | MC_SI_D2
-SIGNAL | NODE | MOSI_P<0>.D2 | 1064 | ? | 0 | 4096 | MOSI_P<0> | NULL | NULL | MOSI_P<0>.SI | 2 | 9 | MC_SI_D2
+SIGNAL | NODE | MOSI_P<0>.D2 | 1059 | ? | 0 | 4096 | MOSI_P<0> | NULL | NULL | MOSI_P<0>.SI | 2 | 9 | MC_SI_D2
 SPPTERM | 1 | IV_TRUE | XLXN_56
 OUTPUT_NODE_TYPE | 3 | 9 | MC_SI_CLKF
-SIGNAL | NODE | MOSI_P<0>.CLKF | 1065 | ? | 0 | 4096 | MOSI_P<0> | NULL | NULL | MOSI_P<0>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | MOSI_P<0>.CLKF | 1060 | ? | 0 | 4096 | MOSI_P<0> | NULL | NULL | MOSI_P<0>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 OUTPUT_NODE_TYPE | 10 | 9 | MC_SI_CE
-SIGNAL | NODE | MOSI_P<0>.CE | 1066 | ? | 0 | 4096 | MOSI_P<0> | NULL | NULL | MOSI_P<0>.SI | 10 | 9 | MC_SI_CE
-SPPTERM | 1 | IV_FALSE | XLXN_38
+SIGNAL | NODE | MOSI_P<0>.CE | 1061 | ? | 0 | 4096 | MOSI_P<0> | NULL | NULL | MOSI_P<0>.SI | 10 | 9 | MC_SI_CE
+SPPTERM | 1 | IV_FALSE | XLXN_117
 
 SRFF_INSTANCE | MOSI_P<0>.REG | MOSI_P<0> | 0 | 3 | 1
 INPUT_NODE_TYPE | 0 | 8 | SRFF_D
-NODE | MOSI_P<0>.D | 1062 | ? | 0 | 0 | MOSI_P<0> | NULL | NULL | MOSI_P<0>.XOR | 0 | 7 | ALU_F
+NODE | MOSI_P<0>.D | 1057 | ? | 0 | 0 | MOSI_P<0> | NULL | NULL | MOSI_P<0>.XOR | 0 | 7 | ALU_F
 INPUT_NODE_TYPE | 1 | 8 | SRFF_C
-SIGNAL | NODE | MOSI_P<0>.CLKF | 1065 | ? | 0 | 4096 | MOSI_P<0> | NULL | NULL | MOSI_P<0>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | MOSI_P<0>.CLKF | 1060 | ? | 0 | 4096 | MOSI_P<0> | NULL | NULL | MOSI_P<0>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 INPUT_NODE_TYPE | 4 | 8 | SRFF_CE
-SIGNAL | NODE | MOSI_P<0>.CE | 1066 | ? | 0 | 4096 | MOSI_P<0> | NULL | NULL | MOSI_P<0>.SI | 10 | 9 | MC_SI_CE
-SPPTERM | 1 | IV_FALSE | XLXN_38
+SIGNAL | NODE | MOSI_P<0>.CE | 1061 | ? | 0 | 4096 | MOSI_P<0> | NULL | NULL | MOSI_P<0>.SI | 10 | 9 | MC_SI_CE
+SPPTERM | 1 | IV_FALSE | XLXN_117
 OUTPUT_NODE_TYPE | 0 | 8 | SRFF_Q
-NODE | MOSI_P<0>.Q | 1067 | ? | 0 | 0 | MOSI_P<0> | NULL | NULL | MOSI_P<0>.REG | 0 | 8 | SRFF_Q
+NODE | MOSI_P<0>.Q | 1062 | ? | 0 | 0 | MOSI_P<0> | NULL | NULL | MOSI_P<0>.REG | 0 | 8 | SRFF_Q
 
 MACROCELL_INSTANCE | PrldLow+OptxMapped | MOSI_P<1> | skosnoere_COPY_0_COPY_0 | 2155873280 | 3 | 1
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<0> | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<0>.Q | MOSI_P<0> | 1 | 0 | MC_UIM
+NODE | MOSI_P<0> | 1016 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<0>.Q | MOSI_P<0> | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 0 | MC_UIM
-NODE | MOSI_P<1> | 1016 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<1>.Q | MOSI_P<1> | 1 | 0 | MC_UIM
+NODE | MOSI_P<1> | 1017 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<1>.Q | MOSI_P<1> | 1 | 0 | MC_UIM
 
 SIGNAL_INSTANCE | MOSI_P<1>.SI | MOSI_P<1> | 0 | 3 | 4
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<0> | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<0>.Q | MOSI_P<0> | 1 | 0 | MC_UIM
+NODE | MOSI_P<0> | 1016 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<0>.Q | MOSI_P<0> | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 9 | MC_SI_D1
-SIGNAL | NODE | MOSI_P<1>.D1 | 1069 | ? | 0 | 4096 | MOSI_P<1> | NULL | NULL | MOSI_P<1>.SI | 1 | 9 | MC_SI_D1
+SIGNAL | NODE | MOSI_P<1>.D1 | 1064 | ? | 0 | 4096 | MOSI_P<1> | NULL | NULL | MOSI_P<1>.SI | 1 | 9 | MC_SI_D1
 SPPTERM | 0 | IV_ZERO
 OUTPUT_NODE_TYPE | 2 | 9 | MC_SI_D2
-SIGNAL | NODE | MOSI_P<1>.D2 | 1070 | ? | 0 | 4096 | MOSI_P<1> | NULL | NULL | MOSI_P<1>.SI | 2 | 9 | MC_SI_D2
+SIGNAL | NODE | MOSI_P<1>.D2 | 1065 | ? | 0 | 4096 | MOSI_P<1> | NULL | NULL | MOSI_P<1>.SI | 2 | 9 | MC_SI_D2
 SPPTERM | 1 | IV_TRUE | MOSI_P<0>
 OUTPUT_NODE_TYPE | 3 | 9 | MC_SI_CLKF
-SIGNAL | NODE | MOSI_P<1>.CLKF | 1071 | ? | 0 | 4096 | MOSI_P<1> | NULL | NULL | MOSI_P<1>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | MOSI_P<1>.CLKF | 1066 | ? | 0 | 4096 | MOSI_P<1> | NULL | NULL | MOSI_P<1>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 OUTPUT_NODE_TYPE | 10 | 9 | MC_SI_CE
-SIGNAL | NODE | MOSI_P<1>.CE | 1072 | ? | 0 | 4096 | MOSI_P<1> | NULL | NULL | MOSI_P<1>.SI | 10 | 9 | MC_SI_CE
-SPPTERM | 1 | IV_FALSE | XLXN_38
+SIGNAL | NODE | MOSI_P<1>.CE | 1067 | ? | 0 | 4096 | MOSI_P<1> | NULL | NULL | MOSI_P<1>.SI | 10 | 9 | MC_SI_CE
+SPPTERM | 1 | IV_FALSE | XLXN_117
 
 SRFF_INSTANCE | MOSI_P<1>.REG | MOSI_P<1> | 0 | 3 | 1
 INPUT_NODE_TYPE | 0 | 8 | SRFF_D
-NODE | MOSI_P<1>.D | 1068 | ? | 0 | 0 | MOSI_P<1> | NULL | NULL | MOSI_P<1>.XOR | 0 | 7 | ALU_F
+NODE | MOSI_P<1>.D | 1063 | ? | 0 | 0 | MOSI_P<1> | NULL | NULL | MOSI_P<1>.XOR | 0 | 7 | ALU_F
 INPUT_NODE_TYPE | 1 | 8 | SRFF_C
-SIGNAL | NODE | MOSI_P<1>.CLKF | 1071 | ? | 0 | 4096 | MOSI_P<1> | NULL | NULL | MOSI_P<1>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | MOSI_P<1>.CLKF | 1066 | ? | 0 | 4096 | MOSI_P<1> | NULL | NULL | MOSI_P<1>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 INPUT_NODE_TYPE | 4 | 8 | SRFF_CE
-SIGNAL | NODE | MOSI_P<1>.CE | 1072 | ? | 0 | 4096 | MOSI_P<1> | NULL | NULL | MOSI_P<1>.SI | 10 | 9 | MC_SI_CE
-SPPTERM | 1 | IV_FALSE | XLXN_38
+SIGNAL | NODE | MOSI_P<1>.CE | 1067 | ? | 0 | 4096 | MOSI_P<1> | NULL | NULL | MOSI_P<1>.SI | 10 | 9 | MC_SI_CE
+SPPTERM | 1 | IV_FALSE | XLXN_117
 OUTPUT_NODE_TYPE | 0 | 8 | SRFF_Q
-NODE | MOSI_P<1>.Q | 1073 | ? | 0 | 0 | MOSI_P<1> | NULL | NULL | MOSI_P<1>.REG | 0 | 8 | SRFF_Q
+NODE | MOSI_P<1>.Q | 1068 | ? | 0 | 0 | MOSI_P<1> | NULL | NULL | MOSI_P<1>.REG | 0 | 8 | SRFF_Q
 
 MACROCELL_INSTANCE | PrldLow+OptxMapped | MOSI_P<2> | skosnoere_COPY_0_COPY_0 | 2155873280 | 3 | 1
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<1> | 1016 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<1>.Q | MOSI_P<1> | 1 | 0 | MC_UIM
+NODE | MOSI_P<1> | 1017 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<1>.Q | MOSI_P<1> | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 0 | MC_UIM
-NODE | MOSI_P<2> | 1017 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<2>.Q | MOSI_P<2> | 1 | 0 | MC_UIM
+NODE | MOSI_P<2> | 1018 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<2>.Q | MOSI_P<2> | 1 | 0 | MC_UIM
 
 SIGNAL_INSTANCE | MOSI_P<2>.SI | MOSI_P<2> | 0 | 3 | 4
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<1> | 1016 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<1>.Q | MOSI_P<1> | 1 | 0 | MC_UIM
+NODE | MOSI_P<1> | 1017 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<1>.Q | MOSI_P<1> | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 9 | MC_SI_D1
-SIGNAL | NODE | MOSI_P<2>.D1 | 1075 | ? | 0 | 4096 | MOSI_P<2> | NULL | NULL | MOSI_P<2>.SI | 1 | 9 | MC_SI_D1
+SIGNAL | NODE | MOSI_P<2>.D1 | 1070 | ? | 0 | 4096 | MOSI_P<2> | NULL | NULL | MOSI_P<2>.SI | 1 | 9 | MC_SI_D1
 SPPTERM | 0 | IV_ZERO
 OUTPUT_NODE_TYPE | 2 | 9 | MC_SI_D2
-SIGNAL | NODE | MOSI_P<2>.D2 | 1076 | ? | 0 | 4096 | MOSI_P<2> | NULL | NULL | MOSI_P<2>.SI | 2 | 9 | MC_SI_D2
+SIGNAL | NODE | MOSI_P<2>.D2 | 1071 | ? | 0 | 4096 | MOSI_P<2> | NULL | NULL | MOSI_P<2>.SI | 2 | 9 | MC_SI_D2
 SPPTERM | 1 | IV_TRUE | MOSI_P<1>
 OUTPUT_NODE_TYPE | 3 | 9 | MC_SI_CLKF
-SIGNAL | NODE | MOSI_P<2>.CLKF | 1077 | ? | 0 | 4096 | MOSI_P<2> | NULL | NULL | MOSI_P<2>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | MOSI_P<2>.CLKF | 1072 | ? | 0 | 4096 | MOSI_P<2> | NULL | NULL | MOSI_P<2>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 OUTPUT_NODE_TYPE | 10 | 9 | MC_SI_CE
-SIGNAL | NODE | MOSI_P<2>.CE | 1078 | ? | 0 | 4096 | MOSI_P<2> | NULL | NULL | MOSI_P<2>.SI | 10 | 9 | MC_SI_CE
-SPPTERM | 1 | IV_FALSE | XLXN_38
+SIGNAL | NODE | MOSI_P<2>.CE | 1073 | ? | 0 | 4096 | MOSI_P<2> | NULL | NULL | MOSI_P<2>.SI | 10 | 9 | MC_SI_CE
+SPPTERM | 1 | IV_FALSE | XLXN_117
 
 SRFF_INSTANCE | MOSI_P<2>.REG | MOSI_P<2> | 0 | 3 | 1
 INPUT_NODE_TYPE | 0 | 8 | SRFF_D
-NODE | MOSI_P<2>.D | 1074 | ? | 0 | 0 | MOSI_P<2> | NULL | NULL | MOSI_P<2>.XOR | 0 | 7 | ALU_F
+NODE | MOSI_P<2>.D | 1069 | ? | 0 | 0 | MOSI_P<2> | NULL | NULL | MOSI_P<2>.XOR | 0 | 7 | ALU_F
 INPUT_NODE_TYPE | 1 | 8 | SRFF_C
-SIGNAL | NODE | MOSI_P<2>.CLKF | 1077 | ? | 0 | 4096 | MOSI_P<2> | NULL | NULL | MOSI_P<2>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | MOSI_P<2>.CLKF | 1072 | ? | 0 | 4096 | MOSI_P<2> | NULL | NULL | MOSI_P<2>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 INPUT_NODE_TYPE | 4 | 8 | SRFF_CE
-SIGNAL | NODE | MOSI_P<2>.CE | 1078 | ? | 0 | 4096 | MOSI_P<2> | NULL | NULL | MOSI_P<2>.SI | 10 | 9 | MC_SI_CE
-SPPTERM | 1 | IV_FALSE | XLXN_38
+SIGNAL | NODE | MOSI_P<2>.CE | 1073 | ? | 0 | 4096 | MOSI_P<2> | NULL | NULL | MOSI_P<2>.SI | 10 | 9 | MC_SI_CE
+SPPTERM | 1 | IV_FALSE | XLXN_117
 OUTPUT_NODE_TYPE | 0 | 8 | SRFF_Q
-NODE | MOSI_P<2>.Q | 1079 | ? | 0 | 0 | MOSI_P<2> | NULL | NULL | MOSI_P<2>.REG | 0 | 8 | SRFF_Q
+NODE | MOSI_P<2>.Q | 1074 | ? | 0 | 0 | MOSI_P<2> | NULL | NULL | MOSI_P<2>.REG | 0 | 8 | SRFF_Q
 
 MACROCELL_INSTANCE | PrldLow+OptxMapped | MOSI_P<3> | skosnoere_COPY_0_COPY_0 | 2155873280 | 3 | 1
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<2> | 1017 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<2>.Q | MOSI_P<2> | 1 | 0 | MC_UIM
+NODE | MOSI_P<2> | 1018 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<2>.Q | MOSI_P<2> | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 0 | MC_UIM
-NODE | MOSI_P<3> | 1018 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<3>.Q | MOSI_P<3> | 1 | 0 | MC_UIM
+NODE | MOSI_P<3> | 1019 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<3>.Q | MOSI_P<3> | 1 | 0 | MC_UIM
 
 SIGNAL_INSTANCE | MOSI_P<3>.SI | MOSI_P<3> | 0 | 3 | 4
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<2> | 1017 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<2>.Q | MOSI_P<2> | 1 | 0 | MC_UIM
+NODE | MOSI_P<2> | 1018 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<2>.Q | MOSI_P<2> | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 9 | MC_SI_D1
-SIGNAL | NODE | MOSI_P<3>.D1 | 1081 | ? | 0 | 4096 | MOSI_P<3> | NULL | NULL | MOSI_P<3>.SI | 1 | 9 | MC_SI_D1
+SIGNAL | NODE | MOSI_P<3>.D1 | 1076 | ? | 0 | 4096 | MOSI_P<3> | NULL | NULL | MOSI_P<3>.SI | 1 | 9 | MC_SI_D1
 SPPTERM | 0 | IV_ZERO
 OUTPUT_NODE_TYPE | 2 | 9 | MC_SI_D2
-SIGNAL | NODE | MOSI_P<3>.D2 | 1082 | ? | 0 | 4096 | MOSI_P<3> | NULL | NULL | MOSI_P<3>.SI | 2 | 9 | MC_SI_D2
+SIGNAL | NODE | MOSI_P<3>.D2 | 1077 | ? | 0 | 4096 | MOSI_P<3> | NULL | NULL | MOSI_P<3>.SI | 2 | 9 | MC_SI_D2
 SPPTERM | 1 | IV_TRUE | MOSI_P<2>
 OUTPUT_NODE_TYPE | 3 | 9 | MC_SI_CLKF
-SIGNAL | NODE | MOSI_P<3>.CLKF | 1083 | ? | 0 | 4096 | MOSI_P<3> | NULL | NULL | MOSI_P<3>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | MOSI_P<3>.CLKF | 1078 | ? | 0 | 4096 | MOSI_P<3> | NULL | NULL | MOSI_P<3>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 OUTPUT_NODE_TYPE | 10 | 9 | MC_SI_CE
-SIGNAL | NODE | MOSI_P<3>.CE | 1084 | ? | 0 | 4096 | MOSI_P<3> | NULL | NULL | MOSI_P<3>.SI | 10 | 9 | MC_SI_CE
-SPPTERM | 1 | IV_FALSE | XLXN_38
+SIGNAL | NODE | MOSI_P<3>.CE | 1079 | ? | 0 | 4096 | MOSI_P<3> | NULL | NULL | MOSI_P<3>.SI | 10 | 9 | MC_SI_CE
+SPPTERM | 1 | IV_FALSE | XLXN_117
 
 SRFF_INSTANCE | MOSI_P<3>.REG | MOSI_P<3> | 0 | 3 | 1
 INPUT_NODE_TYPE | 0 | 8 | SRFF_D
-NODE | MOSI_P<3>.D | 1080 | ? | 0 | 0 | MOSI_P<3> | NULL | NULL | MOSI_P<3>.XOR | 0 | 7 | ALU_F
+NODE | MOSI_P<3>.D | 1075 | ? | 0 | 0 | MOSI_P<3> | NULL | NULL | MOSI_P<3>.XOR | 0 | 7 | ALU_F
 INPUT_NODE_TYPE | 1 | 8 | SRFF_C
-SIGNAL | NODE | MOSI_P<3>.CLKF | 1083 | ? | 0 | 4096 | MOSI_P<3> | NULL | NULL | MOSI_P<3>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | MOSI_P<3>.CLKF | 1078 | ? | 0 | 4096 | MOSI_P<3> | NULL | NULL | MOSI_P<3>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 INPUT_NODE_TYPE | 4 | 8 | SRFF_CE
-SIGNAL | NODE | MOSI_P<3>.CE | 1084 | ? | 0 | 4096 | MOSI_P<3> | NULL | NULL | MOSI_P<3>.SI | 10 | 9 | MC_SI_CE
-SPPTERM | 1 | IV_FALSE | XLXN_38
+SIGNAL | NODE | MOSI_P<3>.CE | 1079 | ? | 0 | 4096 | MOSI_P<3> | NULL | NULL | MOSI_P<3>.SI | 10 | 9 | MC_SI_CE
+SPPTERM | 1 | IV_FALSE | XLXN_117
 OUTPUT_NODE_TYPE | 0 | 8 | SRFF_Q
-NODE | MOSI_P<3>.Q | 1085 | ? | 0 | 0 | MOSI_P<3> | NULL | NULL | MOSI_P<3>.REG | 0 | 8 | SRFF_Q
+NODE | MOSI_P<3>.Q | 1080 | ? | 0 | 0 | MOSI_P<3> | NULL | NULL | MOSI_P<3>.REG | 0 | 8 | SRFF_Q
 
 MACROCELL_INSTANCE | PrldLow+OptxMapped | MOSI_P<4> | skosnoere_COPY_0_COPY_0 | 2155873280 | 3 | 1
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<3> | 1018 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<3>.Q | MOSI_P<3> | 1 | 0 | MC_UIM
+NODE | MOSI_P<3> | 1019 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<3>.Q | MOSI_P<3> | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 0 | MC_UIM
-NODE | MOSI_P<4> | 1019 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<4>.Q | MOSI_P<4> | 1 | 0 | MC_UIM
+NODE | MOSI_P<4> | 1020 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<4>.Q | MOSI_P<4> | 1 | 0 | MC_UIM
 
 SIGNAL_INSTANCE | MOSI_P<4>.SI | MOSI_P<4> | 0 | 3 | 4
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<3> | 1018 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<3>.Q | MOSI_P<3> | 1 | 0 | MC_UIM
+NODE | MOSI_P<3> | 1019 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<3>.Q | MOSI_P<3> | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 9 | MC_SI_D1
-SIGNAL | NODE | MOSI_P<4>.D1 | 1087 | ? | 0 | 4096 | MOSI_P<4> | NULL | NULL | MOSI_P<4>.SI | 1 | 9 | MC_SI_D1
+SIGNAL | NODE | MOSI_P<4>.D1 | 1082 | ? | 0 | 4096 | MOSI_P<4> | NULL | NULL | MOSI_P<4>.SI | 1 | 9 | MC_SI_D1
 SPPTERM | 0 | IV_ZERO
 OUTPUT_NODE_TYPE | 2 | 9 | MC_SI_D2
-SIGNAL | NODE | MOSI_P<4>.D2 | 1088 | ? | 0 | 4096 | MOSI_P<4> | NULL | NULL | MOSI_P<4>.SI | 2 | 9 | MC_SI_D2
+SIGNAL | NODE | MOSI_P<4>.D2 | 1083 | ? | 0 | 4096 | MOSI_P<4> | NULL | NULL | MOSI_P<4>.SI | 2 | 9 | MC_SI_D2
 SPPTERM | 1 | IV_TRUE | MOSI_P<3>
 OUTPUT_NODE_TYPE | 3 | 9 | MC_SI_CLKF
-SIGNAL | NODE | MOSI_P<4>.CLKF | 1089 | ? | 0 | 4096 | MOSI_P<4> | NULL | NULL | MOSI_P<4>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | MOSI_P<4>.CLKF | 1084 | ? | 0 | 4096 | MOSI_P<4> | NULL | NULL | MOSI_P<4>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 OUTPUT_NODE_TYPE | 10 | 9 | MC_SI_CE
-SIGNAL | NODE | MOSI_P<4>.CE | 1090 | ? | 0 | 4096 | MOSI_P<4> | NULL | NULL | MOSI_P<4>.SI | 10 | 9 | MC_SI_CE
-SPPTERM | 1 | IV_FALSE | XLXN_38
+SIGNAL | NODE | MOSI_P<4>.CE | 1085 | ? | 0 | 4096 | MOSI_P<4> | NULL | NULL | MOSI_P<4>.SI | 10 | 9 | MC_SI_CE
+SPPTERM | 1 | IV_FALSE | XLXN_117
 
 SRFF_INSTANCE | MOSI_P<4>.REG | MOSI_P<4> | 0 | 3 | 1
 INPUT_NODE_TYPE | 0 | 8 | SRFF_D
-NODE | MOSI_P<4>.D | 1086 | ? | 0 | 0 | MOSI_P<4> | NULL | NULL | MOSI_P<4>.XOR | 0 | 7 | ALU_F
+NODE | MOSI_P<4>.D | 1081 | ? | 0 | 0 | MOSI_P<4> | NULL | NULL | MOSI_P<4>.XOR | 0 | 7 | ALU_F
 INPUT_NODE_TYPE | 1 | 8 | SRFF_C
-SIGNAL | NODE | MOSI_P<4>.CLKF | 1089 | ? | 0 | 4096 | MOSI_P<4> | NULL | NULL | MOSI_P<4>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | MOSI_P<4>.CLKF | 1084 | ? | 0 | 4096 | MOSI_P<4> | NULL | NULL | MOSI_P<4>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 INPUT_NODE_TYPE | 4 | 8 | SRFF_CE
-SIGNAL | NODE | MOSI_P<4>.CE | 1090 | ? | 0 | 4096 | MOSI_P<4> | NULL | NULL | MOSI_P<4>.SI | 10 | 9 | MC_SI_CE
-SPPTERM | 1 | IV_FALSE | XLXN_38
+SIGNAL | NODE | MOSI_P<4>.CE | 1085 | ? | 0 | 4096 | MOSI_P<4> | NULL | NULL | MOSI_P<4>.SI | 10 | 9 | MC_SI_CE
+SPPTERM | 1 | IV_FALSE | XLXN_117
 OUTPUT_NODE_TYPE | 0 | 8 | SRFF_Q
-NODE | MOSI_P<4>.Q | 1091 | ? | 0 | 0 | MOSI_P<4> | NULL | NULL | MOSI_P<4>.REG | 0 | 8 | SRFF_Q
+NODE | MOSI_P<4>.Q | 1086 | ? | 0 | 0 | MOSI_P<4> | NULL | NULL | MOSI_P<4>.REG | 0 | 8 | SRFF_Q
 
 MACROCELL_INSTANCE | PrldLow+OptxMapped | MOSI_P<5> | skosnoere_COPY_0_COPY_0 | 2155873280 | 3 | 1
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<4> | 1019 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<4>.Q | MOSI_P<4> | 1 | 0 | MC_UIM
+NODE | MOSI_P<4> | 1020 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<4>.Q | MOSI_P<4> | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 0 | MC_UIM
-NODE | MOSI_P<5> | 1020 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<5>.Q | MOSI_P<5> | 1 | 0 | MC_UIM
+NODE | MOSI_P<5> | 1021 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<5>.Q | MOSI_P<5> | 1 | 0 | MC_UIM
 
 SIGNAL_INSTANCE | MOSI_P<5>.SI | MOSI_P<5> | 0 | 3 | 4
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<4> | 1019 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<4>.Q | MOSI_P<4> | 1 | 0 | MC_UIM
+NODE | MOSI_P<4> | 1020 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<4>.Q | MOSI_P<4> | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 9 | MC_SI_D1
-SIGNAL | NODE | MOSI_P<5>.D1 | 1093 | ? | 0 | 4096 | MOSI_P<5> | NULL | NULL | MOSI_P<5>.SI | 1 | 9 | MC_SI_D1
+SIGNAL | NODE | MOSI_P<5>.D1 | 1088 | ? | 0 | 4096 | MOSI_P<5> | NULL | NULL | MOSI_P<5>.SI | 1 | 9 | MC_SI_D1
 SPPTERM | 0 | IV_ZERO
 OUTPUT_NODE_TYPE | 2 | 9 | MC_SI_D2
-SIGNAL | NODE | MOSI_P<5>.D2 | 1094 | ? | 0 | 4096 | MOSI_P<5> | NULL | NULL | MOSI_P<5>.SI | 2 | 9 | MC_SI_D2
+SIGNAL | NODE | MOSI_P<5>.D2 | 1089 | ? | 0 | 4096 | MOSI_P<5> | NULL | NULL | MOSI_P<5>.SI | 2 | 9 | MC_SI_D2
 SPPTERM | 1 | IV_TRUE | MOSI_P<4>
 OUTPUT_NODE_TYPE | 3 | 9 | MC_SI_CLKF
-SIGNAL | NODE | MOSI_P<5>.CLKF | 1095 | ? | 0 | 4096 | MOSI_P<5> | NULL | NULL | MOSI_P<5>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | MOSI_P<5>.CLKF | 1090 | ? | 0 | 4096 | MOSI_P<5> | NULL | NULL | MOSI_P<5>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 OUTPUT_NODE_TYPE | 10 | 9 | MC_SI_CE
-SIGNAL | NODE | MOSI_P<5>.CE | 1096 | ? | 0 | 4096 | MOSI_P<5> | NULL | NULL | MOSI_P<5>.SI | 10 | 9 | MC_SI_CE
-SPPTERM | 1 | IV_FALSE | XLXN_38
+SIGNAL | NODE | MOSI_P<5>.CE | 1091 | ? | 0 | 4096 | MOSI_P<5> | NULL | NULL | MOSI_P<5>.SI | 10 | 9 | MC_SI_CE
+SPPTERM | 1 | IV_FALSE | XLXN_117
 
 SRFF_INSTANCE | MOSI_P<5>.REG | MOSI_P<5> | 0 | 3 | 1
 INPUT_NODE_TYPE | 0 | 8 | SRFF_D
-NODE | MOSI_P<5>.D | 1092 | ? | 0 | 0 | MOSI_P<5> | NULL | NULL | MOSI_P<5>.XOR | 0 | 7 | ALU_F
+NODE | MOSI_P<5>.D | 1087 | ? | 0 | 0 | MOSI_P<5> | NULL | NULL | MOSI_P<5>.XOR | 0 | 7 | ALU_F
 INPUT_NODE_TYPE | 1 | 8 | SRFF_C
-SIGNAL | NODE | MOSI_P<5>.CLKF | 1095 | ? | 0 | 4096 | MOSI_P<5> | NULL | NULL | MOSI_P<5>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | MOSI_P<5>.CLKF | 1090 | ? | 0 | 4096 | MOSI_P<5> | NULL | NULL | MOSI_P<5>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 INPUT_NODE_TYPE | 4 | 8 | SRFF_CE
-SIGNAL | NODE | MOSI_P<5>.CE | 1096 | ? | 0 | 4096 | MOSI_P<5> | NULL | NULL | MOSI_P<5>.SI | 10 | 9 | MC_SI_CE
-SPPTERM | 1 | IV_FALSE | XLXN_38
+SIGNAL | NODE | MOSI_P<5>.CE | 1091 | ? | 0 | 4096 | MOSI_P<5> | NULL | NULL | MOSI_P<5>.SI | 10 | 9 | MC_SI_CE
+SPPTERM | 1 | IV_FALSE | XLXN_117
 OUTPUT_NODE_TYPE | 0 | 8 | SRFF_Q
-NODE | MOSI_P<5>.Q | 1097 | ? | 0 | 0 | MOSI_P<5> | NULL | NULL | MOSI_P<5>.REG | 0 | 8 | SRFF_Q
+NODE | MOSI_P<5>.Q | 1092 | ? | 0 | 0 | MOSI_P<5> | NULL | NULL | MOSI_P<5>.REG | 0 | 8 | SRFF_Q
 
 MACROCELL_INSTANCE | PrldLow+OptxMapped | MOSI_P<6> | skosnoere_COPY_0_COPY_0 | 2155873280 | 3 | 1
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<5> | 1020 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<5>.Q | MOSI_P<5> | 1 | 0 | MC_UIM
+NODE | MOSI_P<5> | 1021 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<5>.Q | MOSI_P<5> | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 0 | MC_UIM
-NODE | MOSI_P<6> | 1021 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<6>.Q | MOSI_P<6> | 1 | 0 | MC_UIM
+NODE | MOSI_P<6> | 1022 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<6>.Q | MOSI_P<6> | 1 | 0 | MC_UIM
 
 SIGNAL_INSTANCE | MOSI_P<6>.SI | MOSI_P<6> | 0 | 3 | 4
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<5> | 1020 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<5>.Q | MOSI_P<5> | 1 | 0 | MC_UIM
+NODE | MOSI_P<5> | 1021 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<5>.Q | MOSI_P<5> | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 9 | MC_SI_D1
-SIGNAL | NODE | MOSI_P<6>.D1 | 1099 | ? | 0 | 4096 | MOSI_P<6> | NULL | NULL | MOSI_P<6>.SI | 1 | 9 | MC_SI_D1
+SIGNAL | NODE | MOSI_P<6>.D1 | 1094 | ? | 0 | 4096 | MOSI_P<6> | NULL | NULL | MOSI_P<6>.SI | 1 | 9 | MC_SI_D1
 SPPTERM | 0 | IV_ZERO
 OUTPUT_NODE_TYPE | 2 | 9 | MC_SI_D2
-SIGNAL | NODE | MOSI_P<6>.D2 | 1100 | ? | 0 | 4096 | MOSI_P<6> | NULL | NULL | MOSI_P<6>.SI | 2 | 9 | MC_SI_D2
+SIGNAL | NODE | MOSI_P<6>.D2 | 1095 | ? | 0 | 4096 | MOSI_P<6> | NULL | NULL | MOSI_P<6>.SI | 2 | 9 | MC_SI_D2
 SPPTERM | 1 | IV_TRUE | MOSI_P<5>
 OUTPUT_NODE_TYPE | 3 | 9 | MC_SI_CLKF
-SIGNAL | NODE | MOSI_P<6>.CLKF | 1101 | ? | 0 | 4096 | MOSI_P<6> | NULL | NULL | MOSI_P<6>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | MOSI_P<6>.CLKF | 1096 | ? | 0 | 4096 | MOSI_P<6> | NULL | NULL | MOSI_P<6>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 OUTPUT_NODE_TYPE | 10 | 9 | MC_SI_CE
-SIGNAL | NODE | MOSI_P<6>.CE | 1102 | ? | 0 | 4096 | MOSI_P<6> | NULL | NULL | MOSI_P<6>.SI | 10 | 9 | MC_SI_CE
-SPPTERM | 1 | IV_FALSE | XLXN_38
+SIGNAL | NODE | MOSI_P<6>.CE | 1097 | ? | 0 | 4096 | MOSI_P<6> | NULL | NULL | MOSI_P<6>.SI | 10 | 9 | MC_SI_CE
+SPPTERM | 1 | IV_FALSE | XLXN_117
 
 SRFF_INSTANCE | MOSI_P<6>.REG | MOSI_P<6> | 0 | 3 | 1
 INPUT_NODE_TYPE | 0 | 8 | SRFF_D
-NODE | MOSI_P<6>.D | 1098 | ? | 0 | 0 | MOSI_P<6> | NULL | NULL | MOSI_P<6>.XOR | 0 | 7 | ALU_F
+NODE | MOSI_P<6>.D | 1093 | ? | 0 | 0 | MOSI_P<6> | NULL | NULL | MOSI_P<6>.XOR | 0 | 7 | ALU_F
 INPUT_NODE_TYPE | 1 | 8 | SRFF_C
-SIGNAL | NODE | MOSI_P<6>.CLKF | 1101 | ? | 0 | 4096 | MOSI_P<6> | NULL | NULL | MOSI_P<6>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | MOSI_P<6>.CLKF | 1096 | ? | 0 | 4096 | MOSI_P<6> | NULL | NULL | MOSI_P<6>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 INPUT_NODE_TYPE | 4 | 8 | SRFF_CE
-SIGNAL | NODE | MOSI_P<6>.CE | 1102 | ? | 0 | 4096 | MOSI_P<6> | NULL | NULL | MOSI_P<6>.SI | 10 | 9 | MC_SI_CE
-SPPTERM | 1 | IV_FALSE | XLXN_38
+SIGNAL | NODE | MOSI_P<6>.CE | 1097 | ? | 0 | 4096 | MOSI_P<6> | NULL | NULL | MOSI_P<6>.SI | 10 | 9 | MC_SI_CE
+SPPTERM | 1 | IV_FALSE | XLXN_117
 OUTPUT_NODE_TYPE | 0 | 8 | SRFF_Q
-NODE | MOSI_P<6>.Q | 1103 | ? | 0 | 0 | MOSI_P<6> | NULL | NULL | MOSI_P<6>.REG | 0 | 8 | SRFF_Q
+NODE | MOSI_P<6>.Q | 1098 | ? | 0 | 0 | MOSI_P<6> | NULL | NULL | MOSI_P<6>.REG | 0 | 8 | SRFF_Q
 
 MACROCELL_INSTANCE | PrldLow+OptxMapped | MOSI_P<7> | skosnoere_COPY_0_COPY_0 | 2155873280 | 3 | 1
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<6> | 1021 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<6>.Q | MOSI_P<6> | 1 | 0 | MC_UIM
+NODE | MOSI_P<6> | 1022 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<6>.Q | MOSI_P<6> | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 0 | MC_UIM
-NODE | MOSI_P<7> | 1022 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<7>.Q | MOSI_P<7> | 1 | 0 | MC_UIM
+NODE | MOSI_P<7> | 1023 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<7>.Q | MOSI_P<7> | 1 | 0 | MC_UIM
 
 SIGNAL_INSTANCE | MOSI_P<7>.SI | MOSI_P<7> | 0 | 3 | 4
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<6> | 1021 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<6>.Q | MOSI_P<6> | 1 | 0 | MC_UIM
+NODE | MOSI_P<6> | 1022 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<6>.Q | MOSI_P<6> | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 9 | MC_SI_D1
-SIGNAL | NODE | MOSI_P<7>.D1 | 1105 | ? | 0 | 4096 | MOSI_P<7> | NULL | NULL | MOSI_P<7>.SI | 1 | 9 | MC_SI_D1
+SIGNAL | NODE | MOSI_P<7>.D1 | 1100 | ? | 0 | 4096 | MOSI_P<7> | NULL | NULL | MOSI_P<7>.SI | 1 | 9 | MC_SI_D1
 SPPTERM | 0 | IV_ZERO
 OUTPUT_NODE_TYPE | 2 | 9 | MC_SI_D2
-SIGNAL | NODE | MOSI_P<7>.D2 | 1106 | ? | 0 | 4096 | MOSI_P<7> | NULL | NULL | MOSI_P<7>.SI | 2 | 9 | MC_SI_D2
+SIGNAL | NODE | MOSI_P<7>.D2 | 1101 | ? | 0 | 4096 | MOSI_P<7> | NULL | NULL | MOSI_P<7>.SI | 2 | 9 | MC_SI_D2
 SPPTERM | 1 | IV_TRUE | MOSI_P<6>
 OUTPUT_NODE_TYPE | 3 | 9 | MC_SI_CLKF
-SIGNAL | NODE | MOSI_P<7>.CLKF | 1107 | ? | 0 | 4096 | MOSI_P<7> | NULL | NULL | MOSI_P<7>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | MOSI_P<7>.CLKF | 1102 | ? | 0 | 4096 | MOSI_P<7> | NULL | NULL | MOSI_P<7>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 OUTPUT_NODE_TYPE | 10 | 9 | MC_SI_CE
-SIGNAL | NODE | MOSI_P<7>.CE | 1108 | ? | 0 | 4096 | MOSI_P<7> | NULL | NULL | MOSI_P<7>.SI | 10 | 9 | MC_SI_CE
-SPPTERM | 1 | IV_FALSE | XLXN_38
+SIGNAL | NODE | MOSI_P<7>.CE | 1103 | ? | 0 | 4096 | MOSI_P<7> | NULL | NULL | MOSI_P<7>.SI | 10 | 9 | MC_SI_CE
+SPPTERM | 1 | IV_FALSE | XLXN_117
 
 SRFF_INSTANCE | MOSI_P<7>.REG | MOSI_P<7> | 0 | 3 | 1
 INPUT_NODE_TYPE | 0 | 8 | SRFF_D
-NODE | MOSI_P<7>.D | 1104 | ? | 0 | 0 | MOSI_P<7> | NULL | NULL | MOSI_P<7>.XOR | 0 | 7 | ALU_F
+NODE | MOSI_P<7>.D | 1099 | ? | 0 | 0 | MOSI_P<7> | NULL | NULL | MOSI_P<7>.XOR | 0 | 7 | ALU_F
 INPUT_NODE_TYPE | 1 | 8 | SRFF_C
-SIGNAL | NODE | MOSI_P<7>.CLKF | 1107 | ? | 0 | 4096 | MOSI_P<7> | NULL | NULL | MOSI_P<7>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | MOSI_P<7>.CLKF | 1102 | ? | 0 | 4096 | MOSI_P<7> | NULL | NULL | MOSI_P<7>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 INPUT_NODE_TYPE | 4 | 8 | SRFF_CE
-SIGNAL | NODE | MOSI_P<7>.CE | 1108 | ? | 0 | 4096 | MOSI_P<7> | NULL | NULL | MOSI_P<7>.SI | 10 | 9 | MC_SI_CE
-SPPTERM | 1 | IV_FALSE | XLXN_38
+SIGNAL | NODE | MOSI_P<7>.CE | 1103 | ? | 0 | 4096 | MOSI_P<7> | NULL | NULL | MOSI_P<7>.SI | 10 | 9 | MC_SI_CE
+SPPTERM | 1 | IV_FALSE | XLXN_117
 OUTPUT_NODE_TYPE | 0 | 8 | SRFF_Q
-NODE | MOSI_P<7>.Q | 1109 | ? | 0 | 0 | MOSI_P<7> | NULL | NULL | MOSI_P<7>.REG | 0 | 8 | SRFF_Q
+NODE | MOSI_P<7>.Q | 1104 | ? | 0 | 0 | MOSI_P<7> | NULL | NULL | MOSI_P<7>.REG | 0 | 8 | SRFF_Q
 
 INPUT_INSTANCE | 0 | 0 | NULL | XLXN_6<0> | skosnoere_COPY_0_COPY_0 | 16 | 1 | 1
 INPUT_NODE_TYPE | 0 | 5 | II_IN
-NODE | CAMERA_DATA<0> | 1047 | PI | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | NULL | 0 | 100 | NOTYPE
+NODE | CAMERA_DATA<0> | 1049 | PI | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | NULL | 0 | 100 | NOTYPE
 OUTPUT_NODE_TYPE | 0 | 5 | II_IMUX
-NODE | XLXN_6<0> | 1030 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<0> | 0 | 5 | II_IMUX
+NODE | XLXN_6<0> | 1031 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<0> | 0 | 5 | II_IMUX
 
 MACROCELL_INSTANCE | PrldLow+OptxMapped | XLXI_26/Q<0> | skosnoere_COPY_0_COPY_0 | 2155873280 | 3 | 1
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_6<0> | 1030 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<0> | 0 | 5 | II_IMUX
+NODE | XLXN_6<0> | 1031 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<0> | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 0 | MC_UIM
-NODE | XLXI_26/Q<0> | 1023 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<0>.Q | XLXI_26/Q<0> | 1 | 0 | MC_UIM
+NODE | XLXI_26/Q<0> | 1024 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<0>.Q | XLXI_26/Q<0> | 1 | 0 | MC_UIM
 
 SIGNAL_INSTANCE | XLXI_26/Q<0>.SI | XLXI_26/Q<0> | 0 | 3 | 3
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_6<0> | 1030 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<0> | 0 | 5 | II_IMUX
+NODE | XLXN_6<0> | 1031 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<0> | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 9 | MC_SI_D1
-SIGNAL | NODE | XLXI_26/Q<0>.D1 | 1111 | ? | 0 | 4096 | XLXI_26/Q<0> | NULL | NULL | XLXI_26/Q<0>.SI | 1 | 9 | MC_SI_D1
+SIGNAL | NODE | XLXI_26/Q<0>.D1 | 1106 | ? | 0 | 4096 | XLXI_26/Q<0> | NULL | NULL | XLXI_26/Q<0>.SI | 1 | 9 | MC_SI_D1
 SPPTERM | 0 | IV_ZERO
 OUTPUT_NODE_TYPE | 2 | 9 | MC_SI_D2
-SIGNAL | NODE | XLXI_26/Q<0>.D2 | 1112 | ? | 0 | 4096 | XLXI_26/Q<0> | NULL | NULL | XLXI_26/Q<0>.SI | 2 | 9 | MC_SI_D2
-SPPTERM | 2 | IV_TRUE | XLXN_38 | IV_TRUE | XLXN_6<0>
+SIGNAL | NODE | XLXI_26/Q<0>.D2 | 1107 | ? | 0 | 4096 | XLXI_26/Q<0> | NULL | NULL | XLXI_26/Q<0>.SI | 2 | 9 | MC_SI_D2
+SPPTERM | 2 | IV_TRUE | XLXN_117 | IV_TRUE | XLXN_6<0>
 OUTPUT_NODE_TYPE | 3 | 9 | MC_SI_CLKF
-SIGNAL | NODE | XLXI_26/Q<0>.CLKF | 1113 | ? | 0 | 4096 | XLXI_26/Q<0> | NULL | NULL | XLXI_26/Q<0>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | XLXI_26/Q<0>.CLKF | 1108 | ? | 0 | 4096 | XLXI_26/Q<0> | NULL | NULL | XLXI_26/Q<0>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 
 SRFF_INSTANCE | XLXI_26/Q<0>.REG | XLXI_26/Q<0> | 0 | 2 | 1
 INPUT_NODE_TYPE | 0 | 8 | SRFF_D
-NODE | XLXI_26/Q<0>.D | 1110 | ? | 0 | 0 | XLXI_26/Q<0> | NULL | NULL | XLXI_26/Q<0>.XOR | 0 | 7 | ALU_F
+NODE | XLXI_26/Q<0>.D | 1105 | ? | 0 | 0 | XLXI_26/Q<0> | NULL | NULL | XLXI_26/Q<0>.XOR | 0 | 7 | ALU_F
 INPUT_NODE_TYPE | 1 | 8 | SRFF_C
-SIGNAL | NODE | XLXI_26/Q<0>.CLKF | 1113 | ? | 0 | 4096 | XLXI_26/Q<0> | NULL | NULL | XLXI_26/Q<0>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | XLXI_26/Q<0>.CLKF | 1108 | ? | 0 | 4096 | XLXI_26/Q<0> | NULL | NULL | XLXI_26/Q<0>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 OUTPUT_NODE_TYPE | 0 | 8 | SRFF_Q
-NODE | XLXI_26/Q<0>.Q | 1114 | ? | 0 | 0 | XLXI_26/Q<0> | NULL | NULL | XLXI_26/Q<0>.REG | 0 | 8 | SRFF_Q
+NODE | XLXI_26/Q<0>.Q | 1109 | ? | 0 | 0 | XLXI_26/Q<0> | NULL | NULL | XLXI_26/Q<0>.REG | 0 | 8 | SRFF_Q
 
 INPUT_INSTANCE | 0 | 0 | NULL | XLXN_6<1> | skosnoere_COPY_0_COPY_0 | 16 | 1 | 1
 INPUT_NODE_TYPE | 0 | 5 | II_IN
-NODE | CAMERA_DATA<1> | 1048 | PI | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | NULL | 0 | 100 | NOTYPE
+NODE | CAMERA_DATA<1> | 1050 | PI | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | NULL | 0 | 100 | NOTYPE
 OUTPUT_NODE_TYPE | 0 | 5 | II_IMUX
-NODE | XLXN_6<1> | 1031 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<1> | 0 | 5 | II_IMUX
+NODE | XLXN_6<1> | 1032 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<1> | 0 | 5 | II_IMUX
 
 MACROCELL_INSTANCE | PrldLow+OptxMapped | XLXI_26/Q<1> | skosnoere_COPY_0_COPY_0 | 2155873280 | 4 | 1
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_6<1> | 1031 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<1> | 0 | 5 | II_IMUX
+NODE | XLXN_6<1> | 1032 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<1> | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXI_26/Q<0> | 1023 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<0>.Q | XLXI_26/Q<0> | 1 | 0 | MC_UIM
+NODE | XLXI_26/Q<0> | 1024 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<0>.Q | XLXI_26/Q<0> | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 0 | MC_UIM
-NODE | XLXI_26/Q<1> | 1024 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<1>.Q | XLXI_26/Q<1> | 1 | 0 | MC_UIM
+NODE | XLXI_26/Q<1> | 1025 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<1>.Q | XLXI_26/Q<1> | 1 | 0 | MC_UIM
 
 SIGNAL_INSTANCE | XLXI_26/Q<1>.SI | XLXI_26/Q<1> | 0 | 4 | 3
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_6<1> | 1031 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<1> | 0 | 5 | II_IMUX
+NODE | XLXN_6<1> | 1032 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<1> | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXI_26/Q<0> | 1023 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<0>.Q | XLXI_26/Q<0> | 1 | 0 | MC_UIM
+NODE | XLXI_26/Q<0> | 1024 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<0>.Q | XLXI_26/Q<0> | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 9 | MC_SI_D1
-SIGNAL | NODE | XLXI_26/Q<1>.D1 | 1116 | ? | 0 | 4096 | XLXI_26/Q<1> | NULL | NULL | XLXI_26/Q<1>.SI | 1 | 9 | MC_SI_D1
+SIGNAL | NODE | XLXI_26/Q<1>.D1 | 1111 | ? | 0 | 4096 | XLXI_26/Q<1> | NULL | NULL | XLXI_26/Q<1>.SI | 1 | 9 | MC_SI_D1
 SPPTERM | 0 | IV_ZERO
 OUTPUT_NODE_TYPE | 2 | 9 | MC_SI_D2
-SIGNAL | NODE | XLXI_26/Q<1>.D2 | 1117 | ? | 0 | 4096 | XLXI_26/Q<1> | NULL | NULL | XLXI_26/Q<1>.SI | 2 | 9 | MC_SI_D2
-SPPTERM | 2 | IV_TRUE | XLXN_38 | IV_TRUE | XLXN_6<1>
-SPPTERM | 2 | IV_FALSE | XLXN_38 | IV_TRUE | XLXI_26/Q<0>
+SIGNAL | NODE | XLXI_26/Q<1>.D2 | 1112 | ? | 0 | 4096 | XLXI_26/Q<1> | NULL | NULL | XLXI_26/Q<1>.SI | 2 | 9 | MC_SI_D2
+SPPTERM | 2 | IV_TRUE | XLXN_117 | IV_TRUE | XLXN_6<1>
+SPPTERM | 2 | IV_FALSE | XLXN_117 | IV_TRUE | XLXI_26/Q<0>
 OUTPUT_NODE_TYPE | 3 | 9 | MC_SI_CLKF
-SIGNAL | NODE | XLXI_26/Q<1>.CLKF | 1118 | ? | 0 | 4096 | XLXI_26/Q<1> | NULL | NULL | XLXI_26/Q<1>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | XLXI_26/Q<1>.CLKF | 1113 | ? | 0 | 4096 | XLXI_26/Q<1> | NULL | NULL | XLXI_26/Q<1>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 
 SRFF_INSTANCE | XLXI_26/Q<1>.REG | XLXI_26/Q<1> | 0 | 2 | 1
 INPUT_NODE_TYPE | 0 | 8 | SRFF_D
-NODE | XLXI_26/Q<1>.D | 1115 | ? | 0 | 0 | XLXI_26/Q<1> | NULL | NULL | XLXI_26/Q<1>.XOR | 0 | 7 | ALU_F
+NODE | XLXI_26/Q<1>.D | 1110 | ? | 0 | 0 | XLXI_26/Q<1> | NULL | NULL | XLXI_26/Q<1>.XOR | 0 | 7 | ALU_F
 INPUT_NODE_TYPE | 1 | 8 | SRFF_C
-SIGNAL | NODE | XLXI_26/Q<1>.CLKF | 1118 | ? | 0 | 4096 | XLXI_26/Q<1> | NULL | NULL | XLXI_26/Q<1>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | XLXI_26/Q<1>.CLKF | 1113 | ? | 0 | 4096 | XLXI_26/Q<1> | NULL | NULL | XLXI_26/Q<1>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 OUTPUT_NODE_TYPE | 0 | 8 | SRFF_Q
-NODE | XLXI_26/Q<1>.Q | 1119 | ? | 0 | 0 | XLXI_26/Q<1> | NULL | NULL | XLXI_26/Q<1>.REG | 0 | 8 | SRFF_Q
+NODE | XLXI_26/Q<1>.Q | 1114 | ? | 0 | 0 | XLXI_26/Q<1> | NULL | NULL | XLXI_26/Q<1>.REG | 0 | 8 | SRFF_Q
 
 INPUT_INSTANCE | 0 | 0 | NULL | XLXN_6<2> | skosnoere_COPY_0_COPY_0 | 16 | 1 | 1
 INPUT_NODE_TYPE | 0 | 5 | II_IN
-NODE | CAMERA_DATA<2> | 1049 | PI | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | NULL | 0 | 100 | NOTYPE
+NODE | CAMERA_DATA<2> | 1051 | PI | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | NULL | 0 | 100 | NOTYPE
 OUTPUT_NODE_TYPE | 0 | 5 | II_IMUX
-NODE | XLXN_6<2> | 1032 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<2> | 0 | 5 | II_IMUX
+NODE | XLXN_6<2> | 1033 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<2> | 0 | 5 | II_IMUX
 
 MACROCELL_INSTANCE | PrldLow+OptxMapped | XLXI_26/Q<2> | skosnoere_COPY_0_COPY_0 | 2155873280 | 4 | 1
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_6<2> | 1032 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<2> | 0 | 5 | II_IMUX
+NODE | XLXI_26/Q<1> | 1025 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<1>.Q | XLXI_26/Q<1> | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXI_26/Q<1> | 1024 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<1>.Q | XLXI_26/Q<1> | 1 | 0 | MC_UIM
+NODE | XLXN_6<2> | 1033 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<2> | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 0 | MC_UIM
-NODE | XLXI_26/Q<2> | 1025 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<2>.Q | XLXI_26/Q<2> | 1 | 0 | MC_UIM
+NODE | XLXI_26/Q<2> | 1026 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<2>.Q | XLXI_26/Q<2> | 1 | 0 | MC_UIM
 
 SIGNAL_INSTANCE | XLXI_26/Q<2>.SI | XLXI_26/Q<2> | 0 | 4 | 3
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_6<2> | 1032 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<2> | 0 | 5 | II_IMUX
+NODE | XLXI_26/Q<1> | 1025 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<1>.Q | XLXI_26/Q<1> | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXI_26/Q<1> | 1024 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<1>.Q | XLXI_26/Q<1> | 1 | 0 | MC_UIM
+NODE | XLXN_6<2> | 1033 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<2> | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 9 | MC_SI_D1
-SIGNAL | NODE | XLXI_26/Q<2>.D1 | 1121 | ? | 0 | 4096 | XLXI_26/Q<2> | NULL | NULL | XLXI_26/Q<2>.SI | 1 | 9 | MC_SI_D1
+SIGNAL | NODE | XLXI_26/Q<2>.D1 | 1116 | ? | 0 | 4096 | XLXI_26/Q<2> | NULL | NULL | XLXI_26/Q<2>.SI | 1 | 9 | MC_SI_D1
 SPPTERM | 0 | IV_ZERO
 OUTPUT_NODE_TYPE | 2 | 9 | MC_SI_D2
-SIGNAL | NODE | XLXI_26/Q<2>.D2 | 1122 | ? | 0 | 4096 | XLXI_26/Q<2> | NULL | NULL | XLXI_26/Q<2>.SI | 2 | 9 | MC_SI_D2
-SPPTERM | 2 | IV_TRUE | XLXN_38 | IV_TRUE | XLXN_6<2>
-SPPTERM | 2 | IV_FALSE | XLXN_38 | IV_TRUE | XLXI_26/Q<1>
+SIGNAL | NODE | XLXI_26/Q<2>.D2 | 1117 | ? | 0 | 4096 | XLXI_26/Q<2> | NULL | NULL | XLXI_26/Q<2>.SI | 2 | 9 | MC_SI_D2
+SPPTERM | 2 | IV_TRUE | XLXN_117 | IV_TRUE | XLXN_6<2>
+SPPTERM | 2 | IV_FALSE | XLXN_117 | IV_TRUE | XLXI_26/Q<1>
 OUTPUT_NODE_TYPE | 3 | 9 | MC_SI_CLKF
-SIGNAL | NODE | XLXI_26/Q<2>.CLKF | 1123 | ? | 0 | 4096 | XLXI_26/Q<2> | NULL | NULL | XLXI_26/Q<2>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | XLXI_26/Q<2>.CLKF | 1118 | ? | 0 | 4096 | XLXI_26/Q<2> | NULL | NULL | XLXI_26/Q<2>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 
 SRFF_INSTANCE | XLXI_26/Q<2>.REG | XLXI_26/Q<2> | 0 | 2 | 1
 INPUT_NODE_TYPE | 0 | 8 | SRFF_D
-NODE | XLXI_26/Q<2>.D | 1120 | ? | 0 | 0 | XLXI_26/Q<2> | NULL | NULL | XLXI_26/Q<2>.XOR | 0 | 7 | ALU_F
+NODE | XLXI_26/Q<2>.D | 1115 | ? | 0 | 0 | XLXI_26/Q<2> | NULL | NULL | XLXI_26/Q<2>.XOR | 0 | 7 | ALU_F
 INPUT_NODE_TYPE | 1 | 8 | SRFF_C
-SIGNAL | NODE | XLXI_26/Q<2>.CLKF | 1123 | ? | 0 | 4096 | XLXI_26/Q<2> | NULL | NULL | XLXI_26/Q<2>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | XLXI_26/Q<2>.CLKF | 1118 | ? | 0 | 4096 | XLXI_26/Q<2> | NULL | NULL | XLXI_26/Q<2>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 OUTPUT_NODE_TYPE | 0 | 8 | SRFF_Q
-NODE | XLXI_26/Q<2>.Q | 1124 | ? | 0 | 0 | XLXI_26/Q<2> | NULL | NULL | XLXI_26/Q<2>.REG | 0 | 8 | SRFF_Q
+NODE | XLXI_26/Q<2>.Q | 1119 | ? | 0 | 0 | XLXI_26/Q<2> | NULL | NULL | XLXI_26/Q<2>.REG | 0 | 8 | SRFF_Q
 
 INPUT_INSTANCE | 0 | 0 | NULL | XLXN_6<3> | skosnoere_COPY_0_COPY_0 | 16 | 1 | 1
 INPUT_NODE_TYPE | 0 | 5 | II_IN
-NODE | CAMERA_DATA<3> | 1050 | PI | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | NULL | 0 | 100 | NOTYPE
+NODE | CAMERA_DATA<3> | 1052 | PI | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | NULL | 0 | 100 | NOTYPE
 OUTPUT_NODE_TYPE | 0 | 5 | II_IMUX
-NODE | XLXN_6<3> | 1033 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<3> | 0 | 5 | II_IMUX
+NODE | XLXN_6<3> | 1034 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<3> | 0 | 5 | II_IMUX
 
 MACROCELL_INSTANCE | PrldLow+OptxMapped | XLXI_26/Q<3> | skosnoere_COPY_0_COPY_0 | 2155873280 | 4 | 1
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_6<3> | 1033 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<3> | 0 | 5 | II_IMUX
+NODE | XLXN_6<3> | 1034 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<3> | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXI_26/Q<2> | 1025 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<2>.Q | XLXI_26/Q<2> | 1 | 0 | MC_UIM
+NODE | XLXI_26/Q<2> | 1026 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<2>.Q | XLXI_26/Q<2> | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 0 | MC_UIM
-NODE | XLXI_26/Q<3> | 1026 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<3>.Q | XLXI_26/Q<3> | 1 | 0 | MC_UIM
+NODE | XLXI_26/Q<3> | 1027 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<3>.Q | XLXI_26/Q<3> | 1 | 0 | MC_UIM
 
 SIGNAL_INSTANCE | XLXI_26/Q<3>.SI | XLXI_26/Q<3> | 0 | 4 | 3
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_6<3> | 1033 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<3> | 0 | 5 | II_IMUX
+NODE | XLXN_6<3> | 1034 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<3> | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXI_26/Q<2> | 1025 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<2>.Q | XLXI_26/Q<2> | 1 | 0 | MC_UIM
+NODE | XLXI_26/Q<2> | 1026 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<2>.Q | XLXI_26/Q<2> | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 9 | MC_SI_D1
-SIGNAL | NODE | XLXI_26/Q<3>.D1 | 1126 | ? | 0 | 4096 | XLXI_26/Q<3> | NULL | NULL | XLXI_26/Q<3>.SI | 1 | 9 | MC_SI_D1
+SIGNAL | NODE | XLXI_26/Q<3>.D1 | 1121 | ? | 0 | 4096 | XLXI_26/Q<3> | NULL | NULL | XLXI_26/Q<3>.SI | 1 | 9 | MC_SI_D1
 SPPTERM | 0 | IV_ZERO
 OUTPUT_NODE_TYPE | 2 | 9 | MC_SI_D2
-SIGNAL | NODE | XLXI_26/Q<3>.D2 | 1127 | ? | 0 | 4096 | XLXI_26/Q<3> | NULL | NULL | XLXI_26/Q<3>.SI | 2 | 9 | MC_SI_D2
-SPPTERM | 2 | IV_TRUE | XLXN_38 | IV_TRUE | XLXN_6<3>
-SPPTERM | 2 | IV_FALSE | XLXN_38 | IV_TRUE | XLXI_26/Q<2>
+SIGNAL | NODE | XLXI_26/Q<3>.D2 | 1122 | ? | 0 | 4096 | XLXI_26/Q<3> | NULL | NULL | XLXI_26/Q<3>.SI | 2 | 9 | MC_SI_D2
+SPPTERM | 2 | IV_TRUE | XLXN_117 | IV_TRUE | XLXN_6<3>
+SPPTERM | 2 | IV_FALSE | XLXN_117 | IV_TRUE | XLXI_26/Q<2>
 OUTPUT_NODE_TYPE | 3 | 9 | MC_SI_CLKF
-SIGNAL | NODE | XLXI_26/Q<3>.CLKF | 1128 | ? | 0 | 4096 | XLXI_26/Q<3> | NULL | NULL | XLXI_26/Q<3>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | XLXI_26/Q<3>.CLKF | 1123 | ? | 0 | 4096 | XLXI_26/Q<3> | NULL | NULL | XLXI_26/Q<3>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 
 SRFF_INSTANCE | XLXI_26/Q<3>.REG | XLXI_26/Q<3> | 0 | 2 | 1
 INPUT_NODE_TYPE | 0 | 8 | SRFF_D
-NODE | XLXI_26/Q<3>.D | 1125 | ? | 0 | 0 | XLXI_26/Q<3> | NULL | NULL | XLXI_26/Q<3>.XOR | 0 | 7 | ALU_F
+NODE | XLXI_26/Q<3>.D | 1120 | ? | 0 | 0 | XLXI_26/Q<3> | NULL | NULL | XLXI_26/Q<3>.XOR | 0 | 7 | ALU_F
 INPUT_NODE_TYPE | 1 | 8 | SRFF_C
-SIGNAL | NODE | XLXI_26/Q<3>.CLKF | 1128 | ? | 0 | 4096 | XLXI_26/Q<3> | NULL | NULL | XLXI_26/Q<3>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | XLXI_26/Q<3>.CLKF | 1123 | ? | 0 | 4096 | XLXI_26/Q<3> | NULL | NULL | XLXI_26/Q<3>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 OUTPUT_NODE_TYPE | 0 | 8 | SRFF_Q
-NODE | XLXI_26/Q<3>.Q | 1129 | ? | 0 | 0 | XLXI_26/Q<3> | NULL | NULL | XLXI_26/Q<3>.REG | 0 | 8 | SRFF_Q
+NODE | XLXI_26/Q<3>.Q | 1124 | ? | 0 | 0 | XLXI_26/Q<3> | NULL | NULL | XLXI_26/Q<3>.REG | 0 | 8 | SRFF_Q
 
 INPUT_INSTANCE | 0 | 0 | NULL | XLXN_6<4> | skosnoere_COPY_0_COPY_0 | 16 | 1 | 1
 INPUT_NODE_TYPE | 0 | 5 | II_IN
-NODE | CAMERA_DATA<4> | 1051 | PI | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | NULL | 0 | 100 | NOTYPE
+NODE | CAMERA_DATA<4> | 1053 | PI | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | NULL | 0 | 100 | NOTYPE
 OUTPUT_NODE_TYPE | 0 | 5 | II_IMUX
-NODE | XLXN_6<4> | 1034 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<4> | 0 | 5 | II_IMUX
+NODE | XLXN_6<4> | 1035 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<4> | 0 | 5 | II_IMUX
 
 MACROCELL_INSTANCE | PrldLow+OptxMapped | XLXI_26/Q<4> | skosnoere_COPY_0_COPY_0 | 2155873280 | 4 | 1
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_6<4> | 1034 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<4> | 0 | 5 | II_IMUX
+NODE | XLXN_6<4> | 1035 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<4> | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXI_26/Q<3> | 1026 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<3>.Q | XLXI_26/Q<3> | 1 | 0 | MC_UIM
+NODE | XLXI_26/Q<3> | 1027 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<3>.Q | XLXI_26/Q<3> | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 0 | MC_UIM
-NODE | XLXI_26/Q<4> | 1027 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<4>.Q | XLXI_26/Q<4> | 1 | 0 | MC_UIM
+NODE | XLXI_26/Q<4> | 1028 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<4>.Q | XLXI_26/Q<4> | 1 | 0 | MC_UIM
 
 SIGNAL_INSTANCE | XLXI_26/Q<4>.SI | XLXI_26/Q<4> | 0 | 4 | 3
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_6<4> | 1034 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<4> | 0 | 5 | II_IMUX
+NODE | XLXN_6<4> | 1035 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<4> | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXI_26/Q<3> | 1026 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<3>.Q | XLXI_26/Q<3> | 1 | 0 | MC_UIM
+NODE | XLXI_26/Q<3> | 1027 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<3>.Q | XLXI_26/Q<3> | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 9 | MC_SI_D1
-SIGNAL | NODE | XLXI_26/Q<4>.D1 | 1131 | ? | 0 | 4096 | XLXI_26/Q<4> | NULL | NULL | XLXI_26/Q<4>.SI | 1 | 9 | MC_SI_D1
+SIGNAL | NODE | XLXI_26/Q<4>.D1 | 1126 | ? | 0 | 4096 | XLXI_26/Q<4> | NULL | NULL | XLXI_26/Q<4>.SI | 1 | 9 | MC_SI_D1
 SPPTERM | 0 | IV_ZERO
 OUTPUT_NODE_TYPE | 2 | 9 | MC_SI_D2
-SIGNAL | NODE | XLXI_26/Q<4>.D2 | 1132 | ? | 0 | 4096 | XLXI_26/Q<4> | NULL | NULL | XLXI_26/Q<4>.SI | 2 | 9 | MC_SI_D2
-SPPTERM | 2 | IV_TRUE | XLXN_38 | IV_TRUE | XLXN_6<4>
-SPPTERM | 2 | IV_FALSE | XLXN_38 | IV_TRUE | XLXI_26/Q<3>
+SIGNAL | NODE | XLXI_26/Q<4>.D2 | 1127 | ? | 0 | 4096 | XLXI_26/Q<4> | NULL | NULL | XLXI_26/Q<4>.SI | 2 | 9 | MC_SI_D2
+SPPTERM | 2 | IV_TRUE | XLXN_117 | IV_TRUE | XLXN_6<4>
+SPPTERM | 2 | IV_FALSE | XLXN_117 | IV_TRUE | XLXI_26/Q<3>
 OUTPUT_NODE_TYPE | 3 | 9 | MC_SI_CLKF
-SIGNAL | NODE | XLXI_26/Q<4>.CLKF | 1133 | ? | 0 | 4096 | XLXI_26/Q<4> | NULL | NULL | XLXI_26/Q<4>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | XLXI_26/Q<4>.CLKF | 1128 | ? | 0 | 4096 | XLXI_26/Q<4> | NULL | NULL | XLXI_26/Q<4>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 
 SRFF_INSTANCE | XLXI_26/Q<4>.REG | XLXI_26/Q<4> | 0 | 2 | 1
 INPUT_NODE_TYPE | 0 | 8 | SRFF_D
-NODE | XLXI_26/Q<4>.D | 1130 | ? | 0 | 0 | XLXI_26/Q<4> | NULL | NULL | XLXI_26/Q<4>.XOR | 0 | 7 | ALU_F
+NODE | XLXI_26/Q<4>.D | 1125 | ? | 0 | 0 | XLXI_26/Q<4> | NULL | NULL | XLXI_26/Q<4>.XOR | 0 | 7 | ALU_F
 INPUT_NODE_TYPE | 1 | 8 | SRFF_C
-SIGNAL | NODE | XLXI_26/Q<4>.CLKF | 1133 | ? | 0 | 4096 | XLXI_26/Q<4> | NULL | NULL | XLXI_26/Q<4>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | XLXI_26/Q<4>.CLKF | 1128 | ? | 0 | 4096 | XLXI_26/Q<4> | NULL | NULL | XLXI_26/Q<4>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 OUTPUT_NODE_TYPE | 0 | 8 | SRFF_Q
-NODE | XLXI_26/Q<4>.Q | 1134 | ? | 0 | 0 | XLXI_26/Q<4> | NULL | NULL | XLXI_26/Q<4>.REG | 0 | 8 | SRFF_Q
+NODE | XLXI_26/Q<4>.Q | 1129 | ? | 0 | 0 | XLXI_26/Q<4> | NULL | NULL | XLXI_26/Q<4>.REG | 0 | 8 | SRFF_Q
 
 INPUT_INSTANCE | 0 | 0 | NULL | XLXN_6<5> | skosnoere_COPY_0_COPY_0 | 16 | 1 | 1
 INPUT_NODE_TYPE | 0 | 5 | II_IN
-NODE | CAMERA_DATA<5> | 1052 | PI | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | NULL | 0 | 100 | NOTYPE
+NODE | CAMERA_DATA<5> | 1054 | PI | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | NULL | 0 | 100 | NOTYPE
 OUTPUT_NODE_TYPE | 0 | 5 | II_IMUX
-NODE | XLXN_6<5> | 1035 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<5> | 0 | 5 | II_IMUX
+NODE | XLXN_6<5> | 1036 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<5> | 0 | 5 | II_IMUX
 
 MACROCELL_INSTANCE | PrldLow+OptxMapped | XLXI_26/Q<5> | skosnoere_COPY_0_COPY_0 | 2155873280 | 4 | 1
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_6<5> | 1035 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<5> | 0 | 5 | II_IMUX
+NODE | XLXN_6<5> | 1036 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<5> | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXI_26/Q<4> | 1027 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<4>.Q | XLXI_26/Q<4> | 1 | 0 | MC_UIM
+NODE | XLXI_26/Q<4> | 1028 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<4>.Q | XLXI_26/Q<4> | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 0 | MC_UIM
-NODE | XLXI_26/Q<5> | 1028 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<5>.Q | XLXI_26/Q<5> | 1 | 0 | MC_UIM
+NODE | XLXI_26/Q<5> | 1029 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<5>.Q | XLXI_26/Q<5> | 1 | 0 | MC_UIM
 
 SIGNAL_INSTANCE | XLXI_26/Q<5>.SI | XLXI_26/Q<5> | 0 | 4 | 3
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_6<5> | 1035 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<5> | 0 | 5 | II_IMUX
+NODE | XLXN_6<5> | 1036 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<5> | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXI_26/Q<4> | 1027 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<4>.Q | XLXI_26/Q<4> | 1 | 0 | MC_UIM
+NODE | XLXI_26/Q<4> | 1028 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<4>.Q | XLXI_26/Q<4> | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 9 | MC_SI_D1
-SIGNAL | NODE | XLXI_26/Q<5>.D1 | 1136 | ? | 0 | 4096 | XLXI_26/Q<5> | NULL | NULL | XLXI_26/Q<5>.SI | 1 | 9 | MC_SI_D1
+SIGNAL | NODE | XLXI_26/Q<5>.D1 | 1131 | ? | 0 | 4096 | XLXI_26/Q<5> | NULL | NULL | XLXI_26/Q<5>.SI | 1 | 9 | MC_SI_D1
 SPPTERM | 0 | IV_ZERO
 OUTPUT_NODE_TYPE | 2 | 9 | MC_SI_D2
-SIGNAL | NODE | XLXI_26/Q<5>.D2 | 1137 | ? | 0 | 4096 | XLXI_26/Q<5> | NULL | NULL | XLXI_26/Q<5>.SI | 2 | 9 | MC_SI_D2
-SPPTERM | 2 | IV_TRUE | XLXN_38 | IV_TRUE | XLXN_6<5>
-SPPTERM | 2 | IV_FALSE | XLXN_38 | IV_TRUE | XLXI_26/Q<4>
+SIGNAL | NODE | XLXI_26/Q<5>.D2 | 1132 | ? | 0 | 4096 | XLXI_26/Q<5> | NULL | NULL | XLXI_26/Q<5>.SI | 2 | 9 | MC_SI_D2
+SPPTERM | 2 | IV_TRUE | XLXN_117 | IV_TRUE | XLXN_6<5>
+SPPTERM | 2 | IV_FALSE | XLXN_117 | IV_TRUE | XLXI_26/Q<4>
 OUTPUT_NODE_TYPE | 3 | 9 | MC_SI_CLKF
-SIGNAL | NODE | XLXI_26/Q<5>.CLKF | 1138 | ? | 0 | 4096 | XLXI_26/Q<5> | NULL | NULL | XLXI_26/Q<5>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | XLXI_26/Q<5>.CLKF | 1133 | ? | 0 | 4096 | XLXI_26/Q<5> | NULL | NULL | XLXI_26/Q<5>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 
 SRFF_INSTANCE | XLXI_26/Q<5>.REG | XLXI_26/Q<5> | 0 | 2 | 1
 INPUT_NODE_TYPE | 0 | 8 | SRFF_D
-NODE | XLXI_26/Q<5>.D | 1135 | ? | 0 | 0 | XLXI_26/Q<5> | NULL | NULL | XLXI_26/Q<5>.XOR | 0 | 7 | ALU_F
+NODE | XLXI_26/Q<5>.D | 1130 | ? | 0 | 0 | XLXI_26/Q<5> | NULL | NULL | XLXI_26/Q<5>.XOR | 0 | 7 | ALU_F
 INPUT_NODE_TYPE | 1 | 8 | SRFF_C
-SIGNAL | NODE | XLXI_26/Q<5>.CLKF | 1138 | ? | 0 | 4096 | XLXI_26/Q<5> | NULL | NULL | XLXI_26/Q<5>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | XLXI_26/Q<5>.CLKF | 1133 | ? | 0 | 4096 | XLXI_26/Q<5> | NULL | NULL | XLXI_26/Q<5>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 OUTPUT_NODE_TYPE | 0 | 8 | SRFF_Q
-NODE | XLXI_26/Q<5>.Q | 1139 | ? | 0 | 0 | XLXI_26/Q<5> | NULL | NULL | XLXI_26/Q<5>.REG | 0 | 8 | SRFF_Q
+NODE | XLXI_26/Q<5>.Q | 1134 | ? | 0 | 0 | XLXI_26/Q<5> | NULL | NULL | XLXI_26/Q<5>.REG | 0 | 8 | SRFF_Q
 
 INPUT_INSTANCE | 0 | 0 | NULL | XLXN_6<6> | skosnoere_COPY_0_COPY_0 | 16 | 1 | 1
 INPUT_NODE_TYPE | 0 | 5 | II_IN
-NODE | CAMERA_DATA<6> | 1053 | PI | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | NULL | 0 | 100 | NOTYPE
+NODE | CAMERA_DATA<6> | 1055 | PI | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | NULL | 0 | 100 | NOTYPE
 OUTPUT_NODE_TYPE | 0 | 5 | II_IMUX
-NODE | XLXN_6<6> | 1036 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<6> | 0 | 5 | II_IMUX
+NODE | XLXN_6<6> | 1037 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<6> | 0 | 5 | II_IMUX
 
 MACROCELL_INSTANCE | PrldLow+OptxMapped | XLXI_26/Q<6> | skosnoere_COPY_0_COPY_0 | 2155873280 | 4 | 1
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_6<6> | 1036 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<6> | 0 | 5 | II_IMUX
+NODE | XLXN_6<6> | 1037 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<6> | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXI_26/Q<5> | 1028 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<5>.Q | XLXI_26/Q<5> | 1 | 0 | MC_UIM
+NODE | XLXI_26/Q<5> | 1029 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<5>.Q | XLXI_26/Q<5> | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 0 | MC_UIM
-NODE | XLXI_26/Q<6> | 1029 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<6>.Q | XLXI_26/Q<6> | 1 | 0 | MC_UIM
+NODE | XLXI_26/Q<6> | 1030 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<6>.Q | XLXI_26/Q<6> | 1 | 0 | MC_UIM
 
 SIGNAL_INSTANCE | XLXI_26/Q<6>.SI | XLXI_26/Q<6> | 0 | 4 | 3
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_6<6> | 1036 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<6> | 0 | 5 | II_IMUX
+NODE | XLXN_6<6> | 1037 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<6> | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXI_26/Q<5> | 1028 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<5>.Q | XLXI_26/Q<5> | 1 | 0 | MC_UIM
+NODE | XLXI_26/Q<5> | 1029 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<5>.Q | XLXI_26/Q<5> | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_90 | 1010 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_90 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 9 | MC_SI_D1
-SIGNAL | NODE | XLXI_26/Q<6>.D1 | 1141 | ? | 0 | 4096 | XLXI_26/Q<6> | NULL | NULL | XLXI_26/Q<6>.SI | 1 | 9 | MC_SI_D1
+SIGNAL | NODE | XLXI_26/Q<6>.D1 | 1136 | ? | 0 | 4096 | XLXI_26/Q<6> | NULL | NULL | XLXI_26/Q<6>.SI | 1 | 9 | MC_SI_D1
 SPPTERM | 0 | IV_ZERO
 OUTPUT_NODE_TYPE | 2 | 9 | MC_SI_D2
-SIGNAL | NODE | XLXI_26/Q<6>.D2 | 1142 | ? | 0 | 4096 | XLXI_26/Q<6> | NULL | NULL | XLXI_26/Q<6>.SI | 2 | 9 | MC_SI_D2
-SPPTERM | 2 | IV_TRUE | XLXN_38 | IV_TRUE | XLXN_6<6>
-SPPTERM | 2 | IV_FALSE | XLXN_38 | IV_TRUE | XLXI_26/Q<5>
+SIGNAL | NODE | XLXI_26/Q<6>.D2 | 1137 | ? | 0 | 4096 | XLXI_26/Q<6> | NULL | NULL | XLXI_26/Q<6>.SI | 2 | 9 | MC_SI_D2
+SPPTERM | 2 | IV_TRUE | XLXN_117 | IV_TRUE | XLXN_6<6>
+SPPTERM | 2 | IV_FALSE | XLXN_117 | IV_TRUE | XLXI_26/Q<5>
 OUTPUT_NODE_TYPE | 3 | 9 | MC_SI_CLKF
-SIGNAL | NODE | XLXI_26/Q<6>.CLKF | 1143 | ? | 0 | 4096 | XLXI_26/Q<6> | NULL | NULL | XLXI_26/Q<6>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | XLXI_26/Q<6>.CLKF | 1138 | ? | 0 | 4096 | XLXI_26/Q<6> | NULL | NULL | XLXI_26/Q<6>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 
 SRFF_INSTANCE | XLXI_26/Q<6>.REG | XLXI_26/Q<6> | 0 | 2 | 1
 INPUT_NODE_TYPE | 0 | 8 | SRFF_D
-NODE | XLXI_26/Q<6>.D | 1140 | ? | 0 | 0 | XLXI_26/Q<6> | NULL | NULL | XLXI_26/Q<6>.XOR | 0 | 7 | ALU_F
+NODE | XLXI_26/Q<6>.D | 1135 | ? | 0 | 0 | XLXI_26/Q<6> | NULL | NULL | XLXI_26/Q<6>.XOR | 0 | 7 | ALU_F
 INPUT_NODE_TYPE | 1 | 8 | SRFF_C
-SIGNAL | NODE | XLXI_26/Q<6>.CLKF | 1143 | ? | 0 | 4096 | XLXI_26/Q<6> | NULL | NULL | XLXI_26/Q<6>.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_90
+SIGNAL | NODE | XLXI_26/Q<6>.CLKF | 1138 | ? | 0 | 4096 | XLXI_26/Q<6> | NULL | NULL | XLXI_26/Q<6>.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
 OUTPUT_NODE_TYPE | 0 | 8 | SRFF_Q
-NODE | XLXI_26/Q<6>.Q | 1144 | ? | 0 | 0 | XLXI_26/Q<6> | NULL | NULL | XLXI_26/Q<6>.REG | 0 | 8 | SRFF_Q
+NODE | XLXI_26/Q<6>.Q | 1139 | ? | 0 | 0 | XLXI_26/Q<6> | NULL | NULL | XLXI_26/Q<6>.REG | 0 | 8 | SRFF_Q
 
-MACROCELL_INSTANCE | Inv+PrldHigh+OptxMapped | XLXN_107 | skosnoere_COPY_0_COPY_0 | 2155873024 | 9 | 2
+INPUT_INSTANCE | 0 | 0 | NULL | XLXN_6<7> | skosnoere_COPY_0_COPY_0 | 16 | 1 | 1
+INPUT_NODE_TYPE | 0 | 5 | II_IN
+NODE | CAMERA_DATA<7> | 1056 | PI | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | NULL | 0 | 100 | NOTYPE
+OUTPUT_NODE_TYPE | 0 | 5 | II_IMUX
+NODE | XLXN_6<7> | 1038 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<7> | 0 | 5 | II_IMUX
+
+MACROCELL_INSTANCE | OptxMapped | XLXN_69 | skosnoere_COPY_0_COPY_0 | 2155872256 | 3 | 1
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<0> | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<0>.Q | MOSI_P<0> | 1 | 0 | MC_UIM
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<1> | 1016 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<1>.Q | MOSI_P<1> | 1 | 0 | MC_UIM
+NODE | XLXN_106 | 1041 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXN_107.Q | XLXN_107 | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<2> | 1017 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<2>.Q | MOSI_P<2> | 1 | 0 | MC_UIM
-INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<3> | 1018 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<3>.Q | MOSI_P<3> | 1 | 0 | MC_UIM
-INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<4> | 1019 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<4>.Q | MOSI_P<4> | 1 | 0 | MC_UIM
-INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<5> | 1020 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<5>.Q | MOSI_P<5> | 1 | 0 | MC_UIM
-INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<6> | 1021 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<6>.Q | MOSI_P<6> | 1 | 0 | MC_UIM
-INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<7> | 1022 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<7>.Q | MOSI_P<7> | 1 | 0 | MC_UIM
-INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 0 | 0 | MC_Q
-NODE | XLXN_107 | 1038 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXN_107.Q | XLXN_107 | 0 | 0 | MC_Q
-OUTPUT_NODE_TYPE | 1 | 0 | MC_UIM
-NODE | XLXN_106 | 1039 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXN_107.Q | XLXN_107 | 1 | 0 | MC_UIM
+NODE | XLXN_69 | 1039 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXN_69.Q | XLXN_69 | 0 | 0 | MC_Q
 
-SIGNAL_INSTANCE | XLXN_107.SI | XLXN_107 | 0 | 9 | 3
+SIGNAL_INSTANCE | XLXN_69.SI | XLXN_69 | 0 | 3 | 2
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<0> | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<0>.Q | MOSI_P<0> | 1 | 0 | MC_UIM
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<1> | 1016 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<1>.Q | MOSI_P<1> | 1 | 0 | MC_UIM
+NODE | XLXN_106 | 1041 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXN_107.Q | XLXN_107 | 1 | 0 | MC_UIM
 INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<2> | 1017 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<2>.Q | MOSI_P<2> | 1 | 0 | MC_UIM
-INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<3> | 1018 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<3>.Q | MOSI_P<3> | 1 | 0 | MC_UIM
-INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<4> | 1019 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<4>.Q | MOSI_P<4> | 1 | 0 | MC_UIM
-INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<5> | 1020 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<5>.Q | MOSI_P<5> | 1 | 0 | MC_UIM
-INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<6> | 1021 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<6>.Q | MOSI_P<6> | 1 | 0 | MC_UIM
-INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | MOSI_P<7> | 1022 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<7>.Q | MOSI_P<7> | 1 | 0 | MC_UIM
-INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
 OUTPUT_NODE_TYPE | 1 | 9 | MC_SI_D1
-SIGNAL | NODE | XLXN_107.D1 | 1146 | ? | 0 | 4096 | XLXN_107 | NULL | NULL | XLXN_107.SI | 1 | 9 | MC_SI_D1
+SIGNAL | NODE | XLXN_69.D1 | 1141 | ? | 0 | 4096 | XLXN_69 | NULL | NULL | XLXN_69.SI | 1 | 9 | MC_SI_D1
 SPPTERM | 0 | IV_ZERO
 OUTPUT_NODE_TYPE | 2 | 9 | MC_SI_D2
-SIGNAL | NODE | XLXN_107.D2 | 1147 | ? | 0 | 4096 | XLXN_107 | NULL | NULL | XLXN_107.SI | 2 | 9 | MC_SI_D2
-SPPTERM | 8 | IV_FALSE | MOSI_P<0> | IV_FALSE | MOSI_P<1> | IV_FALSE | MOSI_P<2> | IV_FALSE | MOSI_P<3> | IV_FALSE | MOSI_P<4> | IV_FALSE | MOSI_P<5> | IV_FALSE | MOSI_P<6> | IV_FALSE | MOSI_P<7>
-OUTPUT_NODE_TYPE | 3 | 9 | MC_SI_CLKF
-SIGNAL | NODE | XLXN_107.CLKF | 1148 | ? | 0 | 4096 | XLXN_107 | NULL | NULL | XLXN_107.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_38
-
-SRFF_INSTANCE | XLXN_107.REG | XLXN_107 | 0 | 2 | 1
-INPUT_NODE_TYPE | 0 | 8 | SRFF_D
-NODE | XLXN_107.D | 1145 | ? | 0 | 0 | XLXN_107 | NULL | NULL | XLXN_107.XOR | 0 | 7 | ALU_F
-INPUT_NODE_TYPE | 1 | 8 | SRFF_C
-SIGNAL | NODE | XLXN_107.CLKF | 1148 | ? | 0 | 4096 | XLXN_107 | NULL | NULL | XLXN_107.SI | 3 | 9 | MC_SI_CLKF
-SPPTERM | 1 | IV_TRUE | XLXN_38
-OUTPUT_NODE_TYPE | 0 | 8 | SRFF_Q
-NODE | XLXN_107.Q | 1149 | ? | 0 | 0 | XLXN_107 | NULL | NULL | XLXN_107.REG | 0 | 8 | SRFF_Q
-
-MACROCELL_INSTANCE | OptxMapped | XLXN_69 | skosnoere_COPY_0_COPY_0 | 2155872256 | 2 | 1
-INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
-INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_106 | 1039 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXN_107.Q | XLXN_107 | 1 | 0 | MC_UIM
-OUTPUT_NODE_TYPE | 0 | 0 | MC_Q
-NODE | XLXN_69 | 1040 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXN_69.Q | XLXN_69 | 0 | 0 | MC_Q
-
-SIGNAL_INSTANCE | XLXN_69.SI | XLXN_69 | 0 | 2 | 2
-INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_38 | 1011 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_38 | 0 | 5 | II_IMUX
-INPUT_NODE_TYPE | 1 | 100 | NOTYPE
-NODE | XLXN_106 | 1039 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXN_107.Q | XLXN_107 | 1 | 0 | MC_UIM
-OUTPUT_NODE_TYPE | 1 | 9 | MC_SI_D1
-SIGNAL | NODE | XLXN_69.D1 | 1151 | ? | 0 | 4096 | XLXN_69 | NULL | NULL | XLXN_69.SI | 1 | 9 | MC_SI_D1
-SPPTERM | 0 | IV_ZERO
-OUTPUT_NODE_TYPE | 2 | 9 | MC_SI_D2
-SIGNAL | NODE | XLXN_69.D2 | 1152 | ? | 0 | 4096 | XLXN_69 | NULL | NULL | XLXN_69.SI | 2 | 9 | MC_SI_D2
-SPPTERM | 2 | IV_FALSE | XLXN_38 | IV_FALSE | XLXN_106
+SIGNAL | NODE | XLXN_69.D2 | 1142 | ? | 0 | 4096 | XLXN_69 | NULL | NULL | XLXN_69.SI | 2 | 9 | MC_SI_D2
+SPPTERM | 2 | IV_TRUE | spi_clock | IV_FALSE | XLXN_106
+SPPTERM | 2 | IV_FALSE | XLXN_117 | IV_TRUE | XLXN_106
 
 SRFF_INSTANCE | XLXN_69.REG | XLXN_69 | 0 | 1 | 1
 INPUT_NODE_TYPE | 0 | 8 | SRFF_D
-NODE | XLXN_69.D | 1150 | ? | 0 | 0 | XLXN_69 | NULL | NULL | XLXN_69.XOR | 0 | 7 | ALU_F
+NODE | XLXN_69.D | 1140 | ? | 0 | 0 | XLXN_69 | NULL | NULL | XLXN_69.XOR | 0 | 7 | ALU_F
 OUTPUT_NODE_TYPE | 0 | 8 | SRFF_Q
-NODE | XLXN_69.Q | 1153 | ? | 0 | 0 | XLXN_69 | NULL | NULL | XLXN_69.REG | 0 | 8 | SRFF_Q
+NODE | XLXN_69.Q | 1143 | ? | 0 | 0 | XLXN_69 | NULL | NULL | XLXN_69.REG | 0 | 8 | SRFF_Q
 
-OUTPUT_INSTANCE | 0 | MISO | skosnoere_COPY_0_COPY_0 | 6 | 2 | 1
-INPUT_NODE_TYPE | 0 | 6 | OI_IN
-NODE | shift_out<7> | 1012 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | shift_out<7>.Q | shift_out<7> | 0 | 0 | MC_Q
-INPUT_NODE_TYPE | 2 | 6 | OI_OE
-NODE | shift_out<7>$OE | 1013 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | shift_out<7>.BUFOE.OUT | shift_out<7> | 2 | 0 | MC_OE
-OUTPUT_NODE_TYPE | 0 | 6 | OI_OUT
-NODE | MISO | 1041 | PO | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | MISO | 0 | 6 | OI_OUT
+MACROCELL_INSTANCE | Inv+PrldHigh+OptxMapped | XLXN_107 | skosnoere_COPY_0_COPY_0 | 2155873024 | 9 | 2
+INPUT_NODE_TYPE | 1 | 100 | NOTYPE
+NODE | MOSI_P<0> | 1016 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<0>.Q | MOSI_P<0> | 1 | 0 | MC_UIM
+INPUT_NODE_TYPE | 1 | 100 | NOTYPE
+NODE | MOSI_P<1> | 1017 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<1>.Q | MOSI_P<1> | 1 | 0 | MC_UIM
+INPUT_NODE_TYPE | 1 | 100 | NOTYPE
+NODE | MOSI_P<2> | 1018 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<2>.Q | MOSI_P<2> | 1 | 0 | MC_UIM
+INPUT_NODE_TYPE | 1 | 100 | NOTYPE
+NODE | MOSI_P<3> | 1019 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<3>.Q | MOSI_P<3> | 1 | 0 | MC_UIM
+INPUT_NODE_TYPE | 1 | 100 | NOTYPE
+NODE | MOSI_P<4> | 1020 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<4>.Q | MOSI_P<4> | 1 | 0 | MC_UIM
+INPUT_NODE_TYPE | 1 | 100 | NOTYPE
+NODE | MOSI_P<5> | 1021 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<5>.Q | MOSI_P<5> | 1 | 0 | MC_UIM
+INPUT_NODE_TYPE | 1 | 100 | NOTYPE
+NODE | MOSI_P<6> | 1022 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<6>.Q | MOSI_P<6> | 1 | 0 | MC_UIM
+INPUT_NODE_TYPE | 1 | 100 | NOTYPE
+NODE | MOSI_P<7> | 1023 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<7>.Q | MOSI_P<7> | 1 | 0 | MC_UIM
+INPUT_NODE_TYPE | 1 | 100 | NOTYPE
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
+OUTPUT_NODE_TYPE | 0 | 0 | MC_Q
+NODE | XLXN_107 | 1040 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXN_107.Q | XLXN_107 | 0 | 0 | MC_Q
+OUTPUT_NODE_TYPE | 1 | 0 | MC_UIM
+NODE | XLXN_106 | 1041 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXN_107.Q | XLXN_107 | 1 | 0 | MC_UIM
 
-OUTPUT_INSTANCE | 0 | FIFO_RESET | skosnoere_COPY_0_COPY_0 | 6 | 1 | 1
-INPUT_NODE_TYPE | 0 | 6 | OI_IN
-NODE | XLXN_107 | 1038 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXN_107.Q | XLXN_107 | 0 | 0 | MC_Q
-OUTPUT_NODE_TYPE | 0 | 6 | OI_OUT
-NODE | FIFO_RESET | 1042 | PO | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | FIFO_RESET | 0 | 6 | OI_OUT
+SIGNAL_INSTANCE | XLXN_107.SI | XLXN_107 | 0 | 9 | 3
+INPUT_NODE_TYPE | 1 | 100 | NOTYPE
+NODE | MOSI_P<0> | 1016 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<0>.Q | MOSI_P<0> | 1 | 0 | MC_UIM
+INPUT_NODE_TYPE | 1 | 100 | NOTYPE
+NODE | MOSI_P<1> | 1017 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<1>.Q | MOSI_P<1> | 1 | 0 | MC_UIM
+INPUT_NODE_TYPE | 1 | 100 | NOTYPE
+NODE | MOSI_P<2> | 1018 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<2>.Q | MOSI_P<2> | 1 | 0 | MC_UIM
+INPUT_NODE_TYPE | 1 | 100 | NOTYPE
+NODE | MOSI_P<3> | 1019 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<3>.Q | MOSI_P<3> | 1 | 0 | MC_UIM
+INPUT_NODE_TYPE | 1 | 100 | NOTYPE
+NODE | MOSI_P<4> | 1020 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<4>.Q | MOSI_P<4> | 1 | 0 | MC_UIM
+INPUT_NODE_TYPE | 1 | 100 | NOTYPE
+NODE | MOSI_P<5> | 1021 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<5>.Q | MOSI_P<5> | 1 | 0 | MC_UIM
+INPUT_NODE_TYPE | 1 | 100 | NOTYPE
+NODE | MOSI_P<6> | 1022 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<6>.Q | MOSI_P<6> | 1 | 0 | MC_UIM
+INPUT_NODE_TYPE | 1 | 100 | NOTYPE
+NODE | MOSI_P<7> | 1023 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | MOSI_P<7>.Q | MOSI_P<7> | 1 | 0 | MC_UIM
+INPUT_NODE_TYPE | 1 | 100 | NOTYPE
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
+OUTPUT_NODE_TYPE | 1 | 9 | MC_SI_D1
+SIGNAL | NODE | XLXN_107.D1 | 1145 | ? | 0 | 4096 | XLXN_107 | NULL | NULL | XLXN_107.SI | 1 | 9 | MC_SI_D1
+SPPTERM | 0 | IV_ZERO
+OUTPUT_NODE_TYPE | 2 | 9 | MC_SI_D2
+SIGNAL | NODE | XLXN_107.D2 | 1146 | ? | 0 | 4096 | XLXN_107 | NULL | NULL | XLXN_107.SI | 2 | 9 | MC_SI_D2
+SPPTERM | 8 | IV_FALSE | MOSI_P<0> | IV_FALSE | MOSI_P<1> | IV_FALSE | MOSI_P<2> | IV_FALSE | MOSI_P<3> | IV_FALSE | MOSI_P<4> | IV_FALSE | MOSI_P<5> | IV_FALSE | MOSI_P<6> | IV_FALSE | MOSI_P<7>
+OUTPUT_NODE_TYPE | 3 | 9 | MC_SI_CLKF
+SIGNAL | NODE | XLXN_107.CLKF | 1147 | ? | 0 | 4096 | XLXN_107 | NULL | NULL | XLXN_107.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | XLXN_117
+
+SRFF_INSTANCE | XLXN_107.REG | XLXN_107 | 0 | 2 | 1
+INPUT_NODE_TYPE | 0 | 8 | SRFF_D
+NODE | XLXN_107.D | 1144 | ? | 0 | 0 | XLXN_107 | NULL | NULL | XLXN_107.XOR | 0 | 7 | ALU_F
+INPUT_NODE_TYPE | 1 | 8 | SRFF_C
+SIGNAL | NODE | XLXN_107.CLKF | 1147 | ? | 0 | 4096 | XLXN_107 | NULL | NULL | XLXN_107.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | XLXN_117
+OUTPUT_NODE_TYPE | 0 | 8 | SRFF_Q
+NODE | XLXN_107.Q | 1148 | ? | 0 | 0 | XLXN_107 | NULL | NULL | XLXN_107.REG | 0 | 8 | SRFF_Q
+
+MACROCELL_INSTANCE | Inv+PrldHigh+OptxMapped | XLXN_121 | skosnoere_COPY_0_COPY_0 | 2155873024 | 4 | 1
+INPUT_NODE_TYPE | 1 | 100 | NOTYPE
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
+INPUT_NODE_TYPE | 1 | 100 | NOTYPE
+NODE | XLXI_26/Q<6> | 1030 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<6>.Q | XLXI_26/Q<6> | 1 | 0 | MC_UIM
+INPUT_NODE_TYPE | 1 | 100 | NOTYPE
+NODE | XLXN_6<7> | 1038 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<7> | 0 | 5 | II_IMUX
+INPUT_NODE_TYPE | 1 | 100 | NOTYPE
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
+OUTPUT_NODE_TYPE | 0 | 0 | MC_Q
+NODE | XLXN_121 | 1042 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXN_121.Q | XLXN_121 | 0 | 0 | MC_Q
+
+SIGNAL_INSTANCE | XLXN_121.SI | XLXN_121 | 0 | 4 | 3
+INPUT_NODE_TYPE | 1 | 100 | NOTYPE
+NODE | XLXN_117 | 1015 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_117 | 0 | 5 | II_IMUX
+INPUT_NODE_TYPE | 1 | 100 | NOTYPE
+NODE | XLXI_26/Q<6> | 1030 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXI_26/Q<6>.Q | XLXI_26/Q<6> | 1 | 0 | MC_UIM
+INPUT_NODE_TYPE | 1 | 100 | NOTYPE
+NODE | XLXN_6<7> | 1038 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | XLXN_6<7> | 0 | 5 | II_IMUX
+INPUT_NODE_TYPE | 1 | 100 | NOTYPE
+NODE | spi_clock | 1014 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | spi_clock | 0 | 5 | II_IMUX
+OUTPUT_NODE_TYPE | 1 | 9 | MC_SI_D1
+SIGNAL | NODE | XLXN_121.D1 | 1150 | ? | 0 | 4096 | XLXN_121 | NULL | NULL | XLXN_121.SI | 1 | 9 | MC_SI_D1
+SPPTERM | 0 | IV_ZERO
+OUTPUT_NODE_TYPE | 2 | 9 | MC_SI_D2
+SIGNAL | NODE | XLXN_121.D2 | 1151 | ? | 0 | 4096 | XLXN_121 | NULL | NULL | XLXN_121.SI | 2 | 9 | MC_SI_D2
+SPPTERM | 2 | IV_TRUE | XLXN_117 | IV_TRUE | XLXN_6<7>
+SPPTERM | 2 | IV_FALSE | XLXN_117 | IV_TRUE | XLXI_26/Q<6>
+OUTPUT_NODE_TYPE | 3 | 9 | MC_SI_CLKF
+SIGNAL | NODE | XLXN_121.CLKF | 1152 | ? | 0 | 4096 | XLXN_121 | NULL | NULL | XLXN_121.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
+
+SRFF_INSTANCE | XLXN_121.REG | XLXN_121 | 0 | 2 | 1
+INPUT_NODE_TYPE | 0 | 8 | SRFF_D
+NODE | XLXN_121.D | 1149 | ? | 0 | 0 | XLXN_121 | NULL | NULL | XLXN_121.XOR | 0 | 7 | ALU_F
+INPUT_NODE_TYPE | 1 | 8 | SRFF_C
+SIGNAL | NODE | XLXN_121.CLKF | 1152 | ? | 0 | 4096 | XLXN_121 | NULL | NULL | XLXN_121.SI | 3 | 9 | MC_SI_CLKF
+SPPTERM | 1 | IV_TRUE | spi_clock
+OUTPUT_NODE_TYPE | 0 | 8 | SRFF_Q
+NODE | XLXN_121.Q | 1153 | ? | 0 | 0 | XLXN_121 | NULL | NULL | XLXN_121.REG | 0 | 8 | SRFF_Q
 
 OUTPUT_INSTANCE | 0 | READ_STROBE | skosnoere_COPY_0_COPY_0 | 6 | 1 | 1
 INPUT_NODE_TYPE | 0 | 6 | OI_IN
-NODE | XLXN_69 | 1040 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXN_69.Q | XLXN_69 | 0 | 0 | MC_Q
+NODE | XLXN_69 | 1039 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXN_69.Q | XLXN_69 | 0 | 0 | MC_Q
 OUTPUT_NODE_TYPE | 0 | 6 | OI_OUT
 NODE | READ_STROBE | 1043 | PO | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | READ_STROBE | 0 | 6 | OI_OUT
+
+OUTPUT_INSTANCE | 0 | FIFO_RESET | skosnoere_COPY_0_COPY_0 | 6 | 1 | 1
+INPUT_NODE_TYPE | 0 | 6 | OI_IN
+NODE | XLXN_107 | 1040 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXN_107.Q | XLXN_107 | 0 | 0 | MC_Q
+OUTPUT_NODE_TYPE | 0 | 6 | OI_OUT
+NODE | FIFO_RESET | 1044 | PO | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | FIFO_RESET | 0 | 6 | OI_OUT
+
+OUTPUT_INSTANCE | 0 | MISO | skosnoere_COPY_0_COPY_0 | 6 | 1 | 1
+INPUT_NODE_TYPE | 0 | 6 | OI_IN
+NODE | XLXN_121 | 1042 | ? | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | XLXN_121.Q | XLXN_121 | 0 | 0 | MC_Q
+OUTPUT_NODE_TYPE | 0 | 6 | OI_OUT
+NODE | MISO | 1045 | PO | 0 | 0 | skosnoere_COPY_0_COPY_0 | NULL | NULL | MISO | 0 | 6 | OI_OUT
 
 FB_INSTANCE | FOOBAR1_ | skosnoere_COPY_0_COPY_0 | 0 | 0 | 0
 FBPIN | 2 | NULL | 0 | XLXN_6<2> | 1 | NULL | 0 | 1 | 49152
@@ -868,9 +859,9 @@ FBPIN | 17 | XLXN_69 | 1 | NULL | 0 | READ_STROBE | 1 | 9 | 49152
 FBPIN | 18 | MOSI_P<1> | 1 | NULL | 0 | NULL | 0
 
 FB_INSTANCE | FOOBAR2_ | skosnoere_COPY_0_COPY_0 | 0 | 0 | 0
-FBPIN | 2 | shift_out<7> | 1 | NULL | 0 | MISO | 1 | 35 | 49152
+FBPIN | 2 | XLXN_121 | 1 | NULL | 0 | MISO | 1 | 35 | 49152
 FBPIN | 5 | NULL | 0 | XLXN_56 | 1 | NULL | 0 | 36 | 49152
-FBPIN | 6 | NULL | 0 | XLXN_90 | 1 | NULL | 0 | 37 | 49152
+FBPIN | 6 | NULL | 0 | spi_clock | 1 | NULL | 0 | 37 | 49152
 FBPIN | 15 | XLXI_26/Q<3> | 1 | XLXN_6<0> | 1 | NULL | 0 | 43 | 49152
 FBPIN | 16 | XLXI_26/Q<2> | 1 | NULL | 0 | NULL | 0
 FBPIN | 17 | XLXI_26/Q<1> | 1 | XLXN_6<1> | 1 | NULL | 0 | 44 | 49152
@@ -883,7 +874,7 @@ FBPIN | 17 | XLXI_26/Q<5> | 1 | NULL | 0 | NULL | 0 | 22 | 49152
 FBPIN | 18 | XLXI_26/Q<4> | 1 | NULL | 0 | NULL | 0
 
 FB_INSTANCE | FOOBAR4_ | skosnoere_COPY_0_COPY_0 | 0 | 0 | 0
-FBPIN | 17 | NULL | 0 | XLXN_38 | 1 | NULL | 0 | 34 | 49152
+FBPIN | 17 | NULL | 0 | XLXN_117 | 1 | NULL | 0 | 34 | 49152
 
 FB_INSTANCE | INPUTPINS_FOOBAR5_ | skosnoere_COPY_0_COPY_0 | 0 | 0 | 0
 
