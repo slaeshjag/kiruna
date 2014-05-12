@@ -255,9 +255,8 @@ unsigned char radiolink_recv_timeout(int size, unsigned char *data, int timeout)
 		return 0x0;
 
 	time_now = global_timer;
-	uart_printf("0x%X -- \n", (unsigned int) data);
 	radiolink_read_reg(REG_FIFO_STATUS, 1, &status);
-	uart_printf("0x%X 0x%X\n", status, radiolink_status());
+	//uart_printf("0x%X 0x%X\n", status, radiolink_status());
 
 	radiolink_read_reg(REG_CONFIG, 1, &config);
 	config |= 0x1;
