@@ -65,9 +65,9 @@ void protocol_loop() {
 
 	/* State-maskinen Gösta */
 	for (;;) {
-		#ifdef MOTHERSHIP
+		//#ifdef MOTHERSHIP
 		uart_printf("In state %i %i\n", state, len);
-		#endif
+		//#endif
 		if (len > 16)
 			len = 1;
 		switch (state) {
