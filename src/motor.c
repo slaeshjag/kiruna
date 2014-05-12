@@ -215,9 +215,7 @@ void motor_logic(void)
 	else if (!radio_motor_speed)	// If radio sends stop, or radiolink is dropped value is 0
 	{
 		uart_printf("Radiolink 'sends' stop, stopping!\n");
-		
 		motor_go(MOTOR_DIR_STAHP, 100);
-		util_delay(MOTOR_TIME_SHORT);
 		is_paused = 1;
 	}
 	/****************************/
@@ -232,7 +230,6 @@ void motor_logic(void)
 				uart_printf("Under 20 3/5 times, stopping!\n");
 				motor_go(MOTOR_DIR_STAHP, 100);
 				is_stopped = 1;
-				util_delay(MOTOR_TIME_SHORT);	// for prints
 			}
 			normalize_stop_loop = 0;
 			normalize_stop_counter = 0;
@@ -243,7 +240,6 @@ void motor_logic(void)
 	{
 		normalize_stop_loop = 5;
 		uart_printf("Under 20, checking for more bogus values.\n");
-				util_delay(MOTOR_TIME_SHORT);	// for prints
 	}
 	/****************************/
 	else if (normalize_start_loop > 0)
@@ -257,7 +253,6 @@ void motor_logic(void)
 				uart_printf("Over 20 3/5 times, starting!\n");
 				motor_go(MOTOR_DIR_FORWARD, 100);
 				is_stopped = 0;
-				util_delay(MOTOR_TIME_SHORT);	// for prints
 			}
 			normalize_start_loop = 0;
 			normalize_start_counter = 0;
@@ -268,8 +263,6 @@ void motor_logic(void)
 	{
 		normalize_start_loop = 5;
 		uart_printf("Over 20 and stopped, checking for more bogus values.\n");
-				util_delay(MOTOR_TIME_SHORT);	// for prints
-
 	}
 	/****************************/
 	else if (radio_motor_left && radio_motor_right)
