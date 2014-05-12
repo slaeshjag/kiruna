@@ -101,7 +101,7 @@ void protocol_loop() {
 			case PROTOCOL_STATE_MASTER_WAIT:
 				if (!resume)
 					uart_get_data(cmd_packet, 16);
-				for (i = 0; i < 16; i++)
+				for (i = 1; i < 16; i++)
 					if (cmd_packet[i] == 0xFF) {	/* SYNC */
 						for (j = 0; j < 16 - i; j++) {
 							cmd_packet[j] = cmd_packet[i + j];
