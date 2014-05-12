@@ -129,6 +129,8 @@ int* package_buff, image_data;
 struct termios2 config;
 struct SOUND_BUFFER sound_buf;
 
+FILE * mic_listening;
+
 //Global stuff \o/ Integers, home-made structures, text objects, and a serial port.
 
 int main(int argc, char **argv) {
@@ -149,44 +151,8 @@ int main(int argc, char **argv) {
 	d_cursor_show(1); //Call a funciton which shows the cursor in the window.
 	
 	initiate_buttons();
-	
-	/*if (!papper)
-		fprintf(stderr, "Paper didn't load\n");*/
-		
-	//DARNIT_SOUND *music = d_sound_streamed_load("TowerTown.ogg", 1, 1); 
-	//Load an audiophile.
-	
-	//d_sound_play(music, 1, 128, 128, 0); 
-	//Play la musica.
-	/*
-	FILE * music = fopen("Rick Astley - Never Gonna Give You Up.wav", "r");
-	
-	unsigned char data_collection[1024];
-	
-	//initiate_buttons();
 	initiate_serial_port();
-	//Initiate our buttons and serial port \o/
 	
-	sleep(5);
-	
-	while(1024 == fread(data_collection, 512, 512, music)){
-		
-		write(serial_port, data_collection, 1024);
-		usleep(100);	
-	}*/
-	
-	/*int fil = open("Robot.c", O_RDONLY);
-	
-	char svar[64];
-	
-	write(serial_port, "Arne", sizeof("Arne"));
-	
-	//wait(5);
-	
-	read(serial_port, svar, sizeof("Arne"));
-	
-	printf("%s", svar);*/
-	initiate_serial_port();
 	for(;;) {
 		
 		//Program loop.
@@ -293,12 +259,11 @@ void initiate_buttons(void){
 	ui2 = d_render_tilesheet_load("UI thing 2.gif", 12, 29, 1);
 	//Here we also load up our graphic sprites. These are just some lines.
 
-	graphic_button_menu = d_render_tilesheet_load("button_menu.gif", BUTTON_WIDTH, BUTTON_HEIGHT, 1);
-	graphic_button_back = d_render_tilesheet_load("button_back.gif", BUTTON_WIDTH, BUTTON_HEIGHT, 1);
+	graphic_button_menu  = d_render_tilesheet_load("button_menu.gif", BUTTON_WIDTH, BUTTON_HEIGHT, 1);
+	graphic_button_back  = d_render_tilesheet_load("button_back.gif", BUTTON_WIDTH, BUTTON_HEIGHT, 1);
 	graphic_button_color = d_render_tilesheet_load("button_color.gif", BUTTON_WIDTH, BUTTON_HEIGHT, 1);
 	//Loads button graphics.
 	
-	FILE * imgage = fopen("rle_encode.dat", "r");
 	imgdat.w = IMAGE_WIDTH;
 	imgdat.h = IMAGE_HEIGHT;
 	imgdat.data = malloc(sizeof(int) * imgdat.w * imgdat.h);
@@ -342,6 +307,8 @@ void initiate_serial_port(void){
 	//Sets the serial_port to work as we want it to,
 	//with the custom baudrate BAUDRATE. 
 	
+	mic_listening = popen("", "");
+	
 }
 
 void do_stuff(DARNIT_TEXT_SURFACE *textplace){
@@ -351,7 +318,6 @@ void do_stuff(DARNIT_TEXT_SURFACE *textplace){
 	
 	d_text_surface_string_append(textplace, " X: ");
 	//"Printing" stuff. (Adds text to the text object.)
-	
 	
 	char femton[256]; 
 	sprintf(femton, "%i", mus.x);
@@ -558,7 +524,14 @@ void send_message(){
 		write(serial_port, message, sizeof(message));
 	}
 	else{
+		unsigned int microphone_data[4 * 2];
+		fread(microphone_data, 1, sizeof(microphone_data), mic_listening);
 		
+		/*
+		 * 
+		 * TODO: put microphone data into packages to be sent to robot. 
+		 * 
+		 */
 		
 	}
 	
@@ -591,7 +564,7 @@ void* transfer(){
 		
 		for(i = 0; i < (22600 / 8); i++){
 			
-			if(write(serial_port, buf + (8*i), 8)){
+			if(write(serial_port, buf[(8*i)], 8)){
 				
 				sleep(2);
 			}
@@ -720,33 +693,6 @@ void* get_image(){
 			break;
 		}
 	}
-
-	/*int i = 0;
-	int size = (IMAGE_HEIGHT * IMAGE_WIDTH);
-	int image[size];
-	//Datastructures for keeping track of stuff.
-	
-	answer.offset = 0;
-	answer.data = (char*)data;
-	answer.byte.nr = 0;
-	answer.byte.data = 0;
-	//Setting the answer structure to the numbers we need it to be.
-	
-	while(i < size){
-		
-		answer = next_bit(answer.data, answer.offset, pixel_size, repeat_size);
-		//Shuffles out the next pixel(s) of data. 
-		
-		while(0 < answer.byte.nr){
-			
-			image[i] = (int)answer.byte.data;
-			answer.byte.nr =- 1;
-			//If we have a pixel in the answer,
-			//count it in, and move on to the next one.	
-		}
-		
-		i++;
-	}*/
 	
 	pthread_exit(NULL);
 }
@@ -762,169 +708,3 @@ void audio_buff_fill(){
 	
 	
 }
-
-/*void * communication(){
-	
-	memset(sound_buf.buffer, 0, sizeof(sound_buf.buffer));
-	sound_buf.buffer_stop = 0;
-	sound_buf.location = 0;
-	//Set the soundbuffer to zero.
-	
-	unsigned int i;
-	unsigned char raw_data[500];
-	//Makes us a little input buffer thing.
-	
-	for(;;){
-		
-		read(serial_port, raw_data, sizeof(raw_data));
-		//Read into our raw_data buffer from the serial_port.
-		
-		i = 0;
-		
-		while(i < sizeof(raw_data)){
-			
-			sound_buf.buffer[sound_buf.buffer_stop] = raw_data[i];
-			//We copy the next byte over.
-			
-			sound_buf.buffer_stop++;
-			sound_buf.buffer_stop %= sizeof(sound_buf.buffer);
-			//Then we move our pointer forwards one step.
-		
-			i++;
-		}
-	}
-	
-	pthread_exit(NULL);
-}*/
-
-
-/*
-
-STRUCT_RETURN_BYTE next_bit(char* data, int offset, int pixel_size, int repeat_size){
-
-	char temp = data[0], temp2;
-	int new_offset = pixel_size;
-
-	static int max_val = 6;
-
-	if (offset != 0){
-	
-		//If we dont start at the first byte.
-	
-		temp = temp >> offset;
-		//Shuffle down the data to avoid the already used bits.
-
-		temp2 = data[1] << offset;
-
-		temp = temp + temp2;
-		//Now we fetch enough data to fill the rest of the char,
-		//and add those bits to the byte.
-	}
-
-	STRUCT_RETURN_BYTE answer;
-
-	if(max_val < temp){
-
-		int temp_offset = offset+3;
-		//If we've encountered an RLE, we move our offset forwards 3 bits.
-
-		int re_size = (make_binary(repeat_size));
-		//And we convert the number of bits to a mask which will
-		//be (repeat_size) number of 1 's.
-
-		if(8 <= temp_offset){
-
-			temp_offset = temp_offset - 8;
-			data++;
-			temp = data[0];
-			//We move our pointer forwards a byte, and change offset accordingly.
-		}
-
-		if (temp_offset != 0){
-		
-			//Om vi inte ska börja vid första biten...
-			
-			temp = temp >> temp_offset;
-			//Shuffle down the data to avoid the already used bits.
-
-			temp2 = data[1] << offset;
-	
-			temp = temp + temp2;
-			//Now we fetch enough data to fill the rest of the char,
-			//and add those bits to the byte.
-		}
-
-		char read_number[4];
-		//We make some space for some calculations.
-	
-		read_number[0] = (data[0] >> temp_offset) + (data[1] << temp_offset);
-		read_number[1] = (data[1] >> temp_offset) + (data[2] << temp_offset);
-		//We then read the following 2 bytes with offset in mind. 
-
-		answer.byte.data = temp;
-		answer.byte.nr = ((int)read_number[0] + ((int)read_number[1] * 0x100)) & re_size;
-		//And then we store the data as we want it; the pixel read on its own,
-		//and the number is the number of bits.
-	}
-	
-	else{
-		
-		temp = temp << (8 - pixel_size);
-		//Otherwise we simply format our pixel,
-
-		answer.byte.data = temp;
-		answer.byte.nr = 1;
-		//and add it to our answer structure.
-
-		new_offset = new_offset + offset;
-		//We also calculate our new offset.
-	}
-
-
-
-	if(new_offset < 8){
-		
-		answer.offset = new_offset;
-		answer.data = data;
-		
-		//If our offset isnt bigger than a byte
-		//we return our answer structure.
-	}
-	
-	else{
-
-		char *tempdata = data;
-
-		while (8 <= new_offset){
-			
-			tempdata++;
-			new_offset = new_offset - 8;
-		}
-
-		answer.offset = new_offset;
-		answer.data = data;
-
-		//Else, if our offset is more than a byte
-		//we move our pointer forward a byte,
-		//subtract 8 from our offset and loop untill
-		//offset is less than 8.
-
-		//When all is said and done we return stuff.
-	}
-
-	return answer;
-}
-
-int make_binary(int repeat_size){
-
-	int temp = 0;
-
-	while(0 < repeat_size){
-
-		temp = (temp * 2) + 1;
-		repeat_size--;
-	} 
-
-	return temp;
-}
-*/
