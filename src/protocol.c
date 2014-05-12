@@ -53,7 +53,7 @@ void protocol_get_motor(int *left, int *right, int *run) {
 void protocol_loop() {
 	unsigned char cmd_packet[16];
 	struct protocol_cmd_header *cmd = (void *) cmd_packet;
-	int last_timer;
+	int last_timer, i, j;
 	static int len = 0, resume = 0;
 	static int timeout;
 
@@ -101,6 +101,14 @@ void protocol_loop() {
 			case PROTOCOL_STATE_MASTER_WAIT:
 				if (!resume)
 					uart_get_data(cmd_packet, 16);
+				for (i = 0; i < 16; i++)
+					if (cmd_packet[i] == 0xFF) {	/* SYNC */
+						for (j = 0; j < 16 - i; j++) {
+							cmd_packet[j] = cmd_packet[i + j];
+						}
+						uart_get_data(&cmd_packet[i], 16 - i);
+						break;
+					}
 				len = cmd->length + 1;
 				switch (cmd->cmd) {
 					case PROTOCOL_CMD_MIC:

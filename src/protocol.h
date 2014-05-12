@@ -34,6 +34,7 @@ enum protocol_state {
 
 
 struct protocol_cmd_header {
+	unsigned int		sync		: 8;
 	unsigned int		cmd		: 3;
 	unsigned int		length		: 4;
 	unsigned int		go_direction	: 3;
