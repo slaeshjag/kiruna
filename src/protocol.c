@@ -1,8 +1,8 @@
 #include <stdint.h>
+#include "main.h"
 #include "protocol.h"
 #include "radiolink.h"
 #include "uart.h"
-#include "main.h"
 #include "audio.h"
 #include "uart_buffer.h"
 #include "protocol.h"
@@ -55,8 +55,9 @@ void protocol_loop() {
 	struct protocol_cmd_header *cmd = (void *) cmd_packet;
 	int last_timer;
 	static int len = 0, resume = 0;
+	static int timeout;
+
 	last_timer = global_timer;
-	
 	#ifdef MOTHERSHIP
 	if (++motor_state.no_update_count >= PROTOCOL_MOTOR_KILL_DELAY)
 		motor_state.motor_state = 0;
@@ -64,19 +65,24 @@ void protocol_loop() {
 
 	/* State-maskinen Gösta */
 	for (;;) {
+		#ifdef MOTHERSHIP
 		uart_printf("In state %i %i\n", state, len);
+		#endif
+		if (len > 16)
+			len = 1;
 		switch (state) {
 			case PROTOCOL_STATE_SLAVE_WAIT:
 				
-				if (!radiolink_recv_timeout(16, cmd_packet, PROTOCOL_MAX_TIMESLICE - (global_timer - last_timer)))
+				if (radiolink_recv_timeout(16, cmd_packet, PROTOCOL_MAX_TIMESLICE - (global_timer - last_timer)) == 0xFF)
 					return;
-
+				
+				uart_printf("Got packet! %X %X %X\n", cmd->cmd, cmd->length, cmd->go_direction);
 				#ifdef MOTHERSHIP
 				motor_state.motor_state = cmd->go_direction;
 				motor_state.no_update_count = 0;
 				#endif
 
-				len = cmd->length;
+				len = cmd->length + 1;
 				switch (cmd->cmd) {
 					case PROTOCOL_CMD_MIC:
 						state = PROTOCOL_STATE_SLAVE_SEND_MIC;
@@ -95,7 +101,7 @@ void protocol_loop() {
 			case PROTOCOL_STATE_MASTER_WAIT:
 				if (!resume)
 					uart_get_data(cmd_packet, 16);
-				len = cmd->length;
+				len = cmd->length + 1;
 				switch (cmd->cmd) {
 					case PROTOCOL_CMD_MIC:
 						state = PROTOCOL_STATE_MASTER_GET_MIC;
@@ -107,9 +113,11 @@ void protocol_loop() {
 						state = PROTOCOL_STATE_MASTER_GET_CAMERA;
 						break;
 					default:
+						len = 0;
 						break;
 				}
 
+				timeout = global_timer;
 				if (!radiolink_send_stubborn(PROTOCOL_PACKET_SIZE, cmd_packet, PROTOCOL_MAX_TIMESLICE - (global_timer - last_timer))) {
 					resume = 1;
 					return;
@@ -118,7 +126,7 @@ void protocol_loop() {
 					
 				break;
 			case PROTOCOL_STATE_SLAVE_GET_SPEAK:
-				if (!radiolink_recv_timeout(PROTOCOL_PACKET_SIZE, cmd_packet, PROTOCOL_MAX_TIMESLICE - (global_timer - last_timer)))
+				if (radiolink_recv_timeout(PROTOCOL_PACKET_SIZE, cmd_packet, PROTOCOL_MAX_TIMESLICE - (global_timer - last_timer)) == 0xFF)
 					return;
 				len--;
 				if (protocol_is_sync(cmd_packet)) {
@@ -142,13 +150,15 @@ void protocol_loop() {
 				protocol_send_sync(cmd_packet);
 				break;
 			case PROTOCOL_STATE_MASTER_GET_MIC:
-				if (!radiolink_recv_timeout(PROTOCOL_PACKET_SIZE, cmd_packet, PROTOCOL_MAX_TIMESLICE - (global_timer - last_timer)))
+				if (radiolink_recv_timeout(PROTOCOL_PACKET_SIZE, cmd_packet, PROTOCOL_MAX_TIMESLICE - (global_timer - last_timer)) == 0xFF)
 					return;
 				if (protocol_is_sync(cmd_packet))
 					state = PROTOCOL_STATE_MASTER_WAIT;
-				len--;
-				if (!len)
-					state = PROTOCOL_STATE_MASTER_WAIT;
+				else {
+					len--;
+					if (!len)
+						state = PROTOCOL_STATE_MASTER_WAIT;
+				}
 				uart_send_raw(cmd_packet, PROTOCOL_PACKET_SIZE);
 				break;
 			case PROTOCOL_STATE_MASTER_SEND_SPEAK:
@@ -166,7 +176,7 @@ void protocol_loop() {
 					state = PROTOCOL_STATE_SLAVE_WAIT;
 				break;
 			case PROTOCOL_STATE_MASTER_GET_CAMERA:
-				if (!radiolink_recv_timeout(PROTOCOL_PACKET_SIZE, cmd_packet, PROTOCOL_MAX_TIMESLICE - (global_timer - last_timer)))
+				if (radiolink_recv_timeout(PROTOCOL_PACKET_SIZE, cmd_packet, PROTOCOL_MAX_TIMESLICE - (global_timer - last_timer)) == 0xFF)
 					break;
 				len--;
 				if (!len)

@@ -5,10 +5,10 @@
 #ifdef MOTHERSHIP
 #define	PROTOCOL_MAX_TIMESLICE  	800
 #else
-#define	PROTOCOL_MAX_TIMESLICE		4
+#define	PROTOCOL_MAX_TIMESLICE		12
 #endif
 #define	PROTOCOL_PACKET_SIZE		16
-#define	PROTOCOL_MOTOR_KILL_DELAY	3
+#define	PROTOCOL_MOTOR_KILL_DELAY	5
 
 
 enum protocol_command {

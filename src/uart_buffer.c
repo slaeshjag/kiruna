@@ -34,8 +34,8 @@ void uart_get_data(unsigned char *buff, int len) {
 	for (i = 0; i < len; i++) {
 		while (uart_buff_next == uart_buff_cur)
 			uart_buff_loop();
-		buff[i] = uart_buff[uart_buff_next];
-		uart_buff_next = uart_fifo_next(uart_buff_next);
+		buff[i] = uart_buff[uart_buff_cur];
+		uart_buff_cur = uart_fifo_next(uart_buff_cur);
 	}
 
 	return;

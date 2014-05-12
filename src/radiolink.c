@@ -248,8 +248,8 @@ int radiolink_send_stubborn(int size, unsigned char *data, int timeout) {
 
 
 unsigned char radiolink_recv_timeout(int size, unsigned char *data, int timeout) {
-	unsigned char status = 0xFF, config, tmp, time_now;
-	int i;
+	unsigned char status = 0xFF, config, tmp;
+	int i, time_now;
 	
 	if(!size)
 		return 0x0;
@@ -265,9 +265,13 @@ unsigned char radiolink_recv_timeout(int size, unsigned char *data, int timeout)
 	
 	ce_on();
 	//util_delay(10);
-	
+
 	for(; size > 0; size -= packet_size) {
 		while (global_timer - time_now < timeout && !((status = radiolink_status()) & 0x40));
+		if ((global_timer - time_now >= timeout)) {
+			return 0xFF;
+		}
+
 		if (!(status & 0x40))
 			return 0xFF;
 		cmd_start();

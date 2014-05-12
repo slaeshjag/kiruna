@@ -67,8 +67,10 @@ void initialize(void) {
 
 void systick_irq() {
 	global_timer++;
-	//microphone_sample();
-	//speaker_output();
+	#ifdef MOTHERSHIP
+	microphone_sample();
+	speaker_output();
+	#endif
 	us_handler();
 }
 
@@ -101,10 +103,42 @@ int main(int ram, char **argv) {
 	}*/
 
 	//speaker_prebuffer();
+	
+	/************* MOTOR TEST ****************/
+	/*
+	while(1)
+	{
+		motor_go(MOTOR_DIR_FORWARD, 100);
+		uart_printf("Forward 100\n");
+		util_delay(MOTOR_TIME_LONG);
+		
+		motor_go(MOTOR_DIR_FORWARD, 70);
+		uart_printf("Forward 70\n");
+		util_delay(MOTOR_TIME_LONG);
+		
+		motor_go(MOTOR_DIR_LEFT, 100);
+		uart_printf("Left 100\n");
+		util_delay(MOTOR_TIME_LONG);
+		
+		motor_go(MOTOR_DIR_STAHP, 100);
+		uart_printf("Stopp\n");
+		util_delay(MOTOR_TIME_SHORT);
+		
+		motor_go(MOTOR_DIR_BACKWARD, 100);
+		uart_printf("Backward\n");
+		util_delay(MOTOR_TIME_LONG);
+		
+		motor_go(MOTOR_DIR_STAHP, 100);
+		uart_printf("Stopp\n");
+		util_delay(MOTOR_TIME_SHORT);
+	}
+	*/
+	/**************** MAIN  ******************/
+
 	systick_enable();
 	
 	//protocol_fulhakk();
-	protocol_fulhakk_computer();
+	//protocol_fulhakk_computer();
 	
 	while(1) {
 		//microphone_send();

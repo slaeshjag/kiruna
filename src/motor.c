@@ -91,7 +91,7 @@ void motor_go(enum motor_direction dir, unsigned int speed)
 	return;
 }
 
-	int value;
+	int us_value;
 	int is_paused = 1;
 	int normalize_stop_counter = 0;
 	int normalize_stop_loop = 0;
@@ -105,10 +105,7 @@ void motor_go(enum motor_direction dir, unsigned int speed)
 
 void motor_logic(void)
 {
-	value = us_read_nonblock();
-	if (value < 0) return;
-	
-	uart_printf("US is %i\n", value);
+	us_value = us_read_nonblock();
 	
 	protocol_get_motor(&radio_motor_left, &radio_motor_right, &radio_motor_speed);	// Getting radio commands
 	
@@ -124,10 +121,9 @@ void motor_logic(void)
 			normalize_stop_loop = 0;	// if pause was done while we were normalizing, reset values
 			normalize_start_counter = 0;
 		}
-		else if(radio_motor_speed)	// We've received some form of command via radio to go forward, so un-pause
+		else if(radio_motor_speed)	// We've received some form of command via radio to move, so un-pause
 		{
 			uart_printf("is paused and radio sent moving command - unpausing!\n");
-			util_delay(MOTOR_TIME_SHORT);
 			is_paused = 0;
 			normalize_stop_loop = 0;	// if pause was done while we were normalizing, reset values
 			normalize_start_counter = 0;
@@ -141,37 +137,6 @@ void motor_logic(void)
 		motor_go(MOTOR_DIR_STAHP, 100);
 		util_delay(MOTOR_TIME_SHORT);
 		is_paused = 1;
-		
-		
-		/*motor_go(MOTOR_DIR_LEFT, 100);
-		util_delay(MOTOR_TIME_SHORT);
-
-		motor_go(MOTOR_DIR_STAHP, 100);
-		util_delay(MOTOR_TIME_SHORT);
-
-
-		motor_go(MOTOR_DIR_STAHP, 100);
-		util_delay(MOTOR_TIME_LONG);
-		
-		motor_go(MOTOR_DIR_LEFT, 100);
-		util_delay(MOTOR_TIME_45);
-		
-		motor_go(MOTOR_DIR_STAHP, 100);
-		util_delay(MOTOR_TIME_LONG);
-		
-		motor_go(MOTOR_DIR_BACKWARD, 100);
-		util_delay(MOTOR_TIME_SHORT);
-		
-		motor_go(MOTOR_DIR_STAHP, 100);
-		util_delay(MOTOR_TIME_LONG);
-		
-		motor_go(MOTOR_DIR_RIGHT, 100);
-		util_delay(MOTOR_TIME_45);
-		
-		motor_go(MOTOR_DIR_STAHP, 100);
-		util_delay(MOTOR_TIME_LONG);
-		
-		motor_go(MOTOR_DIR_FORWARD, 100);*/
 	}
 	else if(ms_right_pressed())
 	{
@@ -180,50 +145,26 @@ void motor_logic(void)
 		motor_go(MOTOR_DIR_STAHP, 100);
 		util_delay(MOTOR_TIME_SHORT);
 		is_paused = 1;
-		
-		
-		/*motor_go(MOTOR_DIR_RIGHT, 100);
-		util_delay(MOTOR_TIME_SHORT);
-
-		motor_go(MOTOR_DIR_STAHP, 100);
-		util_delay(MOTOR_TIME_SHORT);
-		
-		
-		motor_go(MOTOR_DIR_STAHP, 100);
-		util_delay(MOTOR_TIME_LONG);
-		
-		motor_go(MOTOR_DIR_RIGHT, 100);
-		util_delay(MOTOR_TIME_45);
-		
-		motor_go(MOTOR_DIR_STAHP, 100);
-		util_delay(MOTOR_TIME_LONG);
-		
-		motor_go(MOTOR_DIR_BACKWARD, 100);
-		util_delay(MOTOR_TIME_SHORT);
-		
-		motor_go(MOTOR_DIR_STAHP, 100);
-		util_delay(MOTOR_TIME_LONG);
-		
-		motor_go(MOTOR_DIR_LEFT, 100);
-		util_delay(MOTOR_TIME_45);
-		
-		motor_go(MOTOR_DIR_STAHP, 100);
-		util_delay(MOTOR_TIME_LONG);
-		
-		motor_go(MOTOR_DIR_FORWARD, 100);*/
-	}
-	else if (!radio_motor_speed)	// If radio sends stop, or radiolink is dropped value is 0
-	{
-		uart_printf("Radiolink 'sends' stop, stopping!\n");
-		
-		motor_go(MOTOR_DIR_STAHP, 100);
-		util_delay(MOTOR_TIME_SHORT);
-		is_paused = 1;
 	}
 	/****************************/
-	else if (normalize_stop_loop > 0)	// we are here checking US values multiple times to ensure we need to stop
+	else if (!radio_motor_speed)	// If radio sends stop, or radiolink is dropped value is 0 we pause
 	{
-		if (value < STOPPING_DISTANCE) normalize_stop_counter++;
+		uart_printf("Radiolink 'sends' stop, stopping!\n");
+		motor_go(MOTOR_DIR_STAHP, 100);
+		is_paused = 1;
+	}
+	else if (!radio_motor_left && !radio_motor_right) // radio sends 'backwards'. Is before US-code to back from object
+	{
+		uart_printf("Received going backward from radio\n");
+		motor_go(MOTOR_DIR_BACKWARD, radio_motor_speed);
+		
+		normalize_stop_loop = 0;	// goin backward resets any attempts to normalize start/stop
+		normalize_start_loop = 0;
+	}
+	/********* Stopping due to US ***********/
+	else if (us_value > 0 && normalize_stop_loop > 0)	// checking US multiple times ensuring we need to stop
+	{
+		if (us_value < STOPPING_DISTANCE) normalize_stop_counter++;
 		
 		if (normalize_stop_loop == 1)
 		{
@@ -232,21 +173,19 @@ void motor_logic(void)
 				uart_printf("Under 20 3/5 times, stopping!\n");
 				motor_go(MOTOR_DIR_STAHP, 100);
 				is_stopped = 1;
-				util_delay(MOTOR_TIME_SHORT);	// for prints
 			}
 			normalize_stop_loop = 0;
 			normalize_stop_counter = 0;
 		}
 		else normalize_stop_loop--;
 	}
-	else if (value < STOPPING_DISTANCE)	// to ensure its not just >one< bogus value, we check multiple times
+	else if (us_value > 0 && us_value < STOPPING_DISTANCE) // to ensure not just 1 bogus value, we check multiple times
 	{
 		normalize_stop_loop = 5;
 		uart_printf("Under 20, checking for more bogus values.\n");
-				util_delay(MOTOR_TIME_SHORT);	// for prints
 	}
-	/****************************/
-	else if (normalize_start_loop > 0)
+	/********* Starting due to US ************/
+	else if (us_value > 0 && normalize_start_loop > 0)	// if over stopping distance and normalizing
 	{
 		normalize_start_counter++;
 		
@@ -257,19 +196,16 @@ void motor_logic(void)
 				uart_printf("Over 20 3/5 times, starting!\n");
 				motor_go(MOTOR_DIR_FORWARD, 100);
 				is_stopped = 0;
-				util_delay(MOTOR_TIME_SHORT);	// for prints
 			}
 			normalize_start_loop = 0;
 			normalize_start_counter = 0;
 		}
 		else normalize_start_loop--;
 	}
-	else if (is_stopped)	// if is stopped and over stopping distance
+	else if (us_value > 0 && is_stopped)	// if is stopped and over stopping distance
 	{
 		normalize_start_loop = 5;
 		uart_printf("Over 20 and stopped, checking for more bogus values.\n");
-				util_delay(MOTOR_TIME_SHORT);	// for prints
-
 	}
 	/****************************/
 	else if (radio_motor_left && radio_motor_right)
@@ -287,11 +223,7 @@ void motor_logic(void)
 		uart_printf("Received going forward from radio\n");
 		motor_go(MOTOR_DIR_RIGHT, radio_motor_speed);
 	}
-	else
-	{
-		uart_printf("Received going backward from radio\n");
-		motor_go(MOTOR_DIR_BACKWARD, radio_motor_speed);
-	}
+	else uart_printf("A state I should not be in?!\n");
 	
-	us_trig();
+	if (us_value >= 0) us_trig();
 }
