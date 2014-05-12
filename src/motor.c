@@ -59,31 +59,29 @@ void set_pulsewidth(unsigned int l_speed, unsigned int r_speed)
 
 void motor_go(enum motor_direction dir, unsigned int speed)
 {
-	int l_speed = speed-30;			// Adjusting that our motors are not equal
-	if(l_speed < 0) l_speed = 0;		// If we remove more than we are allowed to
 	if (speed>100)	speed = 100;		// Cannot be over 100% obviously
 	
 	MOTOR_PORT->MASKED_ACCESS[MOTOR_MASK] &= (~MOTOR_MASK);
 	switch (dir) {
 		case MOTOR_DIR_FORWARD:
-			set_pulsewidth((100-l_speed), (100-speed));
+			set_pulsewidth((100-speed), (100-speed));
 			MOTOR_REGISTER |= MOTOR_LEFT_FORWARD;
 			MOTOR_REGISTER |= MOTOR_RIGHT_FORWARD;
 			break;
 		case MOTOR_DIR_LEFT:
-			set_pulsewidth(l_speed, (100-speed));
-			MOTOR_REGISTER |= MOTOR_LEFT_BACKWARD;
+			set_pulsewidth(speed, (100-speed));
+			MOTOR_REGISTER &= (~MOTOR_LEFT_FORWARD);
 			MOTOR_REGISTER |= MOTOR_RIGHT_FORWARD;
 			break;
 		case MOTOR_DIR_RIGHT:
-			set_pulsewidth((100-l_speed), speed);
+			set_pulsewidth((100-speed), speed);
 			MOTOR_REGISTER |= MOTOR_LEFT_FORWARD;
-			MOTOR_REGISTER |= MOTOR_RIGHT_BACKWARD;
+			MOTOR_REGISTER &= (~MOTOR_RIGHT_FORWARD);
 			break;
 		case MOTOR_DIR_BACKWARD:
-			set_pulsewidth(l_speed, speed);
-			MOTOR_REGISTER |= MOTOR_LEFT_BACKWARD;
-			MOTOR_REGISTER |= MOTOR_RIGHT_BACKWARD;
+			set_pulsewidth(speed, speed);
+			MOTOR_REGISTER &= (~MOTOR_LEFT_FORWARD);
+			MOTOR_REGISTER &= (~MOTOR_RIGHT_FORWARD);
 			break;
 		default:
 			set_pulsewidth(100, 100);

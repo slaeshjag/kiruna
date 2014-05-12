@@ -2,6 +2,7 @@
 #include "system/LPC11xx.h"
 #include "util.h"
 #include "uart.h"
+#include "main.h"
 #include "spi.h"
 #include "radiolink.h"
 #include "audio.h"
@@ -9,6 +10,7 @@
 #include "motor.h"
 #include "ultrasonic.h"
 #include "microswitch.h"
+
 
 
 void initialize(void) {
@@ -42,7 +44,9 @@ void initialize(void) {
 	LPC_SYSCON->SYSAHBCLKDIV |= (1 << 9);
 	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 7);
 
+	#ifdef MOTHERSHIP
 	audio_init();
+	#endif
 	
 	/*Disable systick*/
 	SysTick->CTRL = 0;
@@ -57,9 +61,12 @@ void initialize(void) {
 	uart_printf("ov7670_init() done\n");*/
 	radiolink_init(16);
 	uart_printf("radiolink_init() done\n");
+	protocol_init();
+	uart_printf("protocol_init() done\n");
 }
 
 void systick_irq() {
+	global_timer++;
 	//microphone_sample();
 	//speaker_output();
 	us_handler();
@@ -73,15 +80,10 @@ void systick_enable() {
 }
 
 int main(int ram, char **argv) {
-	unsigned char data[32];
-	unsigned int lol = 0;
 	initialize();
-
-	systick_enable();
-
 	util_delay(200000);
 	uart_printf("AutoKorg™ READY TO WRECK SOME HAVOC!\n");
-	
+
 	/*****************************************/
 	
 	/*while(1) {
@@ -89,28 +91,36 @@ int main(int ram, char **argv) {
 		radiolink_recv(32, data);
 		uart_send_raw(data, 32);
 	}*/
-	/*
-	while(1) {
-		uart_recv_raw(data, 32);
-		radiolink_send_unreliable(32, data);
-		uart_printf("sent shit\r\n");
-		util_delay(20);
-	}
 	
+	/*while(1) {
+		unsigned char data[16];
+		for(i = 0; i < 16; i++)
+			data[i] = uart_recv_char();
+		radiolink_send_unreliable(16, data);
+		
+	}*/
+
 	//speaker_prebuffer();
 	systick_enable();
 	
 	while(1) {
 		//microphone_send();
-		audio_loop();
-	}
-	*/
-	/*******************************************/
-	
-	us_trig();
-	while (1) {
+		//audio_loop();
 		protocol_loop();
+		#ifndef MOTHERSHIP
+		uart_buff_loop();
+		#endif
+		
 		motor_logic();
 	}
+	
+	/************ CAMERA TEST ****************/
+	
+		// QVGA RGB16
+	/*char sub_adr = 0x0B;
+	char cam_test = ov7670_test(sub_adr);
+	uart_printf("CAM at 0x0B is %x\n", cam_test);*/
+	/*****************************************/
+
 	return 0;
 }

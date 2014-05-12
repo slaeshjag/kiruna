@@ -7,5 +7,6 @@ int radiolink_send_stubborn(int size, unsigned char *data, int timeout);
 unsigned char radiolink_recv(int size, unsigned char *data);
 unsigned char radiolink_recv_timeout(int size, unsigned char *data, int timeout);
 int radiolink_init(char _packet_size);
+int radio_used();
 
 #endif

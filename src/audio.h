@@ -9,6 +9,7 @@ void speaker_output();
 unsigned char microphone_sample();
 int microphone_send();
 void audio_loop();
+int audio_late_dac();
 
 
 #endif
