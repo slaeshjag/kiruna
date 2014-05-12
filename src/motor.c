@@ -106,9 +106,7 @@ void motor_go(enum motor_direction dir, unsigned int speed)
 void motor_logic(void)
 {
 	value = us_read_nonblock();
-	if (value < 0) return;
-	
-	uart_printf("US is %i\n", value);
+	//if (value < 0) return;
 	
 	protocol_get_motor(&radio_motor_left, &radio_motor_right, &radio_motor_speed);	// Getting radio commands
 	
@@ -127,7 +125,6 @@ void motor_logic(void)
 		else if(radio_motor_speed)	// We've received some form of command via radio to go forward, so un-pause
 		{
 			uart_printf("is paused and radio sent moving command - unpausing!\n");
-			util_delay(MOTOR_TIME_SHORT);
 			is_paused = 0;
 			normalize_stop_loop = 0;	// if pause was done while we were normalizing, reset values
 			normalize_start_counter = 0;
@@ -263,6 +260,7 @@ void motor_logic(void)
 	{
 		normalize_start_loop = 5;
 		uart_printf("Over 20 and stopped, checking for more bogus values.\n");
+
 	}
 	/****************************/
 	else if (radio_motor_left && radio_motor_right)

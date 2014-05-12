@@ -248,16 +248,16 @@ int radiolink_send_stubborn(int size, unsigned char *data, int timeout) {
 
 
 unsigned char radiolink_recv_timeout(int size, unsigned char *data, int timeout) {
-	unsigned char status = 0xFF, config, tmp, time_now;
-	int i;
+	unsigned char status = 0xFF, config, tmp;
+	int i, time_now;
 	
 	if(!size)
 		return 0x0;
 
 	time_now = global_timer;
-	uart_printf("0x%X -- \n", (unsigned int) data);
+	//uart_printf("0x%X -- \n", (unsigned int) data);
 	radiolink_read_reg(REG_FIFO_STATUS, 1, &status);
-	uart_printf("0x%X 0x%X\n", status, radiolink_status());
+	//uart_printf("0x%X 0x%X\n", status, radiolink_status());
 
 	radiolink_read_reg(REG_CONFIG, 1, &config);
 	config |= 0x1;
@@ -265,9 +265,13 @@ unsigned char radiolink_recv_timeout(int size, unsigned char *data, int timeout)
 	
 	ce_on();
 	//util_delay(10);
-	
+
 	for(; size > 0; size -= packet_size) {
 		while (global_timer - time_now < timeout && !((status = radiolink_status()) & 0x40));
+		if ((global_timer - time_now >= timeout)) {
+			return 0xFF;
+		}
+
 		if (!(status & 0x40))
 			return 0xFF;
 		cmd_start();
@@ -290,7 +294,39 @@ unsigned char radiolink_recv_timeout(int size, unsigned char *data, int timeout)
 }
 
 unsigned char radiolink_recv(int size, unsigned char *data) {
-	return radiolink_recv_timeout(size, data, INT_MAX);
+	unsigned char status = 0xFF, config, tmp;
+	int i;
+
+	if(!size)
+		return 0x0;
+
+	radiolink_read_reg(REG_CONFIG, 1, &config);
+	config |= 0x1;
+	radiolink_write_reg(REG_CONFIG, 1, &config);
+
+	ce_on();
+	//util_delay(10);
+
+	for(; size > 0; size -= packet_size) {
+		while(!((status = radiolink_status()) & 0x40));
+		uart_printf("status 0x%x\n", status);
+		cmd_start();
+		spi_send_recv(CMD_RECV_PAYLOAD);
+		for(i = 0; i < packet_size; i++) {
+			tmp = spi_send_recv(CMD_NOP);
+			if(i < size)
+				data[i] = tmp;
+			}
+		cmd_end();
+	}
+
+	ce_off();
+
+	config &= ~0x1;
+	radiolink_write_reg(REG_CONFIG, 1, &config);
+
+	radiolink_write_reg(REG_STATUS, 1, &status);
+	return status;
 }
 
 

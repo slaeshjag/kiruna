@@ -57,8 +57,8 @@ void initialize(void) {
 	uart_printf("us_init() done\n");
 	ms_init();
 	uart_printf("ms_init() done\n");
-	/*ov7670_init();
-	uart_printf("ov7670_init() done\n");*/
+	ov7670_init();
+	uart_printf("ov7670_init() done\n");
 	radiolink_init(16);
 	uart_printf("radiolink_init() done\n");
 	protocol_init();
@@ -67,8 +67,8 @@ void initialize(void) {
 
 void systick_irq() {
 	global_timer++;
-	//microphone_sample();
-	//speaker_output();
+	microphone_sample();
+	speaker_output();
 	us_handler();
 }
 
@@ -134,6 +134,9 @@ int main(int ram, char **argv) {
 	/**************** MAIN  ******************/
 
 	systick_enable();
+	
+	//protocol_fulhakk();
+	//protocol_fulhakk_computer();
 	
 	while(1) {
 		//microphone_send();

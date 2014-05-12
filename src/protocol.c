@@ -1,8 +1,8 @@
 #include <stdint.h>
+#include "main.h"
 #include "protocol.h"
 #include "radiolink.h"
 #include "uart.h"
-#include "main.h"
 #include "audio.h"
 #include "uart_buffer.h"
 #include "protocol.h"
@@ -64,13 +64,16 @@ void protocol_loop() {
 
 	/* State-maskinen Gösta */
 	for (;;) {
+		#ifdef MOTHERSHIP
 		uart_printf("In state %i %i\n", state, len);
+		#endif
 		switch (state) {
 			case PROTOCOL_STATE_SLAVE_WAIT:
 				
-				if (!radiolink_recv_timeout(16, cmd_packet, PROTOCOL_MAX_TIMESLICE - (global_timer - last_timer)))
+				if (radiolink_recv_timeout(16, cmd_packet, PROTOCOL_MAX_TIMESLICE - (global_timer - last_timer)) == 0xFF)
 					return;
-
+				
+				uart_printf("Got packet! %X %X %X\n", cmd->cmd, cmd->length, cmd->go_direction);
 				#ifdef MOTHERSHIP
 				motor_state.motor_state = cmd->go_direction;
 				motor_state.no_update_count = 0;
@@ -95,7 +98,7 @@ void protocol_loop() {
 			case PROTOCOL_STATE_MASTER_WAIT:
 				if (!resume)
 					uart_get_data(cmd_packet, 16);
-				len = cmd->length;
+				len = cmd->length + 1;
 				switch (cmd->cmd) {
 					case PROTOCOL_CMD_MIC:
 						state = PROTOCOL_STATE_MASTER_GET_MIC;
@@ -118,7 +121,7 @@ void protocol_loop() {
 					
 				break;
 			case PROTOCOL_STATE_SLAVE_GET_SPEAK:
-				if (!radiolink_recv_timeout(PROTOCOL_PACKET_SIZE, cmd_packet, PROTOCOL_MAX_TIMESLICE - (global_timer - last_timer)))
+				if (radiolink_recv_timeout(PROTOCOL_PACKET_SIZE, cmd_packet, PROTOCOL_MAX_TIMESLICE - (global_timer - last_timer)) == 0xFF)
 					return;
 				len--;
 				if (protocol_is_sync(cmd_packet)) {
@@ -142,7 +145,7 @@ void protocol_loop() {
 				protocol_send_sync(cmd_packet);
 				break;
 			case PROTOCOL_STATE_MASTER_GET_MIC:
-				if (!radiolink_recv_timeout(PROTOCOL_PACKET_SIZE, cmd_packet, PROTOCOL_MAX_TIMESLICE - (global_timer - last_timer)))
+				if (radiolink_recv_timeout(PROTOCOL_PACKET_SIZE, cmd_packet, PROTOCOL_MAX_TIMESLICE - (global_timer - last_timer)) == 0xFF)
 					return;
 				if (protocol_is_sync(cmd_packet))
 					state = PROTOCOL_STATE_MASTER_WAIT;
@@ -166,7 +169,7 @@ void protocol_loop() {
 					state = PROTOCOL_STATE_SLAVE_WAIT;
 				break;
 			case PROTOCOL_STATE_MASTER_GET_CAMERA:
-				if (!radiolink_recv_timeout(PROTOCOL_PACKET_SIZE, cmd_packet, PROTOCOL_MAX_TIMESLICE - (global_timer - last_timer)))
+				if (radiolink_recv_timeout(PROTOCOL_PACKET_SIZE, cmd_packet, PROTOCOL_MAX_TIMESLICE - (global_timer - last_timer)) == 0xFF)
 					break;
 				len--;
 				if (!len)
@@ -180,5 +183,42 @@ void protocol_loop() {
 
 		if (global_timer - last_timer >= PROTOCOL_MAX_TIMESLICE)
 			return;
+	}
+}
+
+#include "motor.h"
+void protocol_fulhakk() {
+	unsigned char buf[16];
+	
+	for(;;) {
+		radiolink_recv(16, buf);
+		uart_printf("got shit %s\n", buf);
+		switch(buf[0]) {
+			case 'w':
+				motor_go(MOTOR_DIR_FORWARD, 100);
+				break;
+			case 'a':
+				motor_go(MOTOR_DIR_LEFT, 100);
+				break;
+			case 's':
+				motor_go(MOTOR_DIR_BACKWARD, 100);
+				break;
+			case 'd':
+				motor_go(MOTOR_DIR_RIGHT, 100);
+				break;
+			case 'x':
+				motor_go(MOTOR_DIR_STAHP, 100);
+				break;
+		}
+	}
+}
+
+void protocol_fulhakk_computer() {
+	unsigned char buf[16] = {0};
+	
+	for(;;) {
+		buf[0] = uart_recv_char();
+		uart_printf("lol\n");
+		radiolink_send(16, buf);
 	}
 }
