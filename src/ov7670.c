@@ -16,9 +16,9 @@ void ov7670_write_reg(char slave_sub_adr, char data);
 
 static unsigned char camera_spi(unsigned char data) {
 	unsigned char ret;
-	LPC_GPIO0->MASKED_ACCESS[0x20] = 0;
+	LPC_GPIO0->MASKED_ACCESS[0x40] = 0;
 	ret = spi_send_recv(data);
-	LPC_GPIO0->MASKED_ACCESS[0x20] = ~0;
+	LPC_GPIO0->MASKED_ACCESS[0x40] = ~0;
 	return ret;
 }
 
@@ -26,8 +26,8 @@ void ov7670_init(void)
 {
 	/*SPI slave selct pin*/
 	LPC_IOCON->PIO0_6 = 0x0;
-	LPC_GPIO0->DIR |= 0x20;
-	LPC_GPIO0->MASKED_ACCESS[0x20] = 0xFF;
+	LPC_GPIO0->DIR |= 0x40;
+	LPC_GPIO0->MASKED_ACCESS[0x40] = 0xFF;
 	
 	/*Vsync*/
 	LPC_IOCON->PIO0_1 = 0x0;

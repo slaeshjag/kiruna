@@ -13,28 +13,41 @@ void us_init(void)
 	US_PORT->DIR	&= ~(1<<US_ECHO);	//set PIO0_3 to input
 }
 
-void us_trig(void)		// Ultrasonic trigger
+enum {
+	STATE_NONE,
+	STATE_COUNTING,
+	STATE_DONE,
+} us_state = STATE_NONE;
+
+int us_counter = 0;
+int us_value = 0;
+
+
+void us_trig(void)		// Ultrasonic trigger, BLOCKING
 {
 	US_PORT->DATA		|= (1<<US_TRIG);	//set PIO0_2 high
 	util_delay(15);					//"sleep" for 15 us (Pulse cannot be <10us!)
 	US_PORT->DATA		&= ~(1<<US_TRIG);	//set PIO0_2 low
-}
-
-int us_read(void)	// blocking
-{
-	int pulseWidth = 0;
 	
-	while ((US_PORT->DATA & (1<<US_ECHO)) == 0);		//while pulse is travelling
-	
-	while ((US_PORT->DATA & (1<<US_ECHO))) pulseWidth++;	//measuring the distance of pulse
-		
-	return pulseWidth;
+	while ((US_PORT->DATA & (1<<US_ECHO)) == 0);	//while pulse is travelling
+	us_counter = 0;					// pulse is incoming, so we add 1
+	us_state = STATE_COUNTING;
 }
 
-
-int us(void)		// not used
+void us_handler(void)			// This is run from the systick interrupter
 {
-	us_trig();
-	return us_read();
+	if (us_state == STATE_COUNTING)	// when 1 we want to read the pulse (if there is one anymore)
+	{
+		if (US_PORT->DATA & (1<<US_ECHO)) us_counter++;	// measuring length of pulse
+		else us_state = STATE_DONE;			// here pulse has ended
+	}
 }
+
+int us_read_nonblock() {
+	if(us_state != STATE_DONE) return -1;
+	
+	us_state = STATE_NONE;
+	return us_counter;
+}
+
 

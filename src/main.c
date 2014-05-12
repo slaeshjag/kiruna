@@ -8,7 +8,9 @@
 #include "audio.h"
 #include "ov7670.h"
 #include "motor.h"
-#include "uart_buffer.h"
+#include "ultrasonic.h"
+#include "microswitch.h"
+
 
 
 void initialize(void) {
@@ -65,8 +67,9 @@ void initialize(void) {
 
 void systick_irq() {
 	global_timer++;
-	//microphone_sample();
-	//speaker_output();
+	microphone_sample();
+	speaker_output();
+	us_handler();
 }
 
 void systick_enable() {
@@ -80,7 +83,7 @@ int main(int ram, char **argv) {
 	initialize();
 	util_delay(200000);
 	uart_printf("AutoKorg™ READY TO WRECK SOME HAVOC!\n");
-	
+
 	/*****************************************/
 	
 	/*while(1) {
@@ -96,9 +99,12 @@ int main(int ram, char **argv) {
 		radiolink_send_unreliable(16, data);
 		
 	}*/
-	
+
 	//speaker_prebuffer();
 	systick_enable();
+	
+	//protocol_fulhakk();
+	//protocol_fulhakk_computer();
 	
 	while(1) {
 		//microphone_send();
@@ -108,11 +114,10 @@ int main(int ram, char **argv) {
 		uart_buff_loop();
 		#endif
 		
+		motor_logic();
 	}
 	
 	/************ CAMERA TEST ****************/
-
-	while(1);
 	
 		// QVGA RGB16
 	/*char sub_adr = 0x0B;
@@ -120,6 +125,5 @@ int main(int ram, char **argv) {
 	uart_printf("CAM at 0x0B is %x\n", cam_test);*/
 	/*****************************************/
 
-	motor_logic();
 	return 0;
 }
