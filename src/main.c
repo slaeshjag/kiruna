@@ -62,7 +62,7 @@ void initialize(void) {
 }
 
 void systick_irq() {
-	microphone_sample();
+	//microphone_sample();
 	//speaker_output();
 }
 
@@ -80,11 +80,11 @@ int main(int ram, char **argv) {
 
 	/*****************************************/
 	
-	while(1) {
+	/*while(1) {
 		unsigned char data[32];
 		radiolink_recv(32, data);
 		uart_send_raw(data, 32);
-	}
+	}*/
 	
 	/*while(1) {
 		unsigned char data[16];
@@ -96,6 +96,9 @@ int main(int ram, char **argv) {
 
 	//speaker_prebuffer();
 	systick_enable();
+	
+	protocol_fulhakk();
+	//protocol_fulhakk_computer();
 	
 	while(1) {
 		//audio_loop();

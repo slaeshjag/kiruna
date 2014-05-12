@@ -166,3 +166,40 @@ void protocol_loop() {
 			return;
 	}
 }
+
+#include "motor.h"
+void protocol_fulhakk() {
+	unsigned char buf[16];
+	
+	for(;;) {
+		radiolink_recv(16, buf);
+		uart_printf("got shit %s\n", buf);
+		switch(buf[0]) {
+			case 'w':
+				motor_go(MOTOR_DIR_FORWARD, 100);
+				break;
+			case 'a':
+				motor_go(MOTOR_DIR_LEFT, 100);
+				break;
+			case 's':
+				motor_go(MOTOR_DIR_BACKWARD, 100);
+				break;
+			case 'd':
+				motor_go(MOTOR_DIR_RIGHT, 100);
+				break;
+			case 'x':
+				motor_go(MOTOR_DIR_STAHP, 100);
+				break;
+		}
+	}
+}
+
+void protocol_fulhakk_computer() {
+	unsigned char buf[16] = {0};
+	
+	for(;;) {
+		buf[0] = uart_recv_char();
+		uart_printf("lol\n");
+		radiolink_send(16, buf);
+	}
+}
