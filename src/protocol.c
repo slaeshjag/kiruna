@@ -5,6 +5,7 @@
 #include "main.h"
 #include "audio.h"
 #include "uart_buffer.h"
+#include "protocol.h"
 
 static enum protocol_state state;
 
@@ -40,9 +41,11 @@ int protocol_is_sync(unsigned char *data) {
 
 
 void protocol_get_motor(int *left, int *right, int *run) {
+	#ifdef MOTHERSHIP
 	*left = (motor_state.motor_state & 01);
 	*right = (motor_state.motor_state & 02) >> 01;
 	*run = (motor_state.motor_state & 04) >> 02;
+	#endif
 	return;
 }
 
@@ -149,9 +152,22 @@ void protocol_loop() {
 				uart_send_raw(cmd_packet, PROTOCOL_PACKET_SIZE);
 				break;
 			case PROTOCOL_STATE_MASTER_SEND_SPEAK:
-				if (!resume)
-					uart_get_data(cmd_packet, PROTOCOL_PACKET_SIZE);
-				resume = (!radiolink_send_unreliable(PROTOCOL_PACKET_SIZE, cmd_packet)) ? 1 : 0;
+				uart_get_data(cmd_packet, PROTOCOL_PACKET_SIZE);
+				radiolink_send_unreliable(PROTOCOL_PACKET_SIZE, cmd_packet);
+				len--;
+				if (!len)
+					state = PROTOCOL_STATE_MASTER_WAIT;
+				break;
+			case PROTOCOL_STATE_SLAVE_SEND_CAMERA:
+				ov7670_get_data_packet(cmd_packet);
+				radiolink_send_unreliable(PROTOCOL_PACKET_SIZE, cmd_packet);
+				len--;
+				if (!len)
+					state = PROTOCOL_STATE_SLAVE_WAIT;
+				break;
+			case PROTOCOL_STATE_MASTER_GET_CAMERA:
+				if (!radiolink_recv_timeout(PROTOCOL_PACKET_SIZE, cmd_packet, PROTOCOL_MAX_TIMESLICE - (global_timer - last_timer)))
+					break;
 				len--;
 				if (!len)
 					state = PROTOCOL_STATE_MASTER_WAIT;

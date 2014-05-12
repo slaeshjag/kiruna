@@ -44,7 +44,9 @@ void initialize(void) {
 	LPC_SYSCON->SYSAHBCLKDIV |= (1 << 9);
 	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 7);
 
+	#ifdef MOTHERSHIP
 	audio_init();
+	#endif
 	
 	/*Disable systick*/
 	SysTick->CTRL = 0;
@@ -59,11 +61,15 @@ void initialize(void) {
 	uart_printf("ov7670_init() done\n");
 	radiolink_init(16);
 	uart_printf("radiolink_init() done\n");
+	protocol_init();
+	uart_printf("protocol_init() done\n");
 }
 
 void systick_irq() {
+	global_timer++;
 	//microphone_sample();
 	//speaker_output();
+	us_handler();
 }
 
 void systick_enable() {
@@ -97,12 +103,18 @@ int main(int ram, char **argv) {
 	//speaker_prebuffer();
 	systick_enable();
 	
-	protocol_fulhakk();
-	//protocol_fulhakk_computer();
+	//protocol_fulhakk();
+	protocol_fulhakk_computer();
 	
 	while(1) {
+		//microphone_send();
 		//audio_loop();
-		microphone_send();
+		protocol_loop();
+		#ifndef MOTHERSHIP
+		uart_buff_loop();
+		#endif
+		
+		motor_logic();
 	}
 	
 	/************ CAMERA TEST ****************/
@@ -113,6 +125,5 @@ int main(int ram, char **argv) {
 	uart_printf("CAM at 0x0B is %x\n", cam_test);*/
 	/*****************************************/
 
-	motor_logic();
 	return 0;
 }
