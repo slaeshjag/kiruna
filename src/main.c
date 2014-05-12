@@ -103,6 +103,38 @@ int main(int ram, char **argv) {
 	}*/
 
 	//speaker_prebuffer();
+	
+	/************* MOTOR TEST ****************/
+	/*
+	while(1)
+	{
+		motor_go(MOTOR_DIR_FORWARD, 100);
+		uart_printf("Forward 100\n");
+		util_delay(MOTOR_TIME_LONG);
+		
+		motor_go(MOTOR_DIR_FORWARD, 70);
+		uart_printf("Forward 70\n");
+		util_delay(MOTOR_TIME_LONG);
+		
+		motor_go(MOTOR_DIR_LEFT, 100);
+		uart_printf("Left 100\n");
+		util_delay(MOTOR_TIME_LONG);
+		
+		motor_go(MOTOR_DIR_STAHP, 100);
+		uart_printf("Stopp\n");
+		util_delay(MOTOR_TIME_SHORT);
+		
+		motor_go(MOTOR_DIR_BACKWARD, 100);
+		uart_printf("Backward\n");
+		util_delay(MOTOR_TIME_LONG);
+		
+		motor_go(MOTOR_DIR_STAHP, 100);
+		uart_printf("Stopp\n");
+		util_delay(MOTOR_TIME_SHORT);
+	}
+	*/
+	/**************** MAIN  ******************/
+
 	systick_enable();
 	
 	//protocol_fulhakk();
