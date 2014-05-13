@@ -97,7 +97,7 @@ int main(int ram, char **argv) {
 	
 	//speaker_prebuffer();
 	//systick_enable();
-
+	
 	ov7670_test();
 	
 	while(1) {
