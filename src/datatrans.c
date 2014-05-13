@@ -3,6 +3,7 @@
 #include "radiolink.h"
 #include "audio.h"
 #include "motor.h"
+#include "ultrasonic.h"
 #include "uart.h"
 
 int motor_state = 0;
@@ -43,8 +44,9 @@ void trans_master_loop() {
 		uart_printf("\r\n> ");
 		uart_recv_raw(buff, 1);
 		uart_printf("\n");
-		radiolink_send_unreliable(16, buff);
-		if (!buff[0]) {
+		if (radiolink_send(16, buff) == 0xFF)
+			radiolink_init();
+		else if (!buff[0]) {
 			uart_printf("Getting microphone\n");
 			trans_get_mic_data();
 		}
@@ -55,10 +57,12 @@ void trans_master_loop() {
 void trans_slave_loop() {
 	unsigned char buff[16];
 
+	us_trig();
+
 	for (;;) {
 		uart_printf("Waiting for data\n");
-		radiolink_recv(16, buff);
-		if (!buff[0]) {
+		if (radiolink_recv_timeout(16, buff, 800) == 0xFF);
+		else if (!buff[0]) {
 			motor_state = 0;
 			motor_logic();
 			trans_send_mic_data();
