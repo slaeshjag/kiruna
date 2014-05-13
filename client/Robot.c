@@ -108,6 +108,7 @@ typedef enum {
 
 //Defining some actions we can send to the robot.
 
+DARNIT_SOUND *robot_sound;
 DARNIT_BBOX *buttonlist;
 unsigned int button_up, button_right, button_left, button_down, button_menu, button_color;
 struct LOOKED looked;
@@ -123,13 +124,13 @@ DARNIT_TILE *t;
 
 int serial_port, package_count, package_in_buff, image_i = 0, audio_i = 0, hello;
 unsigned short robot_state = 0, robot_packages = 0, robot_motors = 0, send_audio = 0;
-int state = 0, stickyness = 100;
+int state = 0, stickyness = 20;
 int* package_buff, image_data;
 
 struct termios2 config;
 struct SOUND_BUFFER sound_buf;
 
-FILE * mic_listening;
+int mic_listening;
 
 //Global stuff \o/ Integers, home-made structures, text objects, and a serial port.
 
@@ -274,7 +275,7 @@ void initiate_buttons(void){
 
 void initiate_serial_port(void){
 	
-	if((serial_port = open(MODEMDEVICE, O_RDWR | O_NOCTTY /*| O_NDELAY*/)) < 0){
+	if((serial_port = open(MODEMDEVICE, O_RDWR | O_NOCTTY)) < 0){
 		
 		printf("AAAAAAH!! Serial port not working.\n");
 		return;
@@ -307,8 +308,10 @@ void initiate_serial_port(void){
 	//Sets the serial_port to work as we want it to,
 	//with the custom baudrate BAUDRATE. 
 	
-	mic_listening = popen("", "");
-	
+	robot_sound = d_sound_callback_load(read_sound_test, NULL, 1);
+	mic_listening = open("/tmp/microphone_data", O_RDONLY);
+	//Open the file to which we pipe our microphone_data,
+	//and make us able to play a sound from the robot.
 }
 
 void do_stuff(DARNIT_TEXT_SURFACE *textplace){
@@ -347,9 +350,6 @@ void do_stuff(DARNIT_TEXT_SURFACE *textplace){
 		if(stickyness < looked.frames_looked){
 		
 		//Then, if we've looked at the same area for 100 frames...
-		
-			d_text_surface_string_append(textplace, "   Nu! :D");
-			//We "print" more text.
 			
 			click(looked.x, looked.y, textplace);
 			//And call the click function, clicking the point
@@ -384,8 +384,6 @@ void click(int x, int y, DARNIT_TEXT_SURFACE *textplace){
 	
 	if(check_true(hits, button_up)){
 		
-		d_text_surface_string_append(textplace, "\n Uppknappen klickades.");
-		
 		if(state == UI){
 			robot_motors = MOTORS_FORWARD;
 			robot_state = NEW_FRAME;  
@@ -398,8 +396,6 @@ void click(int x, int y, DARNIT_TEXT_SURFACE *textplace){
 	else if(check_true(hits, button_down)){
 		   
 		//Down button click.
-		   
-		d_text_surface_string_append(textplace, "\n Nerknappen klickades.");
 		
 		if(state == UI){
 			robot_motors = MOTORS_BACKWARDS;
@@ -413,9 +409,7 @@ void click(int x, int y, DARNIT_TEXT_SURFACE *textplace){
 	else if(check_true(hits, button_left)){
 		
 		//Left button click.
-		
-		d_text_surface_string_append(textplace, "\n Vänsterknappen klickades.");
-		
+
 		if(state == UI){
 			robot_motors = TURN_LEFT;
 			robot_state = NEW_FRAME;  
@@ -428,9 +422,7 @@ void click(int x, int y, DARNIT_TEXT_SURFACE *textplace){
 	else if(check_true(hits, button_right)){
 		   
 		//Right button click.
-		   
-		d_text_surface_string_append(textplace, "\n Högerknappen klickades.");
-			
+		
 		if(state == UI){
 			robot_motors = TURN_RIGHT;
 			robot_state = NEW_FRAME;  
@@ -455,10 +447,7 @@ void click(int x, int y, DARNIT_TEXT_SURFACE *textplace){
 			
 			state &= 0xF0;
 			state |= UI;
-			stickyness = 100;
 		}
-	
-		d_text_surface_string_append(textplace, "\n Menyknappen klickades.");
 	}
 	
 	else if(check_true(hits, button_color)){
@@ -466,25 +455,18 @@ void click(int x, int y, DARNIT_TEXT_SURFACE *textplace){
 		if((state & 0xF) == UI){
 			
 			state &= 0xF0;
-			state |= DISCO + TALK;
-			stickyness = 2;
-			
-			d_text_surface_string_append(textplace, "\n Colorknappen klickades.");
+			state |= TALK;
 		}
 		else if ((state & 0xF) == SOUND){
 			
 			state &= 0xF0;
 			state |= UI;
-			
-			d_text_surface_string_append(textplace, "\n Backknappen klickades.");
 		}
 		
 	}
 	
 	else {
 		//And if we *haven't* pressed a button, this is where we go.
-		
-		d_text_surface_string_append(textplace, "\n Non-click click thing.");
 		
 		if(state == UI){
 			robot_motors = STOP;
@@ -517,22 +499,19 @@ int check_true(unsigned int* hits, unsigned int value){
 
 void send_message(){
 	
-	unsigned short message = robot_motors | robot_state;
+	unsigned short message = robot_motors | robot_state; //Make the message we want to send the robot.
 	
 	if(!send_audio){
 		
-		write(serial_port, message, sizeof(message));
+		write(serial_port, &message, sizeof(message));		     //Send the robot our message.
 	}
 	else{
-		unsigned int microphone_data[4 * 2];
-		fread(microphone_data, 1, sizeof(microphone_data), mic_listening);
+		unsigned short microphone_data[7];   //Make space for a few (6) packets to send the robot.
+		read(mic_listening, microphone_data, sizeof(microphone_data));     //Read microphone data.
 		
-		/*
-		 * 
-		 * TODO: put microphone data into packages to be sent to robot. 
-		 * 
-		 */
-		
+		message |= (7 << 3); 		//Add to the message that we're sending 7 packets of data.
+		write(serial_port, &message, sizeof(message)); 			      //Write the message.
+		write(serial_port, microphone_data, sizeof(microphone_data)); //Write the microphone data.
 	}
 	
 }
@@ -564,7 +543,7 @@ void* transfer(){
 		
 		for(i = 0; i < (22600 / 8); i++){
 			
-			if(write(serial_port, buf[(8*i)], 8)){
+			if(write(serial_port, &buf[(8*i)], 8)){
 				
 				sleep(2);
 			}
@@ -574,69 +553,9 @@ void* transfer(){
 	pthread_exit(NULL);
 }
 
-void * listen_to_sound(){
-	
-	DARNIT_SOUND *microphone = d_sound_callback_load(read_sound_test, NULL, 1); 
-	//Load an audiophile. 
-	
-	for(;;){
-		
-		d_sound_play(microphone, 1, 128, 128, 0); 
-		//Play la musica.		
-	}
-	
-	pthread_exit(NULL);
-}
-
 int read_sound_test(signed short *buff, int buff_len, int pos, void *data){
 	
-	unsigned char local_buffer[buff_len];
-	int i = 0;
-	//Variables; one for keeping track of the sound data,
-	//one for keeping track of where we are.
-	
-	while(sound_buf.location < sound_buf.buffer_stop){
-		
-		if(!(i < buff_len)){
-			
-			break;
-			//If we've filled our buffer, we break the while loop.
-		}
-		
-		local_buffer[i] = sound_buf.buffer[sound_buf.location];
-		//Transfer a byte from the sound buffer to our local bufffer.
-		
-		sound_buf.location++;
-		i++;
-		//Count our counters up one step. This means we "move" one step forwards
-		//in the sound buff, and in our local buff.
-	}
-	while(i < buff_len){
-		
-		local_buffer[i] = 0;
-		//Pad out the rest of our buffer with Zeroes.
-		
-		i++;
-	}
-	
-	unsigned short temp;
-	i = 0;
-	
-	while(i < (buff_len / 2)){
-		
-		if(i + 2 < buff_len){
-			
-			temp = local_buffer[i];
-		}
-		else{
-			
-			temp = (local_buffer[i + 1] << 8) + local_buffer[i];
-		}
-		
-		buff[i] = temp;
-		
-		i ++;
-	}
+	read(serial_port, data, buff_len);
 	
 	return(buff_len);
 }
