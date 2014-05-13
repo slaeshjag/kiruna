@@ -156,7 +156,7 @@ unsigned char radiolink_flush() {
 
 unsigned char radiolink_send(int size, unsigned char *data) {
 	unsigned char status;
-	int i;
+	int i, last_timer = global_timer;
 	
 	ce_on();
 	util_delay(10);
@@ -165,7 +165,8 @@ unsigned char radiolink_send(int size, unsigned char *data) {
 		do {
 			status = radiolink_status();
 			/*uart_printf("arne 0x%x\n", status);*/
-			if(status & 0x10) {
+			if((status & 0x10) || global_timer - last_timer >= 800) {
+				last_timer = global_timer;
 				radiolink_flush();
 				goto error;
 			}
@@ -199,6 +200,7 @@ unsigned char radiolink_send(int size, unsigned char *data) {
 
 unsigned char radiolink_send_unreliable(int size, unsigned char *data) {
 	unsigned char status;
+	int last_timer = global_timer;
 	int i;
 	
 	ce_on();
@@ -208,7 +210,8 @@ unsigned char radiolink_send_unreliable(int size, unsigned char *data) {
 		do {
 			status = radiolink_status();
 			/*uart_printf("arne 0x%x\n", status);*/
-			if(status & 0x10) {
+			if((status & 0x10) || global_timer - last_timer >= 800) {
+				last_timer = global_timer;
 				radiolink_flush();
 				status = radiolink_status();
 				radiolink_write_reg(REG_STATUS, 1, &status);

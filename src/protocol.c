@@ -64,10 +64,13 @@ void protocol_loop() {
 	int last_timer, i, j;
 	static int len = 0, resume = 0;
 	static int timeout;
+	static int next_state_timeout;
 
 	last_timer = global_timer;
 	#ifdef MOTHERSHIP
-	if (++motor_state.no_update_count >= PROTOCOL_MOTOR_KILL_DELAY) {
+	if (++motor_state.no_update_count >= PROTOCOL_MOTOR_KILL_DELAY && !len) {
+		uart_printf("Timeout\n");
+		//radiolink_flush();
 		protocol_send_sync_u(cmd_packet);
 		motor_state.motor_state = 0;
 	}
@@ -78,11 +81,11 @@ void protocol_loop() {
 		#ifdef MOTHERSHIP
 		uart_printf("In state %i %i\n", state, len);
 		#endif
-		if (len > 16)
+		if (len > 2500)
 			len = 1;
 		switch (state) {
 			case PROTOCOL_STATE_SLAVE_WAIT:
-				
+				len = 0;
 				if (radiolink_recv_timeout(16, cmd_packet, PROTOCOL_MAX_TIMESLICE - (global_timer - last_timer)) == 0xFF)
 					return;
 				
@@ -97,6 +100,7 @@ void protocol_loop() {
 				switch (cmd->cmd) {
 					case PROTOCOL_CMD_MIC:
 						state = PROTOCOL_STATE_SLAVE_SEND_MIC;
+						len = 2500;
 						break;
 					case PROTOCOL_CMD_SPEAKER:
 						state = PROTOCOL_STATE_SLAVE_GET_SPEAK;
@@ -121,6 +125,7 @@ void protocol_loop() {
 						break;
 					}
 				len = cmd->length + 1;
+				next_state_timeout = global_timer + 40000;
 				switch (cmd->cmd) {
 					case PROTOCOL_CMD_MIC:
 						state = PROTOCOL_STATE_MASTER_GET_MIC;
@@ -170,6 +175,11 @@ void protocol_loop() {
 				}
 				break;
 			case PROTOCOL_STATE_MASTER_GET_MIC:
+				if (global_timer >= next_state_timeout) {
+					state = PROTOCOL_STATE_MASTER_WAIT;
+					break;
+				}
+					
 				if (radiolink_recv_timeout(PROTOCOL_PACKET_SIZE, cmd_packet, PROTOCOL_MAX_TIMESLICE - (global_timer - last_timer)) == 0xFF)
 					return;
 				if (protocol_is_sync(cmd_packet))
