@@ -22,8 +22,7 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=0
-FILE_NAME_0=1140;C;0;EUTF-8;1;1;0;%2Fhome%2Falex%2FProjekt%2Fkiruna%2Fclient%2FRobot.c;0;8
+current_page=-1
 
 [VTE]
 last_dir=/home/alex
