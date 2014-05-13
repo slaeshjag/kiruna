@@ -253,10 +253,39 @@ void protocol_fulhakk() {
 
 void protocol_fulhakk_computer() {
 	unsigned char buf[16] = {0};
+	unsigned char c;
 	
 	for(;;) {
-		buf[0] = uart_recv_char();
-		uart_printf("lol\n");
+		c = uart_recv_char();
+		switch(c) {
+			case 'w':
+				buf[0] = 0x84;
+				buf[1] = 0x3;
+				break;
+			case 'a':
+				buf[0] = 0x84;
+				buf[1] = 0x2;
+				break;
+			case 's':
+				buf[0] = 0x4;
+				buf[1] = 0x2;
+				break;
+			case 'd':
+				buf[0] = 0x4;
+				buf[1] = 0x3;
+				break;
+			
+			case 'm':
+				buf[0] = 0x0 | (15 << 3);
+				buf[1] = 0x0;
+				break;
+			
+			default:
+				buf[0] = 0x4;
+				break;
+		}
+		
+		uart_printf("lol\r\n");
 		radiolink_send(16, buf);
 	}
 }
