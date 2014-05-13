@@ -14,7 +14,7 @@ void trans_get_mic_data() {
 	timeout = global_timer + 40000;
 
 	while (global_timer < timeout) {
-		radiolink_recv(16, buff);
+		radiolink_recv_timeout(16, buff, 2000);
 		uart_send_raw(buff, 16);
 	}
 
