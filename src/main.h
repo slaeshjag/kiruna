@@ -3,7 +3,7 @@
 
 extern int global_timer;
 
-#define	MOTHERSHIP
+//#define	MOTHERSHIP
 
 
 #endif

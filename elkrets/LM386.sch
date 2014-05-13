@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date tis 13 maj 2014 09:56:20
+EESchema Schematic File Version 2  date tis 13 maj 2014 13:19:24
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -38,7 +38,7 @@ EELAYER END
 $Descr A1 33070 23400
 encoding utf-8
 Sheet 1 1
-Title ""
+Title "AutoKorg"
 Date "13 may 2014"
 Rev ""
 Comp ""
@@ -47,8 +47,21 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-Text Notes 13950 5800 0    90   ~ 0
-Programming mode\nbuttons
+Connection ~ 23200 19450
+Wire Wire Line
+	23200 19450 23000 19450
+Wire Wire Line
+	23000 19450 23000 19700
+Wire Wire Line
+	23100 18650 22700 18650
+Wire Wire Line
+	23100 18650 23100 20100
+Wire Wire Line
+	22800 19550 22800 19500
+Wire Wire Line
+	19300 17300 17700 17300
+Wire Wire Line
+	17700 17300 17700 17650
 Wire Notes Line
 	15400 5300 13200 5300
 Wire Notes Line
@@ -467,8 +480,6 @@ Wire Bus Line
 Wire Wire Line
 	15250 17200 19300 17200
 Wire Wire Line
-	19300 17300 15250 17300
-Wire Wire Line
 	15250 17400 19300 17400
 Wire Wire Line
 	15250 17100 19300 17100
@@ -535,17 +546,7 @@ Wire Wire Line
 Wire Wire Line
 	22600 18700 22600 18550
 Wire Wire Line
-	22600 18550 23100 18550
-Wire Wire Line
-	23100 18550 23100 20100
-Wire Wire Line
-	23000 20100 23000 18650
-Wire Wire Line
-	23000 18650 22700 18650
-Wire Wire Line
 	22700 18650 22700 18700
-Wire Wire Line
-	22800 20100 22800 19500
 Wire Wire Line
 	22700 19500 22700 20100
 Wire Wire Line
@@ -936,6 +937,39 @@ Connection ~ 12900 5950
 Wire Wire Line
 	13900 5700 13900 6100
 Connection ~ 13900 5950
+Wire Wire Line
+	15250 17300 17250 17300
+Wire Wire Line
+	17250 17300 17250 17650
+Wire Wire Line
+	17400 17450 17400 17400
+Connection ~ 17400 17400
+Wire Wire Line
+	22800 20000 22800 20100
+Wire Wire Line
+	22600 18550 23200 18550
+Wire Wire Line
+	23200 18550 23200 20100
+$Comp
+L BUFE U?
+U 1 1 5371FE9D
+P 22800 19750
+F 0 "U?" H 23050 20200 60  0000 C CNN
+F 1 "BUFE" H 23200 20100 60  0000 C CNN
+	1    22800 19750
+	0    -1   1    0   
+$EndComp
+$Comp
+L BUFE U?
+U 1 1 5371FE60
+P 17450 17650
+F 0 "U?" H 17650 17900 60  0000 C CNN
+F 1 "BUFE" H 17650 17750 60  0000 C CNN
+	1    17450 17650
+	1    0    0    1   
+$EndComp
+Text Notes 13950 5800 0    90   ~ 0
+Programming mode\nbuttons
 $Comp
 L GND #PWR?
 U 1 1 5371CFAC
@@ -2138,12 +2172,12 @@ Text Label 22800 20100 1    60   ~ 0
 MISO
 NoConn ~ 22800 18700
 Entry Wire Line
-	22900 20200 23000 20100
-Entry Wire Line
 	23000 20200 23100 20100
-Text Label 23000 20100 1    60   ~ 0
-MOSI
+Entry Wire Line
+	23100 20200 23200 20100
 Text Label 23100 20100 1    60   ~ 0
+MOSI
+Text Label 23200 20100 1    60   ~ 0
 RADIO_CSN
 $Comp
 L +6V #PWR?

@@ -27,7 +27,7 @@ int serial_init(const char *device) {
 	termios.c_cc[VMIN]=1;
 	termios.c_cc[VTIME]=5;
 	
-	//cfmakeraw(&termios);
+	cfmakeraw(&termios);
 	cfsetospeed(&termios, B115200);
 	cfsetispeed(&termios, B115200);
 	
@@ -43,9 +43,9 @@ int serial_init(const char *device) {
 }
 
 int main(int argc, char **argv) {
-	int fd;
+	int fd, audioout;
 	char c;
-	unsigned char buf[16] = {};
+	unsigned char buf = 0xF8;
 	unsigned char readbuf[512];
 	struct termios ttystate, ttysave;
 	int flags, len = 0;
@@ -54,6 +54,11 @@ int main(int argc, char **argv) {
 		printf("nope\n");
 		return 1;
 	}
+	
+	audioout = open("/dev/audioout", O_RDWR);
+	if ((flags = fcntl(audioout, F_GETFL, 0)) == -1)
+		flags = 0;
+	fcntl(audioout, F_SETFL, flags | O_NONBLOCK);
 	
 	tcgetattr(STDIN_FILENO, &ttysave);
 	tcgetattr(STDIN_FILENO, &ttystate);
@@ -65,39 +70,31 @@ int main(int argc, char **argv) {
 	if ((flags = fcntl(STDIN_FILENO, F_GETFL, 0)) == -1)
 		flags = 0;
 	fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
-	
-	buf[0] = 0xFF;
-	
+
 	for(;;) {
 		if(read(STDIN_FILENO, &c, 1) > 0) {
 			switch(c) {
 				case 'w':
-					buf[1] = 0x84;
-					buf[2] = 0x3;
+					buf = 0xF8 | 0x7;
 					break;
 				case 'a':
-					buf[1] = 0x84;
-					buf[2] = 0x2;
+					buf = 0xF8 | 0x5;
 					break;
 				case 's':
-					buf[1] = 0x4;
-					buf[2] = 0x2;
+					buf = 0xF8 | 0x4;
 					break;
 				case 'd':
-					buf[1] = 0x4;
-					buf[2] = 0x3;
+					buf = 0xF8 | 0x6;
 					break;
 				case 'm':
-					buf[1] = (15 << 3);
-					buf[2] = 0;
+					buf = 0x0;
 					break;
 				
 				default:
-					buf[1] = 0x4;
-					buf[2] = 0x0;
+					buf = 0xF8;
 					break;
 			}
-			printf("wrote %i\n", write(fd, buf, 16));
+			printf("wrote %i\n", write(fd, &buf, 1));
 		}
 		
 		len = read(fd, readbuf, 512);
