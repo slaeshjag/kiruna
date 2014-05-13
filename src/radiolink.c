@@ -182,7 +182,7 @@ unsigned char radiolink_send(int size, unsigned char *data) {
 		do {
 			status = radiolink_status();
 			/*uart_printf("arne 0x%x\n", status);*/
-			if(status & 0x10) {
+			if((status & 0x10) || global_timer - last_timer >= 800) {
 				radiolink_flush();
 				goto error;
 			}
