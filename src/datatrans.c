@@ -30,7 +30,8 @@ void trans_send_mic_data() {
 
 	for (i = 0; i < 2500; i++) {
 		uart_printf("loop\n");
-		microphone_send();
+		if (!microphone_send())
+			i--;
 	}
 	#endif
 	return;
@@ -39,6 +40,7 @@ void trans_send_mic_data() {
 
 void trans_master_loop() {
 	unsigned char buff[16];
+	int i;
 	
 	for (;;) {
 		uart_printf("\r\n> ");
@@ -46,8 +48,10 @@ void trans_master_loop() {
 		uart_printf("\n");
 		if (radiolink_send(16, buff) == 0xFF);
 		else if (!buff[0]) {
-			uart_printf("Getting microphone\n");
 			trans_get_mic_data();
+			for (i = 0; i < 16; i++)
+				buff[i] = 0xFF;
+			radiolink_send(16, buff);
 		}
 	}
 }
