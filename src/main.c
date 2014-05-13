@@ -11,7 +11,7 @@
 #include "ultrasonic.h"
 #include "microswitch.h"
 
-
+int global_timer;
 
 void initialize(void) {
 	/* TODO: Set CPU clock etc. */
