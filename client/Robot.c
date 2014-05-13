@@ -1,4 +1,5 @@
-#include <asm/termios.h>
+//#include <asm/termios.h>
+#include <termios.h>
 #include <darnit/darnit.h>
 #include <fcntl.h>
 #include <pthread.h>
@@ -14,7 +15,7 @@
 
 #define BAUDRATE 115200
 #define MODEMDEVICE "/dev/ttyUSB0"
-#define PACKAGE_SIZE 8
+#define PACKAGE_SIZE 1
 //Serial port definitions.
 
 #define HD_IMAGE_WIDTH 640
@@ -93,10 +94,11 @@ typedef struct{
 
 typedef enum {
 	
-	MOTORS_FORWARD = 0x700,
-	MOTORS_BACKWARDS = 0x400,
-	TURN_LEFT = 0x500,
-	TURN_RIGHT = 0x600,
+	MOTORS = 0xF8,
+	MOTORS_FORWARD = 0x7,
+	MOTORS_BACKWARDS = 0x4,
+	TURN_LEFT = 0x5,
+	TURN_RIGHT = 0x6,
 	STOP = 0x0,
 	SYNC = 0xFFFF,
 	SEND_MIC = 0x0,
@@ -123,11 +125,10 @@ DARNIT_TILESHEET *ts;
 DARNIT_TILE *t;
 
 int serial_port, package_count, package_in_buff, image_i = 0, audio_i = 0, hello;
-unsigned short robot_state = 0, robot_packages = 0, robot_motors = 0, send_audio = 0;
+unsigned char robot_state = 0, robot_packages = 0, robot_motors = 0, send_audio = 0;
 int state = 0, stickyness = 20;
 int* package_buff, image_data;
 
-struct termios2 config;
 struct SOUND_BUFFER sound_buf;
 
 int mic_listening;
@@ -273,40 +274,51 @@ void initiate_buttons(void){
 	//Initiate some image graphics. 
 }
 
+struct termios serial_termios;
+
+int serial_init(const char *device) {
+	int fd;
+	unsigned int flags;
+	struct termios termios;
+	
+	fd = open(device, O_RDWR);
+	if(fd < 0)
+		return -1;
+	
+	//tcgetattr(fd, &termios);
+	tcgetattr(fd, &serial_termios);
+	
+	memset(&termios,0,sizeof(termios));
+	termios.c_iflag=0;
+	termios.c_oflag=0;
+	termios.c_cflag=CS8|CREAD|CLOCAL;           // 8n1, see termios.h for more information
+	termios.c_lflag=0;
+	termios.c_cc[VMIN]=1;
+	termios.c_cc[VTIME]=5;
+	
+	cfmakeraw(&termios);
+	cfsetospeed(&termios, B115200);
+	cfsetispeed(&termios, B115200);
+	
+	if (tcsetattr(fd, TCSANOW, &termios) < 0) {
+		close(fd);
+		return -1;
+	}
+	if ((flags = fcntl(fd, F_GETFL, 0)) == -1)
+		flags = 0;
+	fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+	
+	return fd;
+}
+
 void initiate_serial_port(void){
 	
-	if((serial_port = open(MODEMDEVICE, O_RDWR | O_NOCTTY)) < 0){
+	if((serial_port = serial_init(MODEMDEVICE)) < 0){
 		
 		printf("AAAAAAH!! Serial port not working.\n");
 		return;
 	}
 	//Open serial port as ReadWrite.
-	
-	ioctl(serial_port, TCGETS2, &config);
-	
-	config.c_cflag &= ~CBAUD;
-	config.c_cflag &= ~(CSIZE | PARENB);
-	config.c_cflag |= BOTHER;
-	config.c_cflag |= CS8;
-	//These options will let us set our own baudrate,
-	//no parity and a bytesize of 8 bits.
-	
-	config.c_iflag = 0;
-	//No input processing.
-	
-	config.c_oflag = 0;
-	//No output processing.
-	
-	config.c_lflag = 0;
-	//No echoing and stuff.
-	
-	config.c_ispeed = BAUDRATE;
-	config.c_ospeed = BAUDRATE;
-	//Set our baudrates.
-	
-	ioctl(serial_port, TCSETS2, &config);
-	//Sets the serial_port to work as we want it to,
-	//with the custom baudrate BAUDRATE. 
 	
 	robot_sound = d_sound_callback_load(read_sound_test, NULL, 1);
 	mic_listening = open("/tmp/microphone_data", O_RDONLY);
@@ -385,8 +397,8 @@ void click(int x, int y, DARNIT_TEXT_SURFACE *textplace){
 	if(check_true(hits, button_up)){
 		
 		if(state == UI){
-			robot_motors = MOTORS_FORWARD;
-			robot_state = NEW_FRAME;  
+			robot_motors = MOTORS;
+			robot_state = MOTORS_FORWARD;  
 			send_message(); 
 			
 			//Tell the robot to drive forwards, and send us camera data.
@@ -398,8 +410,8 @@ void click(int x, int y, DARNIT_TEXT_SURFACE *textplace){
 		//Down button click.
 		
 		if(state == UI){
-			robot_motors = MOTORS_BACKWARDS;
-			robot_state = NEW_FRAME;  
+			robot_motors = MOTORS;
+			robot_state = MOTORS_BACKWARDS;  
 			send_message(); 
 			
 			//Tell the robot to drive backwards, and send us camera data.
@@ -411,8 +423,8 @@ void click(int x, int y, DARNIT_TEXT_SURFACE *textplace){
 		//Left button click.
 
 		if(state == UI){
-			robot_motors = TURN_LEFT;
-			robot_state = NEW_FRAME;  
+			robot_motors = MOTORS;
+			robot_state = TURN_LEFT;  
 			send_message(); 
 			
 			//Tell the robot to turn left, and send us camera data.	
@@ -424,8 +436,8 @@ void click(int x, int y, DARNIT_TEXT_SURFACE *textplace){
 		//Right button click.
 		
 		if(state == UI){
-			robot_motors = TURN_RIGHT;
-			robot_state = NEW_FRAME;  
+			robot_motors = MOTORS;
+			robot_state = TURN_RIGHT;  
 			send_message(); 
 			
 			//Tell the robot to turn right, and send us camera data.	
@@ -469,8 +481,8 @@ void click(int x, int y, DARNIT_TEXT_SURFACE *textplace){
 		//And if we *haven't* pressed a button, this is where we go.
 		
 		if(state == UI){
-			robot_motors = STOP;
-			robot_state = NEW_FRAME;  
+			robot_motors = MOTORS;
+			robot_state = 0;  
 			send_message(); 
 			
 			//Tell the robot to shut down its motors, and send us camera data.	
@@ -499,7 +511,7 @@ int check_true(unsigned int* hits, unsigned int value){
 
 void send_message(){
 	
-	unsigned short message = robot_motors | robot_state; //Make the message we want to send the robot.
+	unsigned char message = robot_motors | robot_state; //Make the message we want to send the robot.
 	
 	if(!send_audio){
 		
