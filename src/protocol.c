@@ -71,7 +71,8 @@ void protocol_loop() {
 	if (++motor_state.no_update_count >= PROTOCOL_MOTOR_KILL_DELAY && !len) {
 		uart_printf("Timeout\n");
 		//radiolink_flush();
-		protocol_send_sync_u(cmd_packet);
+		if (!state)
+			protocol_send_sync_u(cmd_packet);
 		motor_state.motor_state = 0;
 	}
 	#endif
@@ -182,7 +183,7 @@ void protocol_loop() {
 					
 				if (radiolink_recv_timeout(PROTOCOL_PACKET_SIZE, cmd_packet, PROTOCOL_MAX_TIMESLICE - (global_timer - last_timer)) == 0xFF)
 					return;
-				if (protocol_is_sync(cmd_packet))
+				if (protocol_is_sync(cmd_packet) && len != 2500)
 					state = PROTOCOL_STATE_MASTER_WAIT;
 				else {
 					len--;
