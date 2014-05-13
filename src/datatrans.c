@@ -45,7 +45,7 @@ void trans_master_loop() {
 		uart_recv_raw(buff, 1);
 		uart_printf("\n");
 		if (radiolink_send(16, buff) == 0xFF)
-			radiolink_init();
+			radiolink_init(16);
 		else if (!buff[0]) {
 			uart_printf("Getting microphone\n");
 			trans_get_mic_data();
