@@ -10,6 +10,7 @@
 #include "motor.h"
 #include "ultrasonic.h"
 #include "microswitch.h"
+#include "datatrans.h"
 
 int global_timer;
 
@@ -61,8 +62,8 @@ void initialize(void) {
 	uart_printf("ov7670_init() done\n");
 	radiolink_init(16);
 	uart_printf("radiolink_init() done\n");
-	protocol_init();
-	uart_printf("protocol_init() done\n");
+//	protocol_init();
+//	uart_printf("protocol_init() done\n");
 }
 
 void systick_irq() {
@@ -143,9 +144,10 @@ int main(int ram, char **argv) {
 	while(1) {
 		//microphone_send();
 		//audio_loop();
-		protocol_loop();
 		#ifndef MOTHERSHIP
-		uart_buff_loop();
+		trans_slave_loop();
+		#else
+		trans_master_loop();
 		#endif
 		
 		motor_logic();

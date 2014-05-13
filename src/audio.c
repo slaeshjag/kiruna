@@ -69,8 +69,8 @@ unsigned char microphone_sample() {
 	while(!(LPC_ADC->STAT & 0x1));
 	data = (LPC_ADC->DR[0] >> 7);
 
-	if (data == 0xFF)
-		data = 0xFE;
+	if (data >= 0xF8)
+		data = 0xF7;
 	sample_buffer[index++] = data;
 	
 	if(index == 16) {
