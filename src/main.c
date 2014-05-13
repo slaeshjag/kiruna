@@ -144,7 +144,7 @@ int main(int ram, char **argv) {
 	while(1) {
 		//microphone_send();
 		//audio_loop();
-		#ifndef MOTHERSHIP
+		#ifdef MOTHERSHIP
 		trans_slave_loop();
 		#else
 		trans_master_loop();

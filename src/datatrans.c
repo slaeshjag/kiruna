@@ -48,6 +48,7 @@ void trans_slave_loop() {
 	unsigned char buff[16];
 
 	for (;;) {
+		uart_printf("Waiting for data\n");
 		radiolink_recv(16, buff);
 		if (!buff[0]) {
 			motor_state = 0;
