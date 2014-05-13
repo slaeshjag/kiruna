@@ -312,7 +312,6 @@ unsigned char radiolink_recv(int size, unsigned char *data) {
 
 	for(; size > 0; size -= packet_size) {
 		while(!((status = radiolink_status()) & 0x40));
-		uart_printf("status 0x%x\n", status);
 		cmd_start();
 		spi_send_recv(CMD_RECV_PAYLOAD);
 		for(i = 0; i < packet_size; i++) {
