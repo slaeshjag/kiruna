@@ -34,6 +34,14 @@ void protocol_send_sync(unsigned char *buff) {
 	radiolink_send_stubborn(PROTOCOL_PACKET_SIZE, buff, PROTOCOL_MAX_TIMESLICE / 2);
 }
 
+void protocol_send_sync_u(unsigned char *buff) {
+	int i;
+
+	for (i = 0; i < PROTOCOL_PACKET_SIZE - 1; i++)
+		buff[i] = 0xFF;
+	buff[i] = 0;
+	radiolink_send_unreliable(PROTOCOL_PACKET_SIZE, buff);
+}
 
 int protocol_is_sync(unsigned char *data) {
 	return (*data == 0xFF && data[1] == 0xFF) ? 1 : 0;
@@ -59,8 +67,10 @@ void protocol_loop() {
 
 	last_timer = global_timer;
 	#ifdef MOTHERSHIP
-	if (++motor_state.no_update_count >= PROTOCOL_MOTOR_KILL_DELAY)
+	if (++motor_state.no_update_count >= PROTOCOL_MOTOR_KILL_DELAY) {
+		protocol_send_sync_u(cmd_packet);
 		motor_state.motor_state = 0;
+	}
 	#endif
 
 	/* State-maskinen Gösta */
@@ -80,6 +90,7 @@ void protocol_loop() {
 				#ifdef MOTHERSHIP
 				motor_state.motor_state = cmd->go_direction;
 				motor_state.no_update_count = 0;
+
 				#endif
 
 				len = cmd->length + 1;
@@ -153,9 +164,10 @@ void protocol_loop() {
 					break;
 				#endif
 				len--;
-				if (!len)
+				if (!len) {
 					state = PROTOCOL_STATE_SLAVE_WAIT;
-				protocol_send_sync(cmd_packet);
+					protocol_send_sync(cmd_packet);
+				}
 				break;
 			case PROTOCOL_STATE_MASTER_GET_MIC:
 				if (radiolink_recv_timeout(PROTOCOL_PACKET_SIZE, cmd_packet, PROTOCOL_MAX_TIMESLICE - (global_timer - last_timer)) == 0xFF)

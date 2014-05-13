@@ -89,6 +89,7 @@ int microphone_send() {
 	if(!send_data)
 		return 0;
 	radiolink_send_unreliable(16, send_buffer);
+//	radiolink_send(16, send_buffer);
 //	radiolink_send(16, "ARNEarneARNEarne");
 
 	send_data = 0;
