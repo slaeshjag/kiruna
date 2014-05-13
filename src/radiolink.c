@@ -183,6 +183,7 @@ unsigned char radiolink_send(int size, unsigned char *data) {
 			status = radiolink_status();
 			/*uart_printf("arne 0x%x\n", status);*/
 			if((status & 0x10) || global_timer - last_timer >= 800) {
+				
 				radiolink_flush();
 				goto error;
 			}
@@ -252,7 +253,7 @@ int radiolink_send_stubborn(int size, unsigned char *data, int timeout) {
 
 unsigned char radiolink_recv_timeout(int size, unsigned char *data, int timeout) {
 	unsigned char status = 0xFF, config, tmp;
-	int i, time_now;
+	int i, time_now, n = 0;
 	
 	if(!size)
 		return 0x0;
@@ -272,11 +273,15 @@ unsigned char radiolink_recv_timeout(int size, unsigned char *data, int timeout)
 	for(; size > 0; size -= packet_size) {
 		while (global_timer - time_now < timeout && !((status = radiolink_status()) & 0x40));
 		if ((global_timer - time_now >= timeout)) {
-			return 0xFF;
+			n = 1;
+			goto arne;
 		}
 
-		if (!(status & 0x40))
-			return 0xFF;
+		if (!(status & 0x40)) {
+			n = 1;
+			goto arne;
+		}
+
 		cmd_start();
 		spi_send_recv(CMD_RECV_PAYLOAD);
 		for(i = 0; i < packet_size; i++) {
@@ -287,13 +292,14 @@ unsigned char radiolink_recv_timeout(int size, unsigned char *data, int timeout)
 		cmd_end();
 	}
 	
+	arne:
 	ce_off();
 	
 	config &= ~0x1;
 	radiolink_write_reg(REG_CONFIG, 1, &config);
 	
 	radiolink_write_reg(REG_STATUS, 1, &status);
-	return status;
+	return n ? 0xFF: status;
 }
 
 unsigned char radiolink_recv(int size, unsigned char *data) {
